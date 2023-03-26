@@ -53,7 +53,6 @@ func loadConfig() *types.EnvConfig {
 	} else {
 		config.Port = os.Getenv("PORT")
 		config.Prod = true
-		config.LogFile = os.Getenv("LOGFILE")
 
 		config.Notion = types.NotionConfig{
 			Token: os.Getenv("NOTION_TOKEN"),
@@ -62,7 +61,6 @@ func loadConfig() *types.EnvConfig {
 		config.SendGrid = types.SendGridConfig{ Key: os.Getenv("SENDGRID_KEY") }
 		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
 	}
-
 
 	return &config
 }
@@ -96,11 +94,19 @@ func main() {
 
 func run(env *types.EnvConfig) error {
 	/* Load up the logfile */
-	fmt.Println("Using logfile:", env.LogFile)
-	logfile, err := os.OpenFile(env.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		return err
+	var logfile *os.File
+	var err error
+	if env.LogFile != "" {
+		fmt.Println("Using logfile:", env.LogFile)
+		logfile, err = os.OpenFile(env.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+		if err != nil {
+			return err
+		}
+	} else {
+		fmt.Println("Using logfile: stdout")
+		logfile = os.Stdout
 	}
+
 	app.Infos = log.New(logfile, "INFO\t", log.Ldate|log.Ltime)
 	app.Err = log.New(logfile, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
