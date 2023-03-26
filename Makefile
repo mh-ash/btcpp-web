@@ -2,7 +2,8 @@ APP_NAME = btcpp-web
 
 .PHONY: dev-run
 dev-run:
-	go run ./cmd/web/main.go &
+	go build -o target/$(APP_NAME) ./cmd/web/main.go
+	./target/$(APP_NAME) $
 	./tools/tailwind -i templates/css/input.css -o static/css/styles.css --watch
 
 .PHONY: run
