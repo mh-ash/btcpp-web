@@ -4,3 +4,4 @@ config.toml
 target
 todo
 *.log
+.env

@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/profclems/go-dotenv"
+
 	"github.com/BurntSushi/toml"
 	"github.com/alexedwards/scs/v2"
 	"github.com/gorilla/mux"
@@ -24,10 +26,44 @@ var session *scs.SessionManager
 func loadConfig() *types.EnvConfig {
 	var config types.EnvConfig
 
-	_, err := toml.DecodeFile(configFile, &config)
-	if err != nil {
-		log.Fatal(err)
+	if _, err := os.Stat("config.toml"); err == nil {
+		_, err = toml.DecodeFile(configFile, &config)
+		if err != nil {
+			log.Fatal(err)
+		}
+		config.Prod = false
+	} else if _, err := os.Stat(".env"); err == nil {
+		err = dotenv.LoadConfig()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		/* Populate env */
+		config.Port = dotenv.GetString("PORT")
+		config.Prod = false
+		config.LogFile = dotenv.GetString("LOGFILE")
+
+		config.Notion = types.NotionConfig{
+			Token: dotenv.GetString("NOTION_TOKEN"),
+			TalksDb: dotenv.GetString("NOTION_TALKS_DB"),
+		}
+		config.SendGrid = types.SendGridConfig{ Key: dotenv.GetString("SENDGRID_KEY") }
+		config.Google = types.GoogleConfig{ Key: dotenv.GetString("GOOGLE_KEY") }
+
+	} else {
+		config.Port = os.Getenv("PORT")
+		config.Prod = true
+		config.LogFile = os.Getenv("LOGFILE")
+
+		config.Notion = types.NotionConfig{
+			Token: os.Getenv("NOTION_TOKEN"),
+			TalksDb: os.Getenv("NOTION_TALKS_DB"),
+		}
+		config.SendGrid = types.SendGridConfig{ Key: os.Getenv("SENDGRID_KEY") }
+		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
 	}
+
+
 	return &config
 }
 
@@ -46,7 +82,7 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:    app.Env.Port,
+		Addr:    fmt.Sprintf(":%s", app.Env.Port),
 		Handler: routes,
 	}
 
