@@ -1,0 +1,36 @@
+{{ define "session" }}
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="{{ .Twitter }}" target="_blank">
+     <img class="inline-block h-28 w-full sm:w-28 rounded-md" src="{{ .Photo }}" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/talks#{{ .AnchorTag }}">{{ .Name }}</a></h4>
+       <h5 class="text-left text-lg text-gray-500">{{ .Speaker }}</h5>
+       <p class="text-left text-sm text-gray-500">{{ .Company }}</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">{{ .StartTime }}</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">{{ .Len }}</span>
+    <span class="flex-grow"></span>
+    {{ if eq .Type "mixer" }}
+    <span class="grow0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">All-Conf Ice Breaker</span>
+    {{ end }}
+    {{ if eq .Type "round-robin" }}
+      <span class="grow0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">Cohort Workshops</span>
+    {{ end }}
+    {{ if eq .Type "workshop" }}
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    {{ end }}
+    {{ if eq .Type "talk" }}
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    {{ end }}
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">{{ .Venue }}</span> 
+  </div>
+  </li>	
+{{ end }}
