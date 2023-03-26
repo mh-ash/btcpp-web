@@ -8,13 +8,14 @@ import (
 	"github.com/base58btc/btcpp-web/internal/types"
 )
 
-// AppConfig holds the application configuration settings
-type AppConfig struct {
+/* application configuration settings */
+type AppContext struct {
+	Env    *types.EnvConfig
+	Notion *types.Notion
+
 	InProduction  bool
-	InfoLog       *log.Logger
-	ErrorLog      *log.Logger
+	Err           *log.Logger
+	Infos         *log.Logger
 	Session       *scs.SessionManager
 	TemplateCache map[string]*template.Template
-
-	Context types.AppContext
 }

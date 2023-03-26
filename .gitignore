@@ -3,3 +3,4 @@ btcpp-web
 config.toml
 target
 todo
+*.log

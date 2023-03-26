@@ -18,7 +18,7 @@ import (
 
 const configFile = "config.toml"
 
-var app config.AppConfig
+var app config.AppContext
 var session *scs.SessionManager
 
 func loadConfig() *types.EnvConfig {
@@ -32,37 +32,48 @@ func loadConfig() *types.EnvConfig {
 }
 
 func main() {
-	// Initialize the application configuration
-	app.InProduction = false // change to true in prod
-	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	app.ErrorLog = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	// Load configs from config.toml
-	env := loadConfig()
-
-	fmt.Println("On port", env.Port)
-	// Start the server
-	srv := &http.Server{
-		Addr:    env.Port,
-		Handler: Routes(),
-	}
-
-	fmt.Printf("Starting application on port %s\n", env.Port)
-	err := run(env)
+	/* Load configs from config.toml */
+	app.Env = loadConfig()
+	err := run(app.Env)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	/* Set up Routes */
+	routes, err := Routes()
+	if err != nil {
+		app.Err.Fatal(err)
+	}
+
+	srv := &http.Server{
+		Addr:    app.Env.Port,
+		Handler: routes,
+	}
+
+	/* Start the server */
+	app.Infos.Printf("Starting application on port %s\n", app.Env.Port)
 	err = srv.ListenAndServe()
 	if err != nil {
-		log.Fatal(err)
+		app.Err.Fatal(err)
 	}
 }
 
 func run(env *types.EnvConfig) error {
+	/* Load up the logfile */
+	fmt.Println("Using logfile:", env.LogFile)
+	logfile, err := os.OpenFile(env.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		return err
+	}
+	app.Infos = log.New(logfile, "INFO\t", log.Ldate|log.Ltime)
+	app.Err = log.New(logfile, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+
 	// Initialize the application configuration
-	app.InProduction = false // change to true in production
-	app.InfoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	app.ErrorLog = log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.InProduction = env.Prod
+
+	app.Infos.Println("\n\n\n")
+	app.Infos.Println("~~~~app restarted, here we go~~~~~")
+	app.Infos.Println("Running in prod?", env.Prod)
 
 	// Initialize the session manager
 	session = scs.New()
@@ -73,13 +84,9 @@ func run(env *types.EnvConfig) error {
 
 	app.Session = session
 
-	notion := &types.Notion{Config: env.Notion}
-	notion.Setup()
+	app.Notion = &types.Notion{Config: env.Notion}
+	app.Notion.Setup()
 
-	app.Context = types.AppContext{
-		Env:    env,
-		Notion: notion,
-	}
 	return nil
 }
 
@@ -89,10 +96,10 @@ func getFaviconHandler(name string) func(http.ResponseWriter, *http.Request) {
 	}
 }
 
-func addFaviconRoutes(r *mux.Router) {
+func addFaviconRoutes(r *mux.Router) error {
 	files, err := ioutil.ReadDir("static/favicon/")
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	/* If asked for a favicon, we'll serve it up */
@@ -102,10 +109,12 @@ func addFaviconRoutes(r *mux.Router) {
 		}
 		r.HandleFunc(fmt.Sprintf("/%s", file.Name()), getFaviconHandler(file.Name())).Methods("GET")
 	}
+
+	return nil
 }
 
 // Routes sets up the routes for the application
-func Routes() http.Handler {
+func Routes() (http.Handler, error) {
 	// Create a file server to serve static files from the "static" directory
 	fs := http.FileServer(http.Dir("static"))
 
@@ -113,13 +122,13 @@ func Routes() http.Handler {
 
 	// Set up the routes, we'll have one page per course
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		handlers.Home(w, r, &app.Context)
+		handlers.Home(w, r, &app)
 	}).Methods("GET")
 	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
-		handlers.Talks(w, r, &app.Context)
+		handlers.Talks(w, r, &app)
 	}).Methods("GET")
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
-	addFaviconRoutes(r)
+	err := addFaviconRoutes(r)
 
-	return r
+	return r, err
 }

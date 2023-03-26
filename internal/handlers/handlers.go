@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 	"time"
 	"sort"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/base58btc/btcpp-web/external/getters"
 	"github.com/base58btc/btcpp-web/internal/types"
+	"github.com/base58btc/btcpp-web/internal/config"
 )
 
 func getSessionKey(p string, r *http.Request) (string, bool) {
@@ -27,11 +27,12 @@ type HomePage struct {
 	GoogleKey   string
 }
 
-func Home(w http.ResponseWriter, r *http.Request, ctx *types.AppContext) {
+func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	// Parse the template file
 	tmpl, err := template.ParseFiles("templates/index.tmpl", "templates/nav.tmpl", "templates/session.tmpl")
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		ctx.Err.Fatal(err)
 		return
 	}
 
@@ -39,7 +40,8 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *types.AppContext) {
 	var talks talkTime
 	talks, err = getters.ListTalks(ctx.Notion)
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
 		return
 	}
 
@@ -64,13 +66,15 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *types.AppContext) {
 	// Render the template with the data
 	saturday, err := listSaturdaySessions(talks)
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/ failed to build Saturdays! %s\n", err.Error())
 		return
 	}
 
 	sunday, err := listSundaySessions(talks)
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/ failed to build Sundays ! %s\n", err.Error())
 		return
 	}
 
@@ -83,7 +87,8 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *types.AppContext) {
 		GoogleKey: ctx.Env.Google.Key,
 	})
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/ ExecuteTemplate failed ! %s\n", err.Error())
 		return
 	}
 }
@@ -265,13 +270,14 @@ func listSaturdayTalks(talks talkTime) ([]talkTime, error) {
 	return saturdays, nil
 }
 
-func Talks(w http.ResponseWriter, r *http.Request, ctx *types.AppContext) {
+func Talks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	// Parse the template file
 	tmpl, err := template.ParseFiles("templates/sched.tmpl",
 		"templates/sched_desc.tmpl",
 		"templates/nav.tmpl")
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Fatal("/talks parsetemplates failed! %s\n", err.Error())
 		return
 	}
 
@@ -279,7 +285,8 @@ func Talks(w http.ResponseWriter, r *http.Request, ctx *types.AppContext) {
 	var talks talkTime
 	talks, err = getters.ListTalks(ctx.Notion)
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/talks ListTalks failed! %s\n", err.Error())
 		return
 	}
 
@@ -291,7 +298,8 @@ func Talks(w http.ResponseWriter, r *http.Request, ctx *types.AppContext) {
 		Talks: talks,
 	})
 	if err != nil {
-		log.Fatal(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/talks ExecuteTemplate failed! %s\n", err.Error())
 		return
 	}
 }

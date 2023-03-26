@@ -3,12 +3,12 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/base58btc/btcpp-web/internal/types"
+	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendTicketConfirmed(ctx *types.AppContext, email string) error {
+func SendTicketConfirmed(ctx *config.AppContext, email string) error {
 	from := mail.NewEmail("Base58⛓🔓", "hello@base58.school")
 	subject := fmt.Sprintf("[bitcoin++] Your Ticket to btcpp Austin 2023")
 	to := mail.NewEmail("🐲", email)

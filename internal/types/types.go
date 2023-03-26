@@ -11,6 +11,8 @@ type (
 	/* Configs for the app! */
 	EnvConfig struct {
 		Port     string
+		Prod     bool
+		LogFile  string
 		Notion   NotionConfig
 		SendGrid SendGridConfig
 		Google   GoogleConfig
@@ -18,11 +20,6 @@ type (
 
 	GoogleConfig struct {
 		Key string
-	}
-
-	AppContext struct {
-		Env    *EnvConfig
-		Notion *Notion
 	}
 
 	Talk struct {
