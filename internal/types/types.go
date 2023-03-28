@@ -12,6 +12,7 @@ type (
 	EnvConfig struct {
 		Port     string
 		Prod     bool
+		RegistryPin string
 		LogFile  string
 		Notion   NotionConfig
 		SendGrid SendGridConfig

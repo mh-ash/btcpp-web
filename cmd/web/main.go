@@ -2,17 +2,13 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
-	"github.com/profclems/go-dotenv"
-
 	"github.com/BurntSushi/toml"
 	"github.com/alexedwards/scs/v2"
-	"github.com/gorilla/mux"
 	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/base58btc/btcpp-web/internal/handlers"
 	"github.com/base58btc/btcpp-web/internal/types"
@@ -21,7 +17,6 @@ import (
 const configFile = "config.toml"
 
 var app config.AppContext
-var session *scs.SessionManager
 
 func loadConfig() *types.EnvConfig {
 	var config types.EnvConfig
@@ -32,31 +27,15 @@ func loadConfig() *types.EnvConfig {
 			log.Fatal(err)
 		}
 		config.Prod = false
-	} else if _, err := os.Stat(".env"); err == nil {
-		err = dotenv.LoadConfig()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		/* Populate env */
-		config.Port = dotenv.GetString("PORT")
-		config.Prod = false
-		config.LogFile = dotenv.GetString("LOGFILE")
-
-		config.Notion = types.NotionConfig{
-			Token: dotenv.GetString("NOTION_TOKEN"),
-			TalksDb: dotenv.GetString("NOTION_TALKS_DB"),
-		}
-		config.SendGrid = types.SendGridConfig{ Key: dotenv.GetString("SENDGRID_KEY") }
-		config.Google = types.GoogleConfig{ Key: dotenv.GetString("GOOGLE_KEY") }
-
 	} else {
 		config.Port = os.Getenv("PORT")
 		config.Prod = true
 
+		config.RegistryPin = os.Getenv("REGISTRY_PIN")
 		config.Notion = types.NotionConfig{
 			Token: os.Getenv("NOTION_TOKEN"),
 			TalksDb: os.Getenv("NOTION_TALKS_DB"),
+			PurchasesDb: os.Getenv("NOTION_PURCHASES_DB"),
 		}
 		config.SendGrid = types.SendGridConfig{ Key: os.Getenv("SENDGRID_KEY") }
 		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
@@ -74,14 +53,14 @@ func main() {
 	}
 
 	/* Set up Routes */
-	routes, err := Routes()
+	routes, err := handlers.Routes(&app)
 	if err != nil {
 		app.Err.Fatal(err)
 	}
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%s", app.Env.Port),
-		Handler: routes,
+		Handler: app.Session.LoadAndSave(routes),
 	}
 
 	/* Start the server */
@@ -118,59 +97,14 @@ func run(env *types.EnvConfig) error {
 	app.Infos.Println("Running in prod?", env.Prod)
 
 	// Initialize the session manager
-	session = scs.New()
-	session.Lifetime = 72 * time.Hour
-	session.Cookie.Persist = true
-	session.Cookie.SameSite = http.SameSiteLaxMode
-	session.Cookie.Secure = app.InProduction
-
-	app.Session = session
+	app.Session = scs.New()
+	app.Session.Lifetime = 4 * 24 * time.Hour
+	app.Session.Cookie.Persist = true
+	app.Session.Cookie.SameSite = http.SameSiteLaxMode
+	app.Session.Cookie.Secure = app.InProduction
 
 	app.Notion = &types.Notion{Config: env.Notion}
 	app.Notion.Setup()
 
 	return nil
-}
-
-func getFaviconHandler(name string) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, fmt.Sprintf("static/favicon/%s", name))
-	}
-}
-
-func addFaviconRoutes(r *mux.Router) error {
-	files, err := ioutil.ReadDir("static/favicon/")
-	if err != nil {
-		return err
-	}
-
-	/* If asked for a favicon, we'll serve it up */
-	for _, file := range files {
-		if file.IsDir() {
-			continue
-		}
-		r.HandleFunc(fmt.Sprintf("/%s", file.Name()), getFaviconHandler(file.Name())).Methods("GET")
-	}
-
-	return nil
-}
-
-// Routes sets up the routes for the application
-func Routes() (http.Handler, error) {
-	// Create a file server to serve static files from the "static" directory
-	fs := http.FileServer(http.Dir("static"))
-
-	r := mux.NewRouter()
-
-	// Set up the routes, we'll have one page per course
-	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		handlers.Home(w, r, &app)
-	}).Methods("GET")
-	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
-		handlers.Talks(w, r, &app)
-	}).Methods("GET")
-	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
-	err := addFaviconRoutes(r)
-
-	return r, err
 }

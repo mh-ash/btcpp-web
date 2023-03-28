@@ -8,6 +8,7 @@ type (
 	NotionConfig struct {
 		Token      string
 		TalksDb    string
+		PurchasesDb string
 	}
 
 	Notion struct {

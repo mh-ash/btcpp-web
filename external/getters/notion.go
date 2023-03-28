@@ -6,6 +6,7 @@ import (
 	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/sorcererxw/go-notion"
 	"strings"
+	"time"
 )
 
 func parseRichText(key string, props map[string]notion.PropertyValue) string {
@@ -112,6 +113,49 @@ func ListTalks(n *types.Notion) ([]*types.Talk, error) {
 	}
 
 	return talks, nil
+}
+
+func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
+	/* Make sure that the ticket is in the Purchases table and 
+	is *NOT* already checked in */
+	pages, _, _, _:= n.Client.QueryDatabase(context.Background(), n.Config.PurchasesDb,
+		notion.QueryDatabaseParam{
+			Filter: &notion.Filter{
+				Property: "RefID",
+				Text: &notion.TextFilterCondition{
+					Equals: ticket,
+				},
+			},
+		})
+
+	if len(pages) != 1 {
+		return "", true, fmt.Errorf("Ticket not found")
+	}
+
+	page := pages[0]
+	if len(page.Properties["Checked In"].RichText) == 0 {
+		/* Update to checked in at time.now() */
+		now := time.Now()
+		_, err := n.Client.UpdatePageProperties(context.Background(), page.ID,
+			map[string]*notion.PropertyValue{
+				"Checked In": notion.NewRichTextPropertyValue(
+					[]*notion.RichText{
+						{Type: notion.RichTextText,
+							Text: &notion.Text{Content: now.Format(time.RFC3339) }},
+					}...),
+			})
+
+		/* I need to know what role this is, so I can flash it! */
+		var ticket_type string
+		if page.Properties["Type"].Select != nil {
+			ticket_type = page.Properties["Type"].Select.Name
+		}
+		return ticket_type, err == nil, err
+	}
+
+
+
+	return "", true, fmt.Errorf("Already checked in")
 }
 
 /*

@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"html/template"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
 	"sort"
@@ -10,7 +12,55 @@ import (
 	"github.com/base58btc/btcpp-web/external/getters"
 	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/base58btc/btcpp-web/internal/config"
+	"github.com/gorilla/mux"
 )
+
+// Routes sets up the routes for the application
+func Routes(app *config.AppContext) (http.Handler, error) {
+	// Create a file server to serve static files from the "static" directory
+	fs := http.FileServer(http.Dir("static"))
+
+	r := mux.NewRouter()
+
+	// Set up the routes, we'll have one page per course
+	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		Home(w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
+		Talks(w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/check-in/{ticket}", func(w http.ResponseWriter, r *http.Request) {
+		CheckIn(w, r, app)
+	}).Methods("GET", "POST")
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+	err := addFaviconRoutes(r)
+
+	return r, err
+}
+
+func getFaviconHandler(name string) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, fmt.Sprintf("static/favicon/%s", name))
+	}
+}
+
+func addFaviconRoutes(r *mux.Router) error {
+	files, err := ioutil.ReadDir("static/favicon/")
+	if err != nil {
+		return err
+	}
+
+	/* If asked for a favicon, we'll serve it up */
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		r.HandleFunc(fmt.Sprintf("/%s", file.Name()), getFaviconHandler(file.Name())).Methods("GET")
+	}
+
+	return nil
+}
+
 
 func getSessionKey(p string, r *http.Request) (string, bool) {
 	ok := r.URL.Query().Has(p)
@@ -301,6 +351,100 @@ func Talks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("/talks ExecuteTemplate failed! %s\n", err.Error())
 		return
+	}
+}
+
+type CheckInPage struct {
+	NeedsPin   bool
+	TicketType string
+	Msg        string
+}
+
+func CheckIn(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	// Parse the template file
+	tmpl, err := template.ParseFiles("templates/checkin.tmpl", "templates/nav.tmpl")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		ctx.Err.Fatal(err)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodGet:
+		CheckInGet(w, r, ctx, tmpl)
+		return
+	case http.MethodPost:
+		r.ParseForm()
+		pin := r.Form.Get("pin")
+		if pin != ctx.Env.RegistryPin {
+			w.WriteHeader(http.StatusBadRequest)
+			err = tmpl.ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
+				NeedsPin: true,
+				Msg: "Wrong pin",
+			})
+			ctx.Err.Printf("/check-in wrong pin submitted! %s\n", pin)
+			return
+		}
+
+		/* Set pin?? */
+		ctx.Session.Put(r.Context(), "pin", pin)
+		CheckInGet(w, r, ctx, tmpl)
+	}
+}
+
+func CheckInGet(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, tmpl *template.Template) {
+	/* Check for logged in */
+	pin := ctx.Session.GetString(r.Context(), "pin")
+
+	if pin == "" {
+		w.Header().Set("x-missing-field", "pin")
+		w.WriteHeader(http.StatusBadRequest)
+		err := tmpl.ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
+			NeedsPin: true,
+		})
+		if err != nil {
+			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+		}
+		return
+	}
+
+	if pin != ctx.Env.RegistryPin {
+		w.WriteHeader(http.StatusUnauthorized)
+		err := tmpl.ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
+			Msg: "Wrong registration PIN",
+		})
+		if err != nil {
+			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+		}
+		return
+	}
+
+	params := mux.Vars(r)
+	ticket := params["ticket"]
+
+	tix_type, ok, err := getters.CheckIn(ctx.Notion, ticket)
+	if !ok && err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to check-in %s:\n", ticket, err.Error())
+		return
+	}
+
+	var msg string
+	if err != nil {
+		msg = err.Error()
+		ctx.Infos.Println("check-in problem:", msg)
+	}
+	err = tmpl.ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
+		TicketType: tix_type,
+		Msg: msg,
+	})
+
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
 	}
 }
 
