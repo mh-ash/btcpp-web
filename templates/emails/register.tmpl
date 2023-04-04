@@ -1,0 +1,94 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    {{ .CSS | css }}
+</head>
+<body>
+  <header class="bg-white">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <div class="flex lg:flex-1">
+        <a href="{{ .URI }}/" class="-m-1.5 p-1.5"><span class="sr-only">bitcoin++</span> <img class="h-8 w-auto" src="{{ .URI }}/static/img/btcpp.svg" alt=""></a>
+      </div>
+    </nav><!-- Mobile menu, show/hide based on menu open state. -->
+  </header>
+  <section id="talks">
+    <div class="bg-white py-20 sm:py-20">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="max-w-2xl text-start">
+         <h2 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl">You're Going!</h2>
+         <p class="mt-4 text-base leading-7">bitcoin++ is excited to welcome you to our second conference in Austin, Texas!</p>
+         <p class="mt-2 text-base leading-7">The <span class="font-bold">attached ticket</span> will get you into the conference for three days of workshops and talks from some of the best builders and thinkers in the bitcoin L2 space. You'll need it to check-in!</p>
+	  <p class="mt-2 text-base leading-7">If you still need a place to stay, we've got a short <a href="https://btcpp.dev#venue" target="_blank" class="font-semibold underline underline-offset-4">list of suggestions on the conference website</a>; I'd also really recommend the Hyatt which is pricey but a nice walk to the venue. Any hotel downtown should be great, or an Airbnb nearby.</p>
+	   <h3 class="mt-8 text-2xl font-bold tracking-tight text-gray-700 sm:text-2xl">Before the Conference</h3>
+	<p class="mt-2 text-base leading-7">Get connected with other conference goers and stay up to date on what's happening on our <a href="https://t.me/+srzZdNHt8SoxZTFh" class="font-semibold underline underline-offset-4">Telegram group</a></p>
+	<p class="mt-4 text-base leading-7">Take <a class="font-semibold underline underline-offset-4" href="https://base58.info/classes" target="_blank">Base58⛓🔓</a>'s In-Person Transactions Deep Dive Apr 24-28 in Austin. Get warmed up for a weekend of building with a deep-dive into bitcoin. Learn all about how bitcoin transactions work in a fun, interactive in-person developer workshop. We've got a few seats left, <a class="font-semibold underline underline-offset-4" href="https://www.base58.info/classes" target="_blank">secure your spot here!</a>
+	   <h3 class="mt-8 text-2xl font-bold tracking-tight text-gray-700 sm:text-2xl">At the Conference</h3>
+	  <p class="mt-4 text-base leading-7">The conference will be held in the <a class="font-semibold underline underline-offset-4" href="https://duckduckgo.com/?q=palmer+events+center&t=brave&ia=web&iaxm=places" target="_blank">Palmer Event Center</a>'s meeting rooms April 28+29+30. There's parking availabe on site for $10 a day.</p>
+	  <p class="mt-2"><img class="rounded-xl" height="350" width="100%" src="{{ .URI }}/static/img/conf_where.png" /></p>
+	   <h3 class="mt-8 text-2xl font-bold tracking-tight text-gray-700 sm:text-2xl">Check-In</h3>
+	   <p class="mt-4 text-base leading-7">If you're in town and want to check-in early, we'll be getting things together at <a href="https://www.pleblab.com/" target="_blank">PlebLab</a> on Thurs, April 27. Come by to get your badge + a t-shirt from 3p to 5p @ 623 1/2 E 6th <a href="https://goo.gl/maps/YdVzDYhc8i6kSCsQ6" target="_blank" class="font-semibold underline underline-offset-4">MAP</a></p>
+	  <p class="mt-2 text-base leading-7">The check-in at the conf opens Friday, April 28, at 9.30a; the first event will start at 10.30a. Check out the whole agenda on our <a class="font-semibold underline underline-offset-4" href="https://btcpp.dev/#agenda">updated website</a></p>
+	   <h3 class="mt-8 text-2xl font-bold tracking-tight text-gray-700 sm:text-2xl">Hackathon Details</h3>
+         <p class="mt-4 text-base leading-7">The hackathon will kick off at close of sessions Saturday. You'll have all night Saturday to hack; most of Sunday will be open for hacking and unconferencing at the event center.</p>
+         <p class="mt-2 text-base leading-7">We've got over <span class="font-semibold text-green">$5k</span> in prizes! Big thanks to <span class="font-semibold">Trammel Venture Partners</span> and <span class="font-semibold">Fulgar Ventures</span> for sponsoring the hackathon!</p>
+
+	<ul class="mt-8 max-w-full">
+	<li class="mt-4"><span class="font-semibold">Grand Prize</span>: $1.5k cash prize, a seat in an upcoming Base58 in-person class, and 2 tickets to the next bitcoin++</li>
+	<li class="mt-4">Other prizes to be announced at the kick off Saturday evening!</li>
+	</ul>
+
+	   <h3 class="mt-8 text-2xl font-bold tracking-tight text-gray-700 sm:text-2xl">Satellite Events</h3>
+            <p class="mt-4 text-base leading-7">There's a lot going on in Austin around bitcoin++, here's some satellite events to check out!</p>
+	<ul class="mt-4 max-w-full">
+	<li>
+<span class="font-semibold">M-Th</span> Base58⛓🔓's In-Person Transactions Deep Dive. Learn all about how bitcoin transactions in a fun, interactive in-person workshop. Apr 24-28 9a - 12noon @ Common Desk. We've got a few seats left, <a class="font-semibold underline underline-offset-4" href="https://www.base58.info/classes" target="_blank">Sign up here!</a>
+</li>
+	<li class="mt-4"><span class="font-semibold">Tues</span> Austin Lightning Developers Meetup, 6.30-9p @ Bitcoin Commons <a class="font-semibold underline underline-offset-4" href="https://github.com/base58btc/base58-web" target="_blank">Meetup</a></li>
+	<li><span class="font-semibold">Tues</span> Austin Bitcoin Club's Bitcoin Dinner, 5.30-8p @ Meteor <a class="font-semibold underline underline-offset-4" href="https://www.meetup.com/austin-bitcoin-club/events/292120021/" target="_blank">Meetup</a> </li>
+	<li class="mt-4"><span class="font-semibold">Wed</span> Nakamoto Forum Debate 6-8p @ Bitcoin Commons; ticket required! <a class="font-semibold underline underline-offset-4"href="https://www.eventbrite.com/e/nakamoto-forum-debate-series-tickets-598633497907" target="_blank">Eventbrite</a> </li>
+	<li class="mt-4"><span class="font-semibold">Thurs</span> Austin Bitcoin Design Club Meetup, 6.30-9p @ Bitcoin Commons <a class="font-semibold underline underline-offset-4" href="https://www.meetup.com/austin-bitcoin-club/events/292120021/" target="_blank">Meetup</a> </li>
+	<li><span class="font-semibold">Thurs</span> Application-Only LDK class; details to come</li>
+	</ul>
+	   <h3 class="mt-8 text-2xl font-bold tracking-tight text-gray-700 sm:text-2xl">Our Sponsors</h3>
+            <p class="mt-2 text-base leading-7">bitcoin++ wouldn't be possible without our awesome sponsors. Huge shout out to them for making bitcoin++ possible!</p>
+	    <div class="mt-8 grid grid-cols-1 items-center gap-x-8 gap-y-16 lg:grid-cols-2">
+        <a href="https://mempool.space/" target="_blank" style="background: #1d1f31!important" class="p-8">
+          <img class="max-h-12 w-full object-contain object-center" src="{{ .URI }}/static/img/mempool.svg" alt="Mempool.space" width="150" height="auto">
+        </a>
+        <a href="https://cequals.xyz/" target="_blank">
+        <img class="max-h-16 w-full object-contain object-center" src="{{ .URI }}/static/img/ceq.svg" alt="C=" width="auto" height="200">
+        </a>
+        <a href="https://spiral.xyz/" target="_blank">
+        <img class="max-h-24 w-full object-contain object-center" src="{{ .URI }}/static/img/spiral.svg" alt="Spiral" width="250" height="250">
+        </a>
+        <a href="https://base58.info" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="{{ .URI }}/static/img/base58.svg" alt="Base58" width="150" height="auto">
+        </a>
+        <a href="https://tvp.fund/" target="_blank">
+        <img class="max-h-20 w-full object-contain object-center" src="{{ .URI }}/static/img/trammel.svg" alt="Trammel Venture Partners" width="300" height="300">
+        </a>
+        <a href="https://fulgur.ventures/" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="{{ .URI }}/static/img/fulgar.svg" alt="Fulgar Ventures" width="150" height="auto">
+        </a>
+        <a href="https://rigly.io/" target="_blank">
+        <img class="max-h-24 w-full object-contain object-center" src="{{ .URI }}/static/img/rigly.svg" alt="Rigly" width="250" height="250">
+        </a>
+        <a href="https://www.opennode.com/" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="{{ .URI }}/static/img/opennode.svg" alt="OpenNode" width="150" height="auto">
+        </a>
+        <a href="https://opensats.org/" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="{{ .URI }}/static/img/opensats.svg" alt="OpenSats" width="150" height="auto">
+        </a>
+        <a href="https://atlbitlab.com/" target="_blank" class="p-4">
+        <img class="max-h-20 w-full object-contain object-center" src="{{ .URI }}/static/img/atlbitlab.jpg" alt="ATL BitLab" width="200" height="auto">
+        </a>
+		</div>
+	    </div>
+		
+          </div>
+       </div>
+    </div>
+  </section>
+</body>
+</html>
