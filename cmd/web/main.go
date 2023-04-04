@@ -31,13 +31,15 @@ func loadConfig() *types.EnvConfig {
 		config.Port = os.Getenv("PORT")
 		config.Prod = true
 
+		config.Host = os.Getenv("HOST")
+		config.MailerSecret = os.Getenv("MAILER_SECRET")
+
 		config.RegistryPin = os.Getenv("REGISTRY_PIN")
 		config.Notion = types.NotionConfig{
 			Token: os.Getenv("NOTION_TOKEN"),
 			TalksDb: os.Getenv("NOTION_TALKS_DB"),
 			PurchasesDb: os.Getenv("NOTION_PURCHASES_DB"),
 		}
-		config.SendGrid = types.SendGridConfig{ Key: os.Getenv("SENDGRID_KEY") }
 		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
 	}
 
@@ -52,7 +54,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	/* Set up Routes */
+	/* Set up Routes + Templates */
 	routes, err := handlers.Routes(&app)
 	if err != nil {
 		app.Err.Fatal(err)
@@ -65,6 +67,7 @@ func main() {
 
 	/* Start the server */
 	app.Infos.Printf("Starting application on port %s\n", app.Env.Port)
+	app.Infos.Printf("... Current domain is %s\n", app.Env.GetDomain())
 	err = srv.ListenAndServe()
 	if err != nil {
 		app.Err.Fatal(err)

@@ -12,11 +12,13 @@ type (
 	EnvConfig struct {
 		Port     string
 		Prod     bool
+		MailerSecret string
 		RegistryPin string
 		LogFile  string
 		Notion   NotionConfig
 		SendGrid SendGridConfig
 		Google   GoogleConfig
+		Host string
 	}
 
 	GoogleConfig struct {
@@ -44,6 +46,11 @@ type (
 		AnchorTag string
 	}
 
+	Ticket struct {
+		Id string
+		Pdf []byte
+	}
+
 	Times struct {
 		Start time.Time
 		End   *time.Time
@@ -51,6 +58,22 @@ type (
 
 	ShirtSize string
 )
+
+func (env *EnvConfig) GetDomain() string {
+	if env.Port != "" {
+		return fmt.Sprintf("%s:%s", env.Host, env.Port)
+	}
+	return env.Host
+}
+
+func (env *EnvConfig) GetURI() string {
+	if env.Prod {
+		return fmt.Sprintf("https://%s", env.GetDomain())
+	}
+
+	return fmt.Sprintf("http://%s", env.GetDomain())
+}
+
 
 /* Silly thing to return a value for a venue, for ordering */
 func (t *Talk) VenueValue() int {
