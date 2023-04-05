@@ -55,7 +55,7 @@ func loadTemplates(app *config.AppContext) error {
 			return template.HTMLAttr(fmt.Sprintf(`src="%s"`, s))
 		},
 		"css": func(s string) template.HTML {
-			return template.HTML(fmt.Sprintf(`<style>%s</style>`, s))
+			return template.HTML(fmt.Sprintf(`<style type="text/css">%s</style>`, s))
 		},
 	}).ParseFiles("templates/emails/ticket.tmpl")
 	if err != nil {
@@ -65,13 +65,19 @@ func loadTemplates(app *config.AppContext) error {
 
 	register, err := template.New("register.tmpl").Funcs(template.FuncMap{
 		"css": func(s string) template.HTML {
-			return template.HTML(fmt.Sprintf(`<style>%s</style>`, s))
+			return template.HTML(fmt.Sprintf(`<style type="text/css">%s</style>`, s))
 		},
 	}).ParseFiles("templates/emails/register.tmpl")
 	if err != nil {
 		return err
 	}
 	app.TemplateCache["register"] = register
+
+	registertext, err := template.ParseFiles("templates/emails/register-text.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["register-text"] = registertext
 
 	checkin, err := template.ParseFiles("templates/checkin.tmpl", "templates/nav.tmpl")
 	if err != nil {
@@ -435,6 +441,7 @@ type TicketTmpl struct {
 	QRCodeURI string
 	Domain string
 	CSS string
+	Type string
 }
 
 func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
@@ -534,6 +541,7 @@ func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 		QRCodeURI: dataURI,
 		CSS: MiniCss(),
 		Domain: ctx.Env.GetDomain(),
+		Type: "sponsor",
 	}
 
 	err = ctx.TemplateCache["ticket.tmpl"].Execute(w, tix)

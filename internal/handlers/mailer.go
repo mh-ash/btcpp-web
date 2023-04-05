@@ -33,14 +33,13 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 		return fmt.Errorf("No tickets present!")
 	}
 
-	/*
-	textBody, err := ctx.TemplateCache["register-text"].ExecuteBytes(&EmailTmpl{
-		Domain: ctx.Env.GetURI(),
+	var textBody bytes.Buffer
+	err = ctx.TemplateCache["register-text"].Execute(io.Writer(&textBody), &EmailTmpl{
+		URI: ctx.Env.GetURI(),
 	})
 	if err != nil {
 		return err
 	}
-	*/
 
 	var attaches mailer.AttachSet
 	attaches = make([]*mailer.Attachment, len(tickets))
@@ -64,7 +63,7 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 		FromName: "bitcoin++",
 		Title: "[bitcoin++ Ticket] You're Going! ... Austin, April 28-30",
 		HTMLBody: htmlBody.String(),
-		TextBody: "TODO: this!",
+		TextBody: textBody.String(),
 		Attachments: attaches,
 		SendAt: float64(sendAt.UTC().Unix()),
 	}
