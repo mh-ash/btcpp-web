@@ -66,7 +66,7 @@ func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
         chromedp.Navigate(url),
         chromedp.WaitVisible(`body`, chromedp.ByQuery),
         chromedp.ActionFunc(func(ctx context.Context) error {
-            buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPreferCSSPageSize(true).WithPaperWidth(3.2).WithPaperHeight(9.25).Do(ctx)
+            buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPreferCSSPageSize(true).WithPaperWidth(3.2).WithPaperHeight(10.0).Do(ctx)
             if err != nil {
                 return err
             }
