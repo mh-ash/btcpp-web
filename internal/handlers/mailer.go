@@ -77,8 +77,17 @@ func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
 }
 
 func buildChromePdf(ctx *config.AppContext, fromURL string) ([]byte, error) {
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("allow-insecure-localhost", true),
+		chromedp.Flag("ignore-certificate-errors", true),
+		chromedp.Flag("accept-insecure-certs", true),
+	)
+
+	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer cancel()
+
 	taskCtx, cancel := chromedp.NewContext(
-            context.Background(),
+            allocCtx,
             chromedp.WithLogf(ctx.Infos.Printf),
         )
         defer cancel()
@@ -91,7 +100,7 @@ func buildChromePdf(ctx *config.AppContext, fromURL string) ([]byte, error) {
 }
 
 func MakeTicketPDF(ctx *config.AppContext, rez *types.Registration) ([]byte, error) {
-	ticketPage := fmt.Sprintf("%s/ticket/%s?type=%s", ctx.Env.GetURI(), rez.RefID, rez.Type)
+	ticketPage := fmt.Sprintf("http://localhost:%s/ticket/%s?type=%s", ctx.Env.Port, rez.RefID, rez.Type)
 	return buildChromePdf(ctx, ticketPage)
 }
 
