@@ -118,8 +118,7 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 	/* Send the ticket email! */
 	var htmlBody bytes.Buffer
 	err := ctx.TemplateCache["register"].Execute(io.Writer(&htmlBody), &EmailTmpl{
-		URI: "https://btcpp.dev",
-		//URI: ctx.Env.GetURI(),
+		URI: ctx.Env.GetURI(),
 		CSS: MiniCss(),
 	})
 	if err != nil {

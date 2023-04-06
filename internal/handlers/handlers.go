@@ -500,8 +500,7 @@ func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 func TicketCheck(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	err := ctx.TemplateCache["register"].Execute(w, &EmailTmpl{
-		URI: "https://btcpp.dev",
-		//URI: ctx.Env.GetURI(),
+		URI: ctx.Env.GetURI(),
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
