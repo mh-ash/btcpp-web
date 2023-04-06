@@ -68,9 +68,10 @@ type (
 )
 
 func (env *EnvConfig) GetDomain() string {
-	if env.Port != "" {
+	if env.Port != "" && !env.Prod {
 		return fmt.Sprintf("%s:%s", env.Host, env.Port)
 	}
+
 	return env.Host
 }
 
