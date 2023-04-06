@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -33,6 +34,12 @@ func loadConfig() *types.EnvConfig {
 
 		config.Host = os.Getenv("HOST")
 		config.MailerSecret = os.Getenv("MAILER_SECRET")
+		mailSec, err := strconv.ParseInt(os.Getenv("MAILER_JOB_SEC"), 10, 32)
+		if err != nil {
+			log.Fatal(err)
+			return nil
+		}
+		config.MailerJob = int(mailSec)
 
 		config.RegistryPin = os.Getenv("REGISTRY_PIN")
 		config.Notion = types.NotionConfig{
@@ -44,6 +51,17 @@ func loadConfig() *types.EnvConfig {
 	}
 
 	return &config
+}
+
+/* Every XX seconds, try to send new ticket emails. */
+func RunNewMails(ctx *config.AppContext) {
+	/* Wait a bit, so server can start up */
+	time.Sleep(4 * time.Second)
+	ctx.Infos.Println("Starting up mailer job...")
+	for true {
+		handlers.CheckForNewMails(ctx)
+		time.Sleep(time.Duration(ctx.Env.MailerJob) * time.Second)
+	}
 }
 
 func main() {
@@ -64,6 +82,9 @@ func main() {
 		Addr:    fmt.Sprintf(":%s", app.Env.Port),
 		Handler: app.Session.LoadAndSave(routes),
 	}
+
+	/* Kick off job to start sending mails */
+	go RunNewMails(&app)
 
 	/* Start the server */
 	app.Infos.Printf("Starting application on port %s\n", app.Env.Port)

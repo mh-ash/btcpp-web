@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/base58btc/btcpp-web/internal/types"
+	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/sorcererxw/go-notion"
 	"strings"
 	"time"
@@ -156,6 +157,75 @@ func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
 
 
 	return "", true, fmt.Errorf("Already checked in")
+}
+
+func parseRegistration(props map[string]notion.PropertyValue) *types.Registration {
+	regis := &types.Registration{
+		RefID: parseRichText("RefID", props),
+		Type:  props["Type"].Select.Name,
+		Email: props["Email"].Email,
+		ItemBought: parseRichText("Item Bought", props),
+	}
+	return regis
+}
+
+func fetchRegistrations(ctx *config.AppContext) ([]*types.Registration, error) {
+	var regis []*types.Registration
+
+	hasMore := true;
+	nextCursor := "";
+	n := ctx.Notion
+	db := ctx.Env.Notion.PurchasesDb
+	for hasMore {
+		var err error
+		var pages []*notion.Page
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(), db, notion.QueryDatabaseParam{
+			StartCursor: nextCursor,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		ctx.Infos.Println("Got back pages:", len(pages))
+		ctx.Infos.Println("Has more pages?", hasMore)
+
+		for _, page := range pages {
+			r := parseRegistration(page.Properties)
+			regis = append(regis, r)
+		}
+	}
+
+	return regis, nil
+}
+
+func ticketMatch(tickets []string, rez *types.Registration) bool {
+	for _, tix := range tickets {
+		if strings.Contains(rez.ItemBought, tix) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func FetchBtcppRegistrations(tickets []string, ctx *config.AppContext) ([]*types.Registration, error) {
+	var btcppres []*types.Registration
+	rezzies, err := fetchRegistrations(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range rezzies {
+		if r.RefID == "" {
+			continue
+		}
+		if ticketMatch(tickets, r) {
+			btcppres = append(btcppres, r)
+		}
+	}
+
+	return btcppres, nil
 }
 
 /*

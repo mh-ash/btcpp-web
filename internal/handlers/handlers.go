@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"context"
 	"html/template"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"log"
 	"time"
 	"sort"
 	"strings"
@@ -18,10 +16,6 @@ import (
 
 	qrcode "github.com/skip2/go-qrcode"
 	"encoding/base64"
-
-	"github.com/chromedp/cdproto/emulation"
-	"github.com/chromedp/cdproto/page"
-	"github.com/chromedp/chromedp"
 )
 
 func MiniCss() string {
@@ -63,11 +57,7 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["ticket.tmpl"] = ticket
 
-	register, err := template.New("register.tmpl").Funcs(template.FuncMap{
-		"css": func(s string) template.HTML {
-			return template.HTML(fmt.Sprintf(`<style type="text/css">%s</style>`, s))
-		},
-	}).ParseFiles("templates/emails/register.tmpl")
+	register, err := template.ParseFiles("templates/emails/register.tmpl")
 	if err != nil {
 		return err
 	}
@@ -111,9 +101,6 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	}).Methods("GET")
 	r.HandleFunc("/ticket/{ticket}", func(w http.ResponseWriter, r *http.Request) {
 		Ticket(w, r, app)
-	}).Methods("GET")
-	r.HandleFunc("/get-pdf", func(w http.ResponseWriter, r *http.Request) {
-		MakePdf(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/trial-email", func(w http.ResponseWriter, r *http.Request) {
 		SendMailTest(w, r, app)
@@ -444,42 +431,15 @@ type TicketTmpl struct {
 	Type string
 }
 
-func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
-    return chromedp.Tasks{
-        emulation.SetUserAgentOverride("WebScraper 1.0"),
-        chromedp.Navigate(url),
-        chromedp.WaitVisible(`body`, chromedp.ByQuery),
-        chromedp.ActionFunc(func(ctx context.Context) error {
-            buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPreferCSSPageSize(true).WithPaperWidth(3.2).WithPaperHeight(9.25).Do(ctx)
-            if err != nil {
-                return err
-            }
-            *res = buf
-            return nil
-        }),
-    }
-}
-
-func buildChromePdf(fromURL string) ([]byte, error) {
-	taskCtx, cancel := chromedp.NewContext(
-            context.Background(),
-            chromedp.WithLogf(log.Printf),
-        )
-        defer cancel()
-        var pdfBuffer []byte
-	if err := chromedp.Run(taskCtx, pdfGrabber(fromURL, &pdfBuffer)); err != nil {
-		return pdfBuffer, err
-        }
-
-	return pdfBuffer, nil
-}
-
 func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	email := "niftynei@gmail.com"
-	ticket := "testticket"
+	reg := &types.Registration{
+		RefID: "testticket",
+		Type: "volunteer",
+		Email: "niftynei@gmail.com",
+		ItemBought: "bitcoin++",
+	}
 
-	ticketPage := fmt.Sprintf("%s/ticket/%s", ctx.Env.GetURI(), ticket)
-	pdf, err := buildChromePdf(ticketPage)
+	pdf, err := MakeTicketPDF(ctx, reg)
 
 	if err != nil {
 		http.Error(w, "Unable to make ticket, please try again later", http.StatusInternalServerError)
@@ -489,10 +449,10 @@ func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext
 	tickets := make([]*types.Ticket, 1)
 	tickets[0] = &types.Ticket{
 		Pdf: pdf,
-		Id: ticket,
+		Id: reg.RefID,
 	}
 
-	err = SendTickets(ctx, tickets, email, time.Now())
+	err = SendTickets(ctx, tickets, reg.Email, time.Now())
 
 	/* Return the error */
 	if err != nil {
@@ -503,29 +463,16 @@ func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext
 	return
 }
 
-func MakePdf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	params := mux.Vars(r)
-	ticket := params["ticket"]
-
-	if ticket == "" {
-		return
-	}
-
-	ticketPage := fmt.Sprintf("%s/ticket/%s", ctx.Env.GetURI(), ticket)
-	buf, err := buildChromePdf(ticketPage)
-
-	if err != nil {
-		return
-	}
-
-	/* send email? */
-	w.Header().Add("Content-Type", "application/pdf")
-	w.Write(buf)
-}
-
 func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	params := mux.Vars(r)
 	ticket := params["ticket"]
+
+	tixType, _ := getSessionKey("type", r)
+
+	/* make it pretty */
+	if tixType == "genpop" {
+		tixType = "general"
+	}
 
 	/* URL */
 	url := fmt.Sprintf("%s/check-in/%s", ctx.Env.GetURI(), ticket)
@@ -541,7 +488,7 @@ func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 		QRCodeURI: dataURI,
 		CSS: MiniCss(),
 		Domain: ctx.Env.GetDomain(),
-		Type: "sponsor",
+		Type: tixType,
 	}
 
 	err = ctx.TemplateCache["ticket.tmpl"].Execute(w, tix)
@@ -555,7 +502,6 @@ func TicketCheck(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	err := ctx.TemplateCache["register"].Execute(w, &EmailTmpl{
 		URI: "https://btcpp.dev",
 		//URI: ctx.Env.GetURI(),
-		CSS: MiniCss(),
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)

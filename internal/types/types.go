@@ -13,6 +13,7 @@ type (
 		Port     string
 		Prod     bool
 		MailerSecret string
+		MailerJob int
 		RegistryPin string
 		LogFile  string
 		Notion   NotionConfig
@@ -54,6 +55,13 @@ type (
 	Times struct {
 		Start time.Time
 		End   *time.Time
+	}
+
+	Registration struct {
+		RefID string
+		Type string
+		Email string
+		ItemBought string
 	}
 
 	ShirtSize string
