@@ -1,0 +1,60 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+domains:
+- domain: btcpp.dev
+  type: PRIMARY
+  zone: btcpp.dev
+- domain: btcplusplus.dev
+  type: ALIAS
+  zone: btcplusplus.dev
+- domain: www.btcplusplus.dev
+  type: ALIAS
+  zone: btcplusplus.dev
+ingress: {}
+name: btcpp
+region: nyc
+services:
+- environment_slug: go
+  envs:
+  - key: NOTION_TOKEN
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:sayy1sf/By9Y08tXx0UbLl3ywY4JtRow:c2n2sRJpP0O1u9x7J+z7b+y1FFgjag6gQoKD5qUlkb1V4SS5/VsZ7lXb3T55B2Ed1y/1oNerkldFeq0Z0+Dz0UYj]
+  - key: NOTION_TALKS_DB
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:29gIXhGdYkYNtHQNLG4OgjEKVCBJ0aj3:bJyXmq/w0oL6FNSc6Y64E5qIm2SwNWej1oiX1y1+HRHUrwjX+8hhKJNoT5fNn97w]
+  - key: GOOGLE_KEY
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:B7HniJ8Z7tJPXMvJpPRQ9EKiK2sF0rmB:IGCV8h4Bm3thyQAZgE06U0/Ydvp9cZiEB/Lcx7e6hRmP/c1SfVx3UMO1/Un425Hz/6qia2pZgA==]
+  - key: NOTION_PURCHASES_DB
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:CKh5ELYw4lOPIkOalFOgQAAFfTXl0Eno:SSxWyTscz/4k8VgGBe0fWCS1fhor08+6W24nQKUjwPHodNbbu7EIJCOtdzpvX4YD]
+  - key: REGISTRY_PIN
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:yV5BaR0orNv1l3FKcBp2LOwpUhRf61W3:KUKGNEgHY1wgiZQza3FfcRSuaWg=]
+  - key: HOST
+    scope: RUN_AND_BUILD_TIME
+    value: btcpp.dev
+  - key: MAILER_SECRET
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:loENSPPW4eMVKkb0RLf8oTinWzYW6qC8:QFqJcOIOd+Z4Ha3AF5cynH5OqGl7NHJZWiBtbqaY7fpyx0zGUHoB/4Owi5opCPCuAOEKg7lOSUbLxiIPoEOutfS/P1MJpjt5zTLYN5D4WCw=]
+  - key: MAILER_JOB_SEC
+    scope: RUN_AND_BUILD_TIME
+    value: "60"
+  dockerfile_path: Dockerfile
+  github:
+    branch: master
+    deploy_on_push: true
+    repo: base58btc/btcpp-web
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: professional-xs
+  name: btcpp-web
+  run_command: bin/web
+  source_dir: /
