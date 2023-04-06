@@ -158,10 +158,9 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 
 	ticketJob := tickets[0].Id
 	/* Hack to push thru the test ticket, every time! */
-	if ticketJob == "testticket" {
+	if !ctx.Env.Prod && ticketJob == "testticket" {
 		ticketJob = ticketJob + strconv.Itoa(int(sendAt.UTC().Unix()))
-	//} else if !ctx.Env.Prod {
-	} else {
+	} else if !ctx.Env.Prod {
 		ctx.Infos.Printf("About to send ticket to %s, but desisting, not prod!\n", email)
 		return nil
 	}
