@@ -12,7 +12,6 @@ RUN go mod download
 RUN make build
 
 RUN apk --no-cache add ca-certificates
-RUN apk add chromium
-#RUN dpkg -i ./google-chrome-stable_current_amd64.deb
+RUN apk --no-cache add chromium
 
 CMD [ "./target/btcpp-web" ]
