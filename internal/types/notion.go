@@ -12,12 +12,12 @@ type (
 	}
 
 	Notion struct {
-		Config NotionConfig
+		Config *NotionConfig
 		Client notion.API
 	}
 )
 
-func (n *Notion) Setup() {
-	client := notion.NewClient(notion.Settings{Token: n.Config.Token})
+func (n *Notion) Setup(token string) {
+	client := notion.NewClient(notion.Settings{Token: token})
 	n.Client = client
 }

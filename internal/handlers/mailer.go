@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"bytes"
 	"strconv"
+	"strings"
 
 	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/base58btc/btcpp-web/internal/types"
@@ -31,9 +32,8 @@ func CheckForNewMails(ctx *config.AppContext) {
 		rezziesSent = make(map[string]*types.Registration)
 	}
 
-	var success, fails int
-	tickets := []string { "bitcoin++ atx", "btcpp" }
-	rezzies, err := getters.FetchBtcppRegistrations(tickets, ctx)
+	var success, fails, resent int
+	rezzies, err := getters.FetchBtcppRegistrations(ctx.Env.Tickets, ctx)
 	if err != nil {
 		ctx.Err.Println(err)
 		return
@@ -49,15 +49,18 @@ func CheckForNewMails(ctx *config.AppContext) {
 		}
 
 		err = SendMail(ctx, rez)
-		if err != nil {
-			ctx.Err.Printf("Unable to send mail: %s", err.Error())
-			fails++
-		} else {
+		if err == nil {
 			rezziesSent[rez.RefID] = rez
 			success++
+		} else if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			rezziesSent[rez.RefID] = rez
+			resent++
+		} else {
+			ctx.Err.Printf("Unable to send mail: %s", err.Error())
+			fails++
 		}
 	}
-	ctx.Infos.Printf("Of %d, sent %d mails, %d failed", success + fails, success, fails)
+	ctx.Infos.Printf("Of %d, sent %d mails, %d failed, %d retries", success + fails + resent, success, fails, resent)
 }
 
 func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
@@ -105,7 +108,6 @@ func MakeTicketPDF(ctx *config.AppContext, rez *types.Registration) ([]byte, err
 }
 
 func SendMail(ctx *config.AppContext, rez *types.Registration) error {
-
 	pdf, err := MakeTicketPDF(ctx, rez)
 	if err != nil {
 		return err
@@ -114,13 +116,11 @@ func SendMail(ctx *config.AppContext, rez *types.Registration) error {
 	tickets := make([]*types.Ticket, 1)
 	tickets[0] = &types.Ticket{
 		Pdf: pdf,
-		Id: rez.RefID,
+		ID: rez.RefID,
 	}
 
-	err = SendTickets(ctx, tickets,  rez.Email, time.Now())
-	return err
+	return SendTickets(ctx, tickets, rez.Email, time.Now())
 }
-
 
 /* Send a request to our mailer to send a ticket at time */
 func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, sendAt time.Time) error {
@@ -152,22 +152,26 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 		attaches[i] = &mailer.Attachment{
 			Content: ticket.Pdf,
 			Type: "application/pdf",
-			Name: fmt.Sprintf("btcpp23_ticket_%s.pdf", ticket.Id[:6]),
+			Name: fmt.Sprintf("btcpp23_ticket_%s.pdf", ticket.ID[:6]),
 		}
 	}
 
-	ticketJob := tickets[0].Id
+	ticketJob := tickets[0].ID
 	/* Hack to push thru the test ticket, every time! */
 	if !ctx.Env.Prod && ticketJob == "testticket" {
 		ticketJob = ticketJob + strconv.Itoa(int(sendAt.UTC().Unix()))
-	} else if !ctx.Env.Prod {
+	} else if !ctx.Env.Prod && email != "stripe@example.com" {
 		ctx.Infos.Printf("About to send ticket to %s, but desisting, not prod!\n", email)
 		return nil
 	}
 
+	if email == "stripe@example.com" {
+		email = "niftynei@gmail.com"
+	}
+
 	ctx.Infos.Printf("Sending ticket to %s\n", email)
 
-	title := fmt.Sprintf("[bitcoin++ Ticket #%s] You're Going! @ Austin, April 28-30", tickets[0].Id[:6])
+	title := fmt.Sprintf("[bitcoin++ Ticket #%s] You're Going! @ Austin, April 28-30", tickets[0].ID[:6])
 
 	/* Build a mail to send */
 	mail := &mailer.MailRequest{

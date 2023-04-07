@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"html/template"
 	"fmt"
 	"io/ioutil"
@@ -16,6 +17,10 @@ import (
 
 	qrcode "github.com/skip2/go-qrcode"
 	"encoding/base64"
+
+	stripe "github.com/stripe/stripe-go/v74"
+	"github.com/stripe/stripe-go/v74/checkout/session"
+	"github.com/stripe/stripe-go/v74/webhook"
 )
 
 func MiniCss() string {
@@ -95,7 +100,6 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	r.HandleFunc("/check-in/{ticket}", func(w http.ResponseWriter, r *http.Request) {
 		CheckIn(w, r, app)
 	}).Methods("GET", "POST")
-
 	r.HandleFunc("/welcome-email", func(w http.ResponseWriter, r *http.Request) {
 		TicketCheck(w, r, app)
 	}).Methods("GET")
@@ -105,6 +109,12 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	r.HandleFunc("/trial-email", func(w http.ResponseWriter, r *http.Request) {
 		SendMailTest(w, r, app)
 	}).Methods("GET")
+
+	/* Setup stripe! */
+	stripe.Key = app.Env.StripeKey
+	r.HandleFunc("/callback/stripe", func(w http.ResponseWriter, r *http.Request) {
+		StripeCallback(w, r, app)
+	}).Methods("POST")
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 	err := addFaviconRoutes(r)
@@ -439,17 +449,21 @@ func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext
 		ItemBought: "bitcoin++",
 	}
 
+	sendMail(w, r, ctx, reg)
+}
+
+func sendMail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, reg *types.Registration) {
 	pdf, err := MakeTicketPDF(ctx, reg)
 
 	if err != nil {
 		http.Error(w, "Unable to make ticket, please try again later", http.StatusInternalServerError)
-		fmt.Printf("/send test mail failed ! %s\n", err.Error())
+		ctx.Err.Printf("/send test mail failed ! %s\n", err.Error())
 	}
 
 	tickets := make([]*types.Ticket, 1)
 	tickets[0] = &types.Ticket{
 		Pdf: pdf,
-		Id: reg.RefID,
+		ID: reg.RefID,
 	}
 
 	err = SendTickets(ctx, tickets, reg.Email, time.Now())
@@ -457,7 +471,7 @@ func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext
 	/* Return the error */
 	if err != nil {
 		http.Error(w, "Unable to send ticket, please try again later", http.StatusInternalServerError)
-		fmt.Printf("/send test mail failed to send! %s\n", err.Error())
+		ctx.Err.Printf("/send test mail failed to send! %s\n", err.Error())
 	}
 
 	return
@@ -597,6 +611,99 @@ func CheckInGet(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 		ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
 	}
 }
+
+func ticketMatch(tickets []string, desc string) bool {
+	for _, tix := range tickets {
+		if strings.Contains(desc, tix) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	const MaxBodyBytes = int64(65536)
+	r.Body = http.MaxBytesReader(w, r.Body, MaxBodyBytes)
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		ctx.Err.Printf("Error reading request body: %v\n", err)
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	event, err := webhook.ConstructEvent(payload, r.Header.Get("Stripe-Signature"), ctx.Env.StripeEndpointSec)
+
+	if err != nil {
+		ctx.Err.Println("Error verifying webhook sig", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	switch event.Type {
+	case "checkout.session.completed":
+		var checkout stripe.CheckoutSession
+		err := json.Unmarshal(event.Data.Raw, &checkout)
+		if err != nil {
+			ctx.Err.Printf("Error parsing webhook JSON: %v\n", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		entry := types.Entry{
+			ID:       checkout.ID,
+			Total:    checkout.AmountTotal,
+			Currency: string(checkout.Currency),
+			Created:  time.Unix(checkout.Created, 0).UTC(),
+			Email:    checkout.CustomerDetails.Email,
+		}
+
+		itemParams := &stripe.CheckoutSessionListLineItemsParams{
+			Session: stripe.String(checkout.ID),
+		}
+		items := session.ListLineItems(itemParams)
+		for items.Next() {
+			si := items.LineItem()
+			if !ticketMatch(ctx.Env.Tickets, si.Description) {
+				continue
+			}
+			var i int64
+			for i = 0; i < si.Quantity; i++ {
+				item := types.Item{
+					Total:    si.AmountTotal,
+					Desc:     si.Description,
+				}
+				entry.Items = append(entry.Items, item)
+				ctx.Infos.Println("got back an item:", si.Description, i)
+			}
+		}
+
+		if err := items.Err(); err != nil {
+			ctx.Err.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if len(entry.Items) == 0 {
+			ctx.Infos.Println("No valid items bought")
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		err = getters.AddTickets(ctx.Notion, &entry, "stripe")
+
+		if err != nil {
+			ctx.Err.Printf("!!! Unable to add ticket %s: %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	default:
+		ctx.Infos.Printf("Unhandled event type: %s\n", event.Type)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
 
 func Styles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/css")

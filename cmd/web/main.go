@@ -34,6 +34,8 @@ func loadConfig() *types.EnvConfig {
 
 		config.Host = os.Getenv("HOST")
 		config.MailerSecret = os.Getenv("MAILER_SECRET")
+		config.MailOff = false
+
 		mailSec, err := strconv.ParseInt(os.Getenv("MAILER_JOB_SEC"), 10, 32)
 		if err != nil {
 			log.Fatal(err)
@@ -41,6 +43,8 @@ func loadConfig() *types.EnvConfig {
 		}
 		config.MailerJob = int(mailSec)
 
+		config.StripeKey = os.Getenv("STRIPE_KEY")
+		config.StripeEndpointSec = os.Getenv("STRIPE_END_SECRET")
 		config.RegistryPin = os.Getenv("REGISTRY_PIN")
 		config.Notion = types.NotionConfig{
 			Token: os.Getenv("NOTION_TOKEN"),
@@ -50,6 +54,7 @@ func loadConfig() *types.EnvConfig {
 		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
 	}
 
+	config.Tickets = []string { "bitcoin++ atx", "btcpp" }
 	return &config
 }
 
@@ -84,7 +89,9 @@ func main() {
 	}
 
 	/* Kick off job to start sending mails */
-	go RunNewMails(&app)
+	if !app.Env.MailOff {
+		go RunNewMails(&app)
+	}
 
 	/* Start the server */
 	app.Infos.Printf("Starting application on port %s\n", app.Env.Port)
@@ -127,8 +134,8 @@ func run(env *types.EnvConfig) error {
 	app.Session.Cookie.SameSite = http.SameSiteLaxMode
 	app.Session.Cookie.Secure = app.InProduction
 
-	app.Notion = &types.Notion{Config: env.Notion}
-	app.Notion.Setup()
+	app.Notion = &types.Notion{ Config: &env.Notion }
+	app.Notion.Setup(env.Notion.Token)
 
 	return nil
 }

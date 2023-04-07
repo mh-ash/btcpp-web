@@ -14,12 +14,16 @@ type (
 		Prod     bool
 		MailerSecret string
 		MailerJob int
+		MailOff   bool
+		StripeKey string
+		StripeEndpointSec string
 		RegistryPin string
 		LogFile  string
 		Notion   NotionConfig
 		SendGrid SendGridConfig
 		Google   GoogleConfig
 		Host string
+		Tickets []string
 	}
 
 	GoogleConfig struct {
@@ -48,7 +52,7 @@ type (
 	}
 
 	Ticket struct {
-		Id string
+		ID string
 		Pdf []byte
 	}
 
@@ -62,6 +66,20 @@ type (
 		Type string
 		Email string
 		ItemBought string
+	}
+
+	Item struct {
+		Total    int64
+		Desc     string
+	}
+
+	Entry struct {
+		ID       string
+		Total    int64
+		Currency string
+		Created  time.Time
+		Email    string
+		Items    []Item
 	}
 
 	ShirtSize string

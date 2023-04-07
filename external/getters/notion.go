@@ -2,6 +2,9 @@ package getters
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/binary"
+	"encoding/hex"
 	"fmt"
 	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/base58btc/btcpp-web/internal/config"
@@ -228,72 +231,77 @@ func FetchBtcppRegistrations(tickets []string, ctx *config.AppContext) ([]*types
 	return btcppres, nil
 }
 
-/*
-func SaveRegistration(n *types.Notion, r *types.ClassRegistration) (string, error) {
-	parent := notion.NewDatabaseParent(n.Config.SignupsDb)
-	props := map[string]*notion.PropertyValue{
-		"Email": notion.NewTitlePropertyValue(
-			[]*notion.RichText{
-				{Type: notion.RichTextText,
-					Text: &notion.Text{Content: r.Email}},
-			}...),
-		"session": notion.NewRelationPropertyValue(
-			[]*notion.ObjectReference{{ID: r.SessionUUID}}...,
-		),
-		"Idempotent": notion.NewRichTextPropertyValue(
-			[]*notion.RichText{
-				{Type: notion.RichTextText,
-					Text: &notion.Text{Content: r.Idempotency}},
-			}...),
-		"Replit": notion.NewRichTextPropertyValue(
-			[]*notion.RichText{
-				{Type: notion.RichTextText,
-					Text: &notion.Text{Content: r.ReplitUser}},
-			}...),
-	}
+func UniqueID(email string, ref string, counter int32) string {
+	// sha256 of ref || email || count (4, le)
+	h := sha256.New()
+	h.Write([]byte(email))
+	h.Write([]byte(ref))
 
-	if r.Shirt != nil {
-		props["T-Shirt Size"] = &notion.PropertyValue{
-			Type: notion.PropertySelect,
-			Select: &notion.SelectOption{
-				Name: r.Shirt.String(),
-			},
+	b := make([]byte, 4)
+	binary.LittleEndian.PutUint32(b, uint32(counter))
+	h.Write(b)
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+func AddTickets(n *types.Notion, entry *types.Entry, src string) error {
+	parent := notion.NewDatabaseParent(n.Config.PurchasesDb)
+
+	for i, item := range entry.Items {
+		uniqID := UniqueID(entry.Email, entry.ID, int32(i))
+		_, err := n.Client.CreatePage(context.Background(),
+			parent,
+			map[string]*notion.PropertyValue{
+				"RefID": notion.NewTitlePropertyValue(
+					[]*notion.RichText{
+						{Type: notion.RichTextText,
+							Text: &notion.Text{Content: uniqID }},
+					}...),
+				"Timestamp": notion.NewRichTextPropertyValue(
+					[]*notion.RichText{
+						{Type: notion.RichTextText,
+							Text: &notion.Text{Content: entry.Created.Format(time.RFC3339)},
+						}}...),
+				"Platform": &notion.PropertyValue{
+					Type: notion.PropertySelect,
+					Select: &notion.SelectOption{
+						Name: src,
+					},
+				},
+				"Type": &notion.PropertyValue{
+					Type: notion.PropertySelect,
+					Select: &notion.SelectOption{
+						Name: "genpop",
+					},
+				},
+				"Amount Paid": &notion.PropertyValue{
+					Type:   notion.PropertyNumber,
+					Number: float64(item.Total) / 100,
+				},
+				"Currency": &notion.PropertyValue{
+					Type: notion.PropertySelect,
+					Select: &notion.SelectOption{
+						Name: entry.Currency,
+					},
+				},
+				"Email": &notion.PropertyValue{
+					Type:  notion.PropertyEmail,
+					Email: entry.Email,
+				},
+				"Item Bought": notion.NewRichTextPropertyValue(
+					[]*notion.RichText{
+						{Type: notion.RichTextText,
+							Text: &notion.Text{Content: item.Desc}},
+					}...),
+				"Lookup ID": notion.NewRichTextPropertyValue(
+					[]*notion.RichText{
+						{Type: notion.RichTextText,
+							Text: &notion.Text{Content: entry.ID}},
+					}...),
+			})
+		if err != nil {
+			return err
 		}
 	}
 
-	if r.MailingAddr != nil {
-		props["Mailing Address"] = notion.NewRichTextPropertyValue(
-			[]*notion.RichText{
-				{Type: notion.RichTextText,
-					Text: &notion.Text{Content: *r.MailingAddr}},
-			}...)
-	}
-	page, err := n.Client.CreatePage(context.Background(), parent, props)
-	if err != nil {
-		return "", err
-	}
-	return page.ID, err
+	return nil
 }
-
-func SaveWaitlist(n *types.Notion, w *types.WaitList) error {
-	parent := notion.NewDatabaseParent(n.Config.WaitlistDb)
-	_, err := n.Client.CreatePage(context.Background(), parent,
-		map[string]*notion.PropertyValue{
-			"Email": notion.NewTitlePropertyValue(
-				[]*notion.RichText{
-					{Type: notion.RichTextText,
-						Text: &notion.Text{Content: w.Email}},
-				}...),
-			"Session": notion.NewRelationPropertyValue(
-				[]*notion.ObjectReference{{ID: w.SessionUUID}}...,
-			),
-			"Idempotent": &notion.PropertyValue{
-				Type: notion.PropertySelect,
-				Select: &notion.SelectOption{
-					Name: w.Idempotency,
-				},
-			},
-		})
-	return err
-}
-*/
