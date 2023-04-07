@@ -9,6 +9,7 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20230329100754-6125fc8d7142
 	github.com/chromedp/chromedp v0.9.1
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/schema v1.2.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/sorcererxw/go-notion v0.2.4
 	github.com/stripe/stripe-go/v74 v74.15.0

@@ -17,6 +17,7 @@ type (
 		MailOff   bool
 		StripeKey string
 		StripeEndpointSec string
+		OpenNodeKey string
 		RegistryPin string
 		LogFile  string
 		Notion   NotionConfig

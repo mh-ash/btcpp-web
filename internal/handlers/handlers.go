@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"html/template"
 	"fmt"
@@ -14,6 +17,7 @@ import (
 	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 
 	qrcode "github.com/skip2/go-qrcode"
 	"encoding/base64"
@@ -114,6 +118,9 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	stripe.Key = app.Env.StripeKey
 	r.HandleFunc("/callback/stripe", func(w http.ResponseWriter, r *http.Request) {
 		StripeCallback(w, r, app)
+	}).Methods("POST")
+	r.HandleFunc("/callback/opennode", func(w http.ResponseWriter, r *http.Request) {
+		OpenNodeCallback(w, r, app)
 	}).Methods("POST")
 
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
@@ -620,6 +627,96 @@ func ticketMatch(tickets []string, desc string) bool {
 	}
 
 	return false
+}
+
+func computeHash(key, id string) string {
+	mac := hmac.New(sha256.New, []byte(key))
+	mac.Write([]byte(id))
+	return hex.EncodeToString(mac.Sum(nil))
+}
+
+func validHash(key, id, msgMAC string) bool {
+	actual := computeHash(key, id)
+	return msgMAC == actual
+}
+
+var decoder = schema.NewDecoder()
+
+func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+
+	err := r.ParseForm()
+	if err != nil {
+		ctx.Err.Printf("Error reading request body: %v\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	var ev ChargeEvent
+	decoder.IgnoreUnknownKeys(true)
+	err = decoder.Decode(&ev, r.PostForm)
+	if err != nil {
+		ctx.Err.Printf("Unable to unmarshal: %v\n", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	/* Check the hashed order is ok */
+	if !validHash(ctx.Env.OpenNodeKey, ev.ID, ev.HashedOrder) {
+		ctx.Err.Printf("Invalid request")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if !ticketMatch(ctx.Env.Tickets, ev.Description) {
+		w.WriteHeader(http.StatusOK)
+		ctx.Infos.Printf("Not a btcpp ticket: %s", ev.Description)
+		return
+	}
+
+	/* Go get the actual event data */
+	charge, err := GetCharge(ctx, ev.ID)
+	if err != nil {
+		ctx.Err.Printf("Unable to fetch charge", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	entry := types.Entry{
+		ID:       charge.ID,
+		Total:    int64(charge.FiatVal),
+		Currency: "USD",
+		Created:  charge.CreatedAt,
+		Email:    charge.Metadata.Email,
+	}
+
+	if err != nil {
+		ctx.Err.Printf("Failed to fetch charge %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	for i := 0; i < int(charge.Metadata.Quantity); i++ {
+		item := types.Item{
+			Total:    int64(charge.FiatVal / charge.Metadata.Quantity) * 100,
+			Desc:     charge.Description,
+		}
+		entry.Items = append(entry.Items, item)
+	}
+
+	if len(entry.Items) == 0 {
+		ctx.Infos.Println("No valid items bought")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	err = getters.AddTickets(ctx.Notion, &entry, "opennode")
+
+	if err != nil {
+		ctx.Err.Printf("!!! Unable to add ticket %s: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	ctx.Infos.Println("Added ticket!", entry.ID)
+	w.WriteHeader(http.StatusOK)
 }
 
 func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {

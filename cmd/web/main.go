@@ -43,6 +43,8 @@ func loadConfig() *types.EnvConfig {
 		}
 		config.MailerJob = int(mailSec)
 
+		config.OpenNodeKey = os.Getenv("OPENNODE_KEY")
+
 		config.StripeKey = os.Getenv("STRIPE_KEY")
 		config.StripeEndpointSec = os.Getenv("STRIPE_END_SECRET")
 		config.RegistryPin = os.Getenv("REGISTRY_PIN")
@@ -54,7 +56,7 @@ func loadConfig() *types.EnvConfig {
 		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
 	}
 
-	config.Tickets = []string { "bitcoin++ atx", "btcpp" }
+	config.Tickets = []string { "bitcoin++ atx", "btcpp", "bitcoinery" }
 	return &config
 }
 
