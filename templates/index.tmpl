@@ -208,7 +208,32 @@
 	    <span class="bg-white px-2 text-sm text-gray-500">Check-in Opens, 9:30 am </span>
 	  </div>
 	</div>
-      <p class="mt-4 text-md text-gray-600">We kick off Friday with a 1.5h ice breaker game led by D++ (details to come).</p>
+      <p class="mt-4 text-md text-gray-600">We kick off Friday with a 1.5h ice breaker game led by D++.</p>
+      <div class="mt-8 divide-y max-w-full text-center grid mt-16 grid-cols-1 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">	
+	<div class="flex flex-col items-center justify-between rounded-lg">
+	  <div class="w-full">
+	    <img class="aspect-[16/9] w-full object-cover rounded-2xl bg-gray-100 sm:aspect-[2/1] lg:aspect-[3/2]" src="{{ .Dee.Photo }}" alt="">
+	   </div>
+	   <div class="ml-3 max-w-full">
+          <div class="group relative">
+            <h3 class="mt-3 text-2xl font-semibold leading-8 text-gray-900 group-hover:text-gray-600">
+              <a href="/talks#{{ .Dee.AnchorTag }}">
+                <span class="absolute inset-0"></span>
+		{{ .Dee.Name }}
+              </a>
+	      </h3>
+              <p class="mt-2 text-lg"><a href="{{ .Dee.Twitter }}" target="_blank"><span class="text-gray-900">{{ .Dee.Speaker }} </span></a></p>
+              <p class="mb-4 text-sm leading-6"><span class="text-gray-900">{{ .Dee.Company }} </span></p>
+          </div>
+          <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">{{ .Dee.StartTime }}</span>
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900 font-bold">{{ .Dee.Len }}</span>
+	    <span class="flex-grow"></span>
+            <span class="grow-0 relative z-10 rounded-full bg-indigo-50 py-1.5 px-3 font-medium text-indigo-600">Opening Mixer</span> 
+          </div>
+          </div>	
+         </div>
+	</div>
 	<div class="mt-6 relative">
 	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
 	    <div class="w-full border-t border-gray-300"></div>
@@ -217,7 +242,7 @@
 	    <span class="bg-white px-2 text-sm text-gray-500">Lunch, 11:30 am - 12:30 pm @ Auditorium Shores</span>
 	  </div>
 	</div>
-      <p class="mt-2 text-md text-gray-600">After lunch, you'll be split into cohorts of 40 people and rotate through 5 hands-on workshops that are meant to teach you the basics of builiding on bitcoin.</p>
+      <p class="mt-8 text-md text-gray-600">After lunch, you'll be split into cohorts of 40 people and rotate through 5 hands-on workshops that are meant to teach you the basics of builiding on bitcoin.</p>
       <ul class="mt-8 -my-8 divide-y max-w-full text-center grid mt-16 grid-cols-1 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">	
       {{ range .RoundRobins }}
 	<li class="flex flex-col items-center justify-between rounded-lg">

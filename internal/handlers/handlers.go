@@ -168,6 +168,7 @@ func getSessionKey(p string, r *http.Request) (string, bool) {
 
 type HomePage struct {
 	Talks      talkTime
+	Dee         *Session
 	RoundRobins []*Session
 	Sessions    []*Session
 	Saturday    []sessionTime
@@ -191,6 +192,7 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 	var sessions []*Session
 	var roundRobins []*Session
+	var dee *Session
 	for _, talk := range talks {
 		if talk.Sched == nil {
 			continue
@@ -199,6 +201,9 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 		if session.Type == "round-robin" {
 			roundRobins = append(roundRobins, session)
+			continue
+		} else if session.Type == "mixer" {
+			dee = session
 			continue
 		}
 
@@ -222,6 +227,7 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 	err = tmpl.ExecuteTemplate(w, "index.tmpl", &HomePage{
 		Talks: talks,
+		Dee: dee,
 		Sessions: sessions,
 		Saturday: saturday,
 		Sunday: sunday,
