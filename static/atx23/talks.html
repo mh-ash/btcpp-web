@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>bitcoin++</title>
+  <link rel="stylesheet" href="/static/atx23/css/mini.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/static/atx23/script.js" type="text/javascript"></script>
+</head>
+<body>
+
+  <header class="bg-white">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <div class="flex lg:flex-1">
+        <a href="/" class="-m-1.5 p-1.5"><span class="sr-only">bitcoin++</span> <img class="h-8 w-auto" src="/static/atx23/img/btcpp.svg" alt=""></a>
+      </div>
+      <div class="flex lg:hidden">
+        <button type="button" onclick="toggleMenu(this)" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"><span class="sr-only">Open main menu</span> <svg class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg></button>
+      </div>
+      <div class="hidden lg:flex lg:gap-x-12">
+        <a href="/static/atx23/index.html#about" class="text-sm font-semibold leading-6 text-gray-900">about</a> 
+	<a href="/static/atx23/index.html#venue" class="text-sm font-semibold leading-6 text-gray-900">venue</a> 
+	<a href="/static/atx23/index.html#agenda" class="text-sm font-semibold leading-6 text-gray-900">agenda</a> 
+	<a href="#" class="text-sm font-semibold leading-6 text-gray-900">talks</a>
+	<a href="/static/atx23/index.html#sponsors" class="text-sm font-semibold leading-6 text-gray-900">sponsors</a> 
+      </div>
+    </nav>
+    <div class="hidden lg:hidden" role="nav-dialog" aria-modal="true">
+      
+      <div class="fixed inset-0 z-10"></div>
+      <div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <div class="flex items-center justify-between">
+          <a href="/" class="-m-1.5 p-1.5"><span class="sr-only">bitcoin++</span> <img class="h-8 w-auto" src="/static/atx23/img/btcpp.svg" alt=""></a> 
+	  <button type="button" onclick="closeMenu(this)" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+	    <span class="sr-only">Close menu</span> 
+	    <svg class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+	 </button>
+        </div>
+        <div class="mt-6 flow-root">
+          <div class="-my-6 divide-y divide-gray-500/10">
+            <div class="space-y-2 py-6">
+              <div class="-mx-3">
+                <a onclick="toggleMenu(this)" href="/static/atx23/index.html#about" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">about</a> 
+		<a onclick="toggleMenu(this)" href="/static/atx23/index.html#venue" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">venue</a> 
+		<a onclick="toggleMenu(this)" href="/static/atx23/index.html#agenda" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">agenda</a> 
+		<a onclick="toggleMenu(this)" href="#" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">talks</a> 
+		<a onclick="toggleMenu(this)" href="/static/atx23/index.html#sponsors" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">sponsors</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="talks">
+    <div class="bg-white py-20 sm:py-20">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="max-w-2xl text-start">
+         <h2 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl">Workshops + Talks</h2>
+         <p class="mt-2 text-base leading-7">Talks at <span class="btcpp">bitcoin++</span>, April 28+29+30</p>
+       <a href="https://docs.google.com/spreadsheets/d/1TTauIlar50I62sACCa8n69o80yZcJR1WyaafFn63kzE/edit?usp=sharing" target="_blank">
+	<span class="mt-8 flex items-center space-x-2 text-sm font-medium leading-6 text-gray-600">
+	  <span>See as spreadsheet</span>
+	  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+	    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+	  </svg>
+	</span>
+      </a>
+	</div>
+        <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-y-20 gap-x-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+         
+           
+	 
+           
+	 
+           
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="dee">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/dee.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Fri. Apr 28, 2023 @ 10:00 am</time>
+    
+    <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">All-Conf Ice Breaker</span>
+    
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	      <a href="https://youtu.be/lPrpdKY1wlc" target="_blank">
+	  <span class="absolute inset-0"></span>
+	  Lightning LARP
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Friendship is magic! Break the ice and join forces with fellow bitcoiners to harness the power of friendship to master the Lightning Network.  Together, we&#39;ll build a Bitcoin&#43;&#43; Lightning graph, route payments, earn satoshis, and most importantly of all, make new friends.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/d_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/d_plus__plus" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     D&#43;&#43;
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Entropy</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="socratic">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/socratic.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Fri. Apr 28, 2023 @ 12:30 pm</time>
+    
+    
+      <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Cohort Workshops</span>
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	      <a href="https://youtu.be/pPFlpDE2TLk" target="_blank"><span class="absolute inset-0"></span>
+		      Socratic Seminar: Fee Management
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">This will be a socratic seminar style discussion on the current challenges around fee management, particularly for layer 2 and other contracting protocols, and some of the current solutions currently under consideration from v3 transactions and ephemeral anchors to transaction sponsors. The workshop will be friendly to the range experience levels and encourage participation (questions, answers, research done) from all attendees. Attendance encouraged for those interested in going to other related talks and want to level up their understanding of the subject matter.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/buck_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://iris.to/buck" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     buck
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Unchained Capital</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="first_lightning">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/first_lightning.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Fri. Apr 28, 2023 @ 12:30 pm</time>
+    
+    
+      <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Cohort Workshops</span>
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Building your First Lightning App
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">A beginner friendly technical presentation covering two simple Lightning App templates you can use as a foundation to build your first full-stack Lightning application</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/kelsay_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/@bitcoinplebdev" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Austin
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Fold / PlebLab</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="workbench">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/workbench.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Fri. Apr 28, 2023 @ 12:30 pm</time>
+    
+    
+      <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Cohort Workshops</span>
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Build your own Lightning Workbench
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">A step-by-step guide on using Docker to build your own custom lightning node and tech stack.</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/topher_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/btctechsupport" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Christopher Scott
+	    </a>
+	  </p>
+	  <p class="text-gray-600">BitEscrow Inc.</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="bitcoin_core">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/bitcoin_core.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Fri. Apr 28, 2023 @ 12:30 pm</time>
+    
+    
+      <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Cohort Workshops</span>
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Let’s Contribute to Bitcoin Core!
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Bitcoin Core depends on contributors to advance, maintain, and protect the software. This session will orient you in the space, and help you to your first contribution via a collaborative attempt to address one of Core’s “</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/ben_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/Empact" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Empact / Benjamin Woosley
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Bitcoin Core</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="deepdive">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/deepdive.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Fri. Apr 28, 2023 @ 12:30 pm</time>
+    
+    
+      <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Cohort Workshops</span>
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Base58&#39;s Transactions Deep Dive
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">nifty walks you through how bitcoin transactions work, a super abbreviated part of the Base58&#39;s transactions deep dive course.</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/nifty_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/niftynei" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     niftynei
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Base58⛓🔓</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="fedimint">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/fedimint.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 9:30 am</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/T454R_3P8GA" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Build a Fedimint Module
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Learn to add new functionality to Fedimint by building a &#34;module&#34;.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/jmoon_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/_JustinMoon_" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Justin Moon
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Fedi</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="mempool">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/mempool.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 9:30 am</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Mempool as a Battleground: RBF Pinning, v3, Ephemeral Anchors (Remote)
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Starts with an overview of the current fee-bumping techniques available to L2 contracting protocols and their limitations in adversarial conditions. Walks through tradeoffs between Denial of Service protection and incentive compatibility, then breaks down the incremental improvements from package {relay, RBF}, v3 policy, and ephemeral anchors.</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/gloria_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/glozow" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     glozow
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Bitcoin Core</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="nix">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/nix.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 9:30 am</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/IrneGNN3e6c" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Nix for Bitcoiners
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">An introduction to Nix: what it is, why it&#39;s special, and why it&#39;s a powerful tool for FOSS.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/urraca_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/@urraca__" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Julien
+	    </a>
+	  </p>
+	  <p class="text-gray-600">flox</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="police">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/police.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 9:30 am</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Bip300: How we Police Sidechains Without Looking at Them
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Paul Sztorc (creator of Bip300) will explain: the problem(s) solved by Bip300, the history of Bip300, common misunderstandings, and finally the BIP text itself. Followed by Q&amp;A.</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/pauls_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/Truthcoin" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Paul Sztorc
+	    </a>
+	  </p>
+	  <p class="text-gray-600">LayerTwo Labs</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="community_ln">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/community_ln.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 10:30 am</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/odhruq5GuG8" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Community Lightning: Building Lightning Gateways for Fedimint
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">A soft walk-through of Fedimint lightning gateways, and how you can build or run one</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/okjodom_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/@okjodom" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     okjodom
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Fedimint</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="mutiny">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/mutiny.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 10:30 am</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Building a lightning node in the browser
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Build your own lightning node in the browser based on the Mutiny Wallet&#39;s open source core.</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/futurepaul_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/futurepaul" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Paul
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Mutiny</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="doxxing">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/doxxing.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 10:30 am</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/qQAhGCdqGZ4" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  NostrMail - PGP for the plebs
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">NostrMail is a simple email client that pairs Nostr DMs with encrypted emails, thereby providing a mechanism for long-form content, file sharing and archival storage.  We&#39;ll demo our proof of concept running in docker, discuss our technical implementation, NIP and planned features, including 2-factor authentication, key rotation, and multi-party conversations.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/asherp.jpeg" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/asherp" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Asher Pembroke PhD
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Rigly</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="trustless_bridge">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/trustless_bridge.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 10:30 am</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/M40yzuv6DNY" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Building (trustless) Bridges
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Many mechanisms have been created that enable users to lock BTC on the mainchain, transfer a claim on the BTC in some offchain system, and then later redeem the claim and take ownership of the underlying BTC. Colloquially known as &#34;bridges&#34;, these mechanisms offer a diverse range of security and usability properties for users to choose from depending on their risk tolerance and cost preferences. This talk will give an overview of the different types of BTC bridges that exist, how they work, and how they can be improved.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/lightcoin_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/lightcoin" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     John Light
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Sovryn</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="ordinals">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/ordinals.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 11:00 am</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/MV052jwkoDk" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Ordinals: More Than Inscriptions
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Exploring the world of possibilities presented by Ordinal Theory. How can we grow from art to complex use cases.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/psfour.jpg" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/Psifour" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Psifour
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Ordinals Project</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="rollup">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/rollup.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 11:15 am</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/Nldg_tjeX_A" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Towards a Validity Rollup on Bitcoin with Taproot
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">We will discuss the technical designs around building a ZK Rollup on Bitcoin to 1) enable more decentralized, scalable financial applications for the bitcoin currency and 2) unlock the value of Bitcoin as a global settlement layer. Mechanisms for securing a trustless bridge and L2 state transitions with STARK proofs is covered, along with the existing challenges and limitations.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/simanta_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/simanta_gautam" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Simanta Gautam
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Alpen Labs</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="clams">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/clams.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 1:00 pm</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/vBUvKARV_so" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Building Core Lightning Web Apps
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Learn to build web apps that connect to Core Lightning nodes securely and privately over the lightning network and utilize the Commando API to call RPC methods.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/alan_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/satoshisbrew" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Aaron
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Clams Tech</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="ldk">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/ldk.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 1:00 pm</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/B1YC8nJdc4s" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Getting started with LDK Node
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">LDK Node is a ready-to-go Lightning node implementation based on LDK. It wraps the full suite of LDK APIs and provides a simpler API so you can get started quickly. In this interactive workshop, you&#39;ll learn how to use LDK Node to set up a simple Lightning node with a BDK-based on-chain wallet and blockchain access via Esplora. At the start of the workshop, we&#39;ll generate a lightning invoice on regtest that will expire before the lesson finishes. The first one to pay with their newly built node wins the race!</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/spiral_talk.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/ConorOkus" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Conor Okus &#43; Jeff Czyz
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Spiral</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="splicing">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/splicing.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 1:00 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/zynf3JtFdsY" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Splicing Plays w/Coach Dusty
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">How to up you Lightning game with a splicing strategy -- become an elite node with these simple tricks!</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/dustin_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/dusty_daemon" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Dusty Daemon
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Bitcoin</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="stablesats">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/stablesats.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 1:00 pm</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/S_rKMNbcoNk" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Stablesats: Bringing Stability to Bitcoin
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">One problem that persists for people in a Bitcoin economy is the short-term volatility of the bitcoin exchange rate. When the bitcoin price drops, it can lessen the purchasing power of sats and make it harder to pay for dollar-priced goods and services. This workshop will introduce Stablesats, a Lightning based protocol which allows people to hold “dollar equivalent” balances in their Lightning wallet,</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/kody_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/kodylow" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Kody
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Base58</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="guida">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/guida.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 2:00 pm</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/Ls37xVlAL2w" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Writing Your First CLN Plugin
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Tired of going to talks about how you might get started with Lightning development, but never actually following through? Want to start making a difference and helping the Lightning Network become what it was meant to be? Then this class is for you! By the end of this one-hour workshop, you will have made your own Core-Lightning plugin, from start to finish.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/guida_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/cguida6" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Chris Guida
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Bitcoiner</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="lsp">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/lsp.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 2:00 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/bxwHe8GsxRo" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  LSPs: Lightning/Liquidity Service Providers
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">What can an LSP do for you? From non-custodial wallets to running your lightning business, find out what an LSP does and how you can best use an LSP in your next project.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/nickslaney_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/@nick_slaney" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Nick Slaney
+	    </a>
+	  </p>
+	  <p class="text-gray-600">c=</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="built_right">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/built_right.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 2:00 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/OBt1nS14Ac4" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Anchors &amp; Shackles
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">A new privacy-preserving second-layer scaling solution is on the horizon. Learn about the protocol specs such as txlocks, ATLCs, and swap factories.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/burak_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/brqgoo" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Burak
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Bitspace</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="wasabi">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/wasabi.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 3:30 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	<a href="https://youtu.be/8oc9V59PTDU" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Settle channels privately through WabiSabi
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Privacy implications of channel opening/closure and how WabiSabi CoinJoin protocol can be leveraged to mitigate these risks.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/turbolay_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/Turbolay" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Turbolay
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Wasabi Wallet</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="miniscript">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/miniscript.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 3:30 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/l0Ct9fX9EZQ" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Leveraging Miniscript
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">A walkthrough of what is Miniscript, including its strengths and limitations. We will review things to consider if you&#39;re looking to add Miniscript to your Bitcoin project, and have a live demonstration of Trident, which is built using Miniscript, powered by Bitcoin Dev Kit!</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/rob_ham_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/Rob1Ham" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Rob Hamilton
+	    </a>
+	  </p>
+	  <p class="text-gray-600">AnchorWatch</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="donttrust">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/donttrust.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 3:30 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/BsWR94cbZ3Y" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Translational Bitcoin Development (or why Johnny can&#39;t verify)
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">There&#39;s lots of amazing new technologies, developments and discoveries in Bitcoin and higher layers, but most users are not fully verifying; many don&#39;t even have keys.  Why is this, and what should we think about when developing Bitcoin software and protocols to solve this problem?</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/tadge_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/tdryja" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Tadge Dryja
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Lightspark</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="simple">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/simple.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 3:30 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <a href="https://youtu.be/yPkGjpvofNM" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Simple Layer Twos
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Simplicity is a proposed overhaul of the scripting language of Bitcoin. It fundamentally changes what can be done on layer one, but it does not stop there. Given what was possible with the existing scripts so far, imagine the explosion of ideas that Simplicity would enable. In this talk, we explore some of those applications, including Validity rollups and Fedimint accounts.</p>
+    </a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/clewe_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     uncomputable
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Blockstream Research</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="nostr">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/nostr.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:00 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/aIL8eBLb1sc" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Notes &amp; Relays: The Nostr Protocol Explained
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Nostr is a new social protocol (not a platform), innovative in its simplicity.  We will explain the fundamental workings of the network, and show how permissionless innovation has lead to a thriving ecosystem of makers, lightning integrators, and enthusiasts.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/greg_announce.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/scsibug" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Greg Heartsfield
+	    </a>
+	  </p>
+	  <p class="text-gray-600"></p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="hashrate">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/hashrate.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:00 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/IvfmfcAX9wU" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Exploring P2P Hashrate Markets
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Using multisig to protect hashrate delivery so everyone can mine bitcoin again while figuring out how to pay out coinbase sats over lightning.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/nico_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/@nicop2010" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Nico
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Rigly</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="unjamming">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/unjamming.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:00 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/S7ZH4hr2FlA" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Unjamming Lightning
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">While it may not be easy to steal funds on the Lightning Network, it is relatively simple and cheap to jam channels. This can result in users not being able to send or receive payment, lost revenue for routing nodes, or even degradation of the whole network’s ability to make payments.
+      In this presentation, we will delve into the consequences of such attacks, explore potential mitigation strategies, and discuss various implications for the Lightning Network.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/clara_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/ClaraShik" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Clara
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Chaincode</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="layercake">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/layercake.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:00 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/l34O4cHXATY" target="_blank"> 
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  bitcoin is a layer cake (a talk about layers)
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Let&#39;s talk about what exactly a &#34;layer-2&#34; is!</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/nifty_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/niftynei" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     niftynei
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Base58</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="web">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/web.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:30 pm</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/HkkqSM6uFR8" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Toward a More Decentralized Web
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">A technical preview of the Web5 family of technologies with a demo of what developers can build.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/daniel_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/csuwildcat" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Daniel Buchner
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Block</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="liquid_ln">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/liquid_ln.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:30 pm</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/R91VHrj-Vxc" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Liquid Network: Smart Contract Layer for Lightning Applications
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Submarine swaps allow funding and redemption covenant address &#34;lightning&#34; fast on the Liquid blockchain. The workshop will show how to create a web application from zero that interacts with the covenant directly, without having custody of funds or having a server.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/tiero_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/tierotiero" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     tiero
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Fuji Labs</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="taproot">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/taproot.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:30 pm</time>
+    
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600 hover:bg-orange-100">Talk</span>
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/E_z4hjvVzoQ" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Lightning on Taproot
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Constraints and rationale for changes to the Lightning protocol necessary for Taproot-based channels.</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/arik_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/arikaleph" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Arik
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Spiral</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="spacechains">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/spacechains.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sat. Apr 29, 2023 @ 4:30 pm</time>
+    
+    
+    
+    <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/cSREdRrBVtk" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Spacechains: a modest sidechain proposal
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">- What spacechains are
+- How they work
+- How anyprevout can help
+- Comparison with other sidechains
+- Spacechain use cases
+- Demo that works today
+- Q&amp;A</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/super_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/super_testnet" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Super Testnet
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Pleblab</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="hackathon">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/hackathon.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sun. Apr 30, 2023 @ 9:30 am</time>
+    
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Hack Time &#43; Unconf
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Time for hacking &#43; unconferencing</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/hackathon_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/btcplusplus" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     
+	    </a>
+	  </p>
+	  <p class="text-gray-600"></p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="hackathon">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/hackathon.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sun. Apr 30, 2023 @ 12:00 pm</time>
+    
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Hack Time &#43; Unconf
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Time for hacking &#43; unconferencing</p>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/hackathon_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/btcplusplus" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     
+	    </a>
+	  </p>
+	  <p class="text-gray-600"></p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="keynote">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/keynote.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sun. Apr 30, 2023 @ 3:20 pm</time>
+    
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/DxEc606i1_Y" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Hackathon Keynote
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Keynote speech opening the Bitcoin&#43;&#43; hackathon</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/chris_c_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/mecee" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     Christopher Calicott
+	    </a>
+	  </p>
+	  <p class="text-gray-600">Trammell Venture Partners (TVP)</p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+           
+		
+<article class="relative isolate flex flex-col gap-8 lg:flex-row" id="hack_prize">
+<div class="relative aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+    <img src="/static/atx23/img/talks/hack_prize.png" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+    <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+  </div>
+  <div>
+    <div class="flex items-center gap-x-4 text-xs">
+    <time datetime="2020-03-16" class="text-gray-500">Sun. Apr 30, 2023 @ 3:30 pm</time>
+    
+    
+    
+    
+    </div>
+    <div class="group relative max-w-xl">
+	    <a href="https://youtu.be/s5QBgniOnGo" target="_blank">
+      <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900">
+	  <span class="absolute inset-0"></span>
+	  Hackathon Presentations &#43; Awards
+      </h3>
+      <p class="mt-5 text-sm leading-6 text-gray-600">Show us your best L2 hacks. Hacking teams will compete for over $3k in sats!</p></a>
+    </div>
+    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+      <div class="relative flex items-center gap-x-4">
+	<img src="/static/atx23/img/speakers/hack_prize_unified.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+	<div class="text-sm leading-6">
+	  <p class="font-semibold text-gray-900">
+	    <a href="https://twitter.com/btcplusplus" target="_blank">
+	      <span class="absolute inset-0"></span>
+	     
+	    </a>
+	  </p>
+	  <p class="text-gray-600"></p>
+	</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+	   
+	 
+         </div>
+       </div>
+    </div>
+  </section>
+</body>
+</html>

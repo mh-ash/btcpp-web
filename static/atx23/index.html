@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>bitcoin++</title>
+    <link rel="stylesheet" href="/static/atx23/css/mini.css" />
+    <script src="/static/atx23/script.js" type="text/javascript"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+<body>
+
+  <header class="bg-white">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+      <div class="flex lg:flex-1">
+        <a href="/" class="-m-1.5 p-1.5"><span class="sr-only">bitcoin++</span> <img class="h-8 w-auto" src="/static/atx23/img/btcpp.svg" alt=""></a>
+      </div>
+      <div class="flex lg:hidden">
+        <button type="button" onclick="toggleMenu(this)" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"><span class="sr-only">Open main menu</span> <svg class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg></button>
+      </div>
+      <div class="hidden lg:flex lg:gap-x-12">
+        <a href="#about" class="text-sm font-semibold leading-6 text-gray-900">about</a> 
+	<a href="#venue" class="text-sm font-semibold leading-6 text-gray-900">venue</a> 
+	<a href="#agenda" class="text-sm font-semibold leading-6 text-gray-900">agenda</a> 
+	<a href="/static/atx23/talks.html" class="text-sm font-semibold leading-6 text-gray-900">talks</a>
+	<a href="#sponsors" class="text-sm font-semibold leading-6 text-gray-900">sponsors</a> 
+      </div>
+      <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+        <a href="https://btcpp.dev/" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Current Confs</a>
+      </div>
+    </nav>
+    <div class="hidden lg:hidden" role="nav-dialog" aria-modal="true">
+      
+      <div class="fixed inset-0 z-10"></div>
+      <div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <div class="flex items-center justify-between">
+          <a href="/" class="-m-1.5 p-1.5"><span class="sr-only">bitcoin++</span> <img class="h-8 w-auto" src="/static/atx23/img/btcpp.svg" alt=""></a> 
+	  <button type="button" onclick="closeMenu(this)" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+	    <span class="sr-only">Close menu</span> 
+	    <svg class="h-6 w-6" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"> <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+	 </button>
+        </div>
+        <div class="mt-6 flow-root">
+          <div class="-my-6 divide-y divide-gray-500/10">
+            <div class="space-y-2 py-6">
+              <div class="-mx-3">
+                <a onclick="toggleMenu(this)" href="#about" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">about</a> 
+		<a onclick="toggleMenu(this)" href="#venue" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">venue</a> 
+		<a onclick="toggleMenu(this)" href="#agenda" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">agenda</a> 
+		<a onclick="toggleMenu(this)" href="/static/atx23/talks.html" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">talks</a> 
+		<a onclick="toggleMenu(this)" href="#sponsors" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">sponsors</a>
+              </div>
+              <div class="py-6">
+                <a onclick="toggleMenu(this)" href="https://btcpp.dev" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Current Confs</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<section>
+ <div class="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-14 sm:pt-0">
+    <div class="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:-mr-80 lg:-mr-96" aria-hidden="true"></div>
+    <div class="mx-auto max-w-7xl px-6 pt-4 pb-12 sm:py-32 lg:px-8">
+    <div class="mt-4 sm:mt-24 lg:mt-16 pb-8">
+      <a href="#agenda" class="inline-flex space-x-2 sm:space-x-6">
+	<span class="inline-flex items-center space-x-2 text-sm font-medium leading-6 text-gray-600">
+	  <span>Checkout the Agenda</span>
+	  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+	    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+	  </svg>
+	</span>
+      </a>
+    </div>
+      <div class="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-16 lg:gap-y-6 xl:grid-cols-1 xl:grid-rows-1 xl:gap-x-8">
+        <h1 class="max-w-2xl text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl lg:col-span-2 xl:col-auto">bitcoin++ is taking a look at <span>layer-2s</span></h1>
+        <div class="mt-6 max-w-xl lg:mt-0 xl:col-end-1 xl:row-start-1">
+          <p class="text-lg leading-8 text-gray-600">Our April 2023 conference is all about what's going on in bitcoin layer-2s</p>
+          <p class="text-lg leading-8 text-gray-600">Austin, TX | April 28 + 29 + 30 | Palmer Events Center</p>
+        </div>
+        <img src="/static/atx23/img/cakes.svg" alt="" class="mt-10 aspect-[6/5] w-full max-w-lg rounded-2xl object-cover sm:mt-16 lg:mt-0 lg:max-w-none xl:row-span-2 xl:row-end-2 xl:mt-10">
+      </div>
+    </div>
+    <div class="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32"></div>
+  </div>
+</section>
+
+<section>
+<div class="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32" id="about">
+  <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center">
+  <svg viewBox="0 0 1097 845" aria-hidden="true" class="hidden transform-gpu blur-3xl sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:w-[68.5625rem]">
+    <path fill="url(#10724532-9d81-43d2-bb94-866e98dd6e42)" fill-opacity=".2" d="M301.174 646.641 193.541 844.786 0 546.172l301.174 100.469 193.845-356.855c1.241 164.891 42.802 431.935 199.124 180.978 195.402-313.696 143.295-588.18 284.729-419.266 113.148 135.13 124.068 367.989 115.378 467.527L811.753 372.553l20.102 451.119-530.681-177.031Z" />
+    <defs>
+      <linearGradient id="10724532-9d81-43d2-bb94-866e98dd6e42" x1="1097.04" x2="-141.165" y1=".22" y2="363.075" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#776FFF" />
+        <stop offset="1" stop-color="#FF4694" />
+      </linearGradient>
+    </defs>
+  </svg>
+  <svg viewBox="0 0 1097 845" aria-hidden="true" class="absolute left-1/2 -top-52 -z-10 w-[68.5625rem] -translate-x-1/2 transform-gpu blur-3xl sm:top-[-28rem] sm:ml-16 sm:translate-x-0 sm:transform-gpu">
+    <path fill="url(#8ddc7edb-8983-4cd7-bccb-79ad21097d70)" fill-opacity=".2" d="M301.174 646.641 193.541 844.786 0 546.172l301.174 100.469 193.845-356.855c1.241 164.891 42.802 431.935 199.124 180.978 195.402-313.696 143.295-588.18 284.729-419.266 113.148 135.13 124.068 367.989 115.378 467.527L811.753 372.553l20.102 451.119-530.681-177.031Z" />
+    <defs>
+      <linearGradient id="8ddc7edb-8983-4cd7-bccb-79ad21097d70" x1="1097.04" x2="-141.165" y1=".22" y2="363.075" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#776FFF" />
+        <stop offset="1" stop-color="#FF4694" />
+      </linearGradient>
+    </defs>
+  </svg>
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto max-w-2xl lg:mx-0">
+      <h2 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">What to expect</h2>
+      <p class="mt-6 text-lg leading-8 text-gray-300">Bitcoin++ is a developer-focused conference series. We place a heavy emphasis on long form lectures and workshops, with smaller more-focused audiences who are excited to get deeper into the cutting edge of bitcoin tech.</p>
+ <p class="mt-6 text-lg leading-8 text-gray-300">Our upcoming Austin conference will have a focus on layer-2 technology; we’ve invited a range of experts and builders across the scaling space to come talk about their projects and get users on-boarded to using them.</p>
+<p class="mt-6 text-lg leading-8 text-gray-300">bitcoin++ is put on by Base58⛓🔓, the premier bitcoin protocol academy.</p>
+</p>
+    </div>
+    <div class="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">
+      <div class="grid grid-cols-1 gap-y-6 gap-x-8 text-base font-semibold leading-7 text-white sm:grid-cols-2 md:flex lg:gap-x-10">
+        <a href="https://www.youtube.com/watch?v=kCON4wuecOw&list=PLHhfnB1Uefkor98E-ikci_sUtUKKYYSDA" target="_blank">Videos from our last conference<span aria-hidden="true">&rarr;</span></a>
+        <a href="https://twitter.com/base58btc" target="_blank">Follow us on Twitter<span aria-hidden="true">&rarr;</span></a>
+        <a href="https://base58.info" target="_blank">Learn more about Base58⛓🔓<span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <dl class="mt-16 grid grid-cols-1 gap-8 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="flex flex-col-reverse">
+          <dt class="text-base leading-7 text-gray-300">Days of Talks + Learning</dt>
+          <dd class="text-2xl font-bold leading-9 tracking-tight text-white">3</dd>
+        </div>
+
+        <div class="flex flex-col-reverse">
+          <dt class="text-base leading-7 text-gray-300">Speakers and Workshop Sessions</dt>
+          <dd class="text-2xl font-bold leading-9 tracking-tight text-white">36</dd>
+        </div>
+
+        <div class="flex flex-col-reverse">
+          <dt class="text-base leading-7 text-gray-300">Anticipated Attendees</dt>
+          <dd class="text-2xl font-bold leading-9 tracking-tight text-white">200+</dd>
+        </div>
+
+        <div class="flex flex-col-reverse">
+          <dt class="text-base leading-7 text-gray-300">Hackathon Prizes</dt>
+          <dd class="text-2xl font-bold leading-9 tracking-tight text-white">$5,000+</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>
+</section>
+<section id="venue" class="mx-auto max-w-2xl lg:max-w-4xl">
+<div class="bg-white py-20 sm:py-20">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto max-w-2xl lg:mx-0">
+      <p class="text-base font-semibold leading-7 text-indigo-600">Explore Austin, learn about bitcoin-dev</p>
+      <h2 class="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Venue</h2>
+      <p class="mt-6 text-lg leading-8 text-gray-600">bitcoin++ is happening at the Palmer Events Center in Austin, Texas. It's a short walk from downtown Austin, on Town Lake.</p>
+      <iframe title="Palmer Events Center" aria-lable="Palmer Events Center" 
+	  width="100%"
+	  height="500px"
+	  frameborder="0" style="border:0"
+	  referrerpolicy="no-referrer-when-downgrade"
+	  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBs_ErgLEfaa9HBJfMzdm45JPhQgdPAMwc&amp;q=Palmer%20Events%20Center&amp;zoom=16"
+	  allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</div>
+<div class="bg-white py-10 sm:py-10">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h3 class="mt-2 text-xl tracking-tight text-gray-900 sm:text-xl">Where to Stay</h3>
+      <p class="mt-6 text-lg leading-8 text-gray-600">The conference is at the Palmer Events Center. Here’s some suggestions for places to stay that are really close by! We don’t have an official hotel this year, as we’re at a conf center, (and typically the prices we get from partner hotels aren’t really amazing)</p>
+    <div class="mx-auto grid max-w-2xl grid-cols-1 gap-8 overflow-hidden lg:mx-0 lg:max-w-none lg:grid-cols-4 mt-12">
+      <div>
+        <time datetime="2021-08" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+	  Mid-Range
+          <div class="absolute -ml-2 h-px w-screen -translate-x-full bg-gray-900/10 sm:-ml-4 lg:static lg:ml-8 lg:-mr-6 lg:w-auto lg:flex-auto lg:translate-x-0" aria-hidden="true"></div>
+        </time>
+	<a href="https://www.hilton.com/en/book/reservation/rooms/?ctyhocn=AUSLKES&arrivalDate=2023-04-27&departureDate=2023-04-30&room1NumAdults=1&ownerVIPRate=false&brandCode=HH&inputModule=HOTEL_SEARCH" target="_blank">
+	<img src="/static/atx23/img/embassy.webp" height="350" width="100%" class="mt-12 w-full max-h-xl rounded-xl" />
+        <p class="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900">Embassy Suites</p>
+        <p class="mt-1 text-base leading-7 text-gray-600">About $300 a night, walking distance to venue.</p>
+	</a>
+      </div>
+
+      <div>
+        <time datetime="2021-12" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+          Apartments
+          <div class="absolute -ml-2 h-px w-screen -translate-x-full bg-gray-900/10 sm:-ml-4 lg:static lg:ml-8 lg:-mr-6 lg:w-auto lg:flex-auto lg:translate-x-0" aria-hidden="true"></div>
+        </time>
+	<a href="https://www.locale.com/properties/south-congress" target="_blank">
+	<img src="/static/atx23/img/locale_sc.jpeg" height="350" width="100%" class="mt-12 w-full max-h-xl rounded-xl" />
+        <p class="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900">Locale, South Congress</p>
+        <p class="mt-1 text-base leading-7 text-gray-600">Apartment style digs a few blocks from the event center. From $240 a night.</p>
+	</a>
+      </div>
+
+      <div>
+        <time datetime="2022-02" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+          Hostel
+          <div class="absolute -ml-2 h-px w-screen -translate-x-full bg-gray-900/10 sm:-ml-4 lg:static lg:ml-8 lg:-mr-6 lg:w-auto lg:flex-auto lg:translate-x-0" aria-hidden="true"></div>
+        </time>
+	<a href="https://hotels.cloudbeds.com/reservation/E5VBgI#checkin=2023-04-27&checkout=2023-04-30" target="_blank">
+	<img src="/static/atx23/img/firehouse.jpg" height="350" width="100%"class="mt-12 w-full max-h-xl rounded-xl" />
+        <p class="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900">Firehouse Hostel</p>
+        <p class="mt-1 text-base leading-7 text-gray-600">About a 20m walk from the venue, in downtown Austin. From $40 a night (shared dorm).</p>
+	</a>
+      </div>
+
+      <div>
+        <time datetime="2022-12" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+          Boutique
+          <div class="absolute -ml-2 h-px w-screen -translate-x-full bg-gray-900/10 sm:-ml-4 lg:static lg:ml-8 lg:-mr-6 lg:w-auto lg:flex-auto lg:translate-x-0" aria-hidden="true"></div>
+        </time>
+	<a href="https://carpenterhotel.com/" target="_blank">
+	<img src="/static/atx23/img/carpenter.jpg" height="350" width="100%" class="mt-12 w-full max-h-xl rounded-xl aspect[16/9] sm:aspect[2/1] lg:aspect-[3/2]" />
+        <p class="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900">Carpenter Hotel</p>
+        <p class="mt-1 text-base leading-7 text-gray-600">Boutique hotel within walking distance. From $450 a night.</p>
+	</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+<section id="agenda" class="mx-auto max-w-2xl lg:max-w-4xl">
+<div class="bg-white py-24 sm:py-32 px-6">
+  <div class="mx-auto max-w-7xl">
+      <h2 class="mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">Conference Agenda</h2>
+       <a href="https://docs.google.com/spreadsheets/d/1TTauIlar50I62sACCa8n69o80yZcJR1WyaafFn63kzE/edit?usp=sharing" target="_blank">
+	<span class="mt-8 flex items-center space-x-2 text-sm font-medium leading-6 text-gray-600">
+	  <span>See as spreadsheet</span>
+	  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+	    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+	  </svg>
+	</span>
+      </a>
+      <h3 class="mt-8 text-xl tracking-tight text-gray-900 sm:text-xl">Friday</h3>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Check-in Opens, 9:30 am </span>
+	  </div>
+	</div>
+      <p class="mt-4 text-md text-gray-600">We kick off Friday with a 1.5h ice breaker game led by D++.</p>
+      <div class="mt-8 divide-y max-w-full text-center grid mt-16 grid-cols-1 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">	
+	<div class="flex flex-col items-center justify-between rounded-lg">
+	  <div class="w-full">
+	    <img class="aspect-[16/9] w-full object-cover rounded-2xl bg-gray-100 sm:aspect-[2/1] lg:aspect-[3/2]" src="/static/atx23/img/speakers/d_unified.png" alt="">
+	   </div>
+	   <div class="ml-3 max-w-full">
+          <div class="group relative">
+            <h3 class="mt-3 text-2xl font-semibold leading-8 text-gray-900 group-hover:text-gray-600">
+              <a href="/static/atx23/talks.html#dee">
+                <span class="absolute inset-0"></span>
+		Lightning LARP
+              </a>
+	      </h3>
+              <p class="mt-2 text-lg"><a href="https://twitter.com/d_plus__plus" target="_blank"><span class="text-gray-900">D&#43;&#43; </span></a></p>
+              <p class="mb-4 text-sm leading-6"><span class="text-gray-900">Entropy </span></p>
+          </div>
+          <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">10:00 am - 11:30 am</span>
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900 font-bold">1h 30m</span>
+	    <span class="flex-grow"></span>
+            <span class="grow-0 relative z-10 rounded-full bg-indigo-50 py-1.5 px-3 font-medium text-indigo-600">Opening Mixer</span> 
+          </div>
+          </div>	
+         </div>
+	</div>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Lunch, 11:30 am - 12:30 pm @ Auditorium Shores</span>
+	  </div>
+	</div>
+      <p class="mt-8 text-md text-gray-600">After lunch, you'll be split into cohorts of 40 people and rotate through 5 hands-on workshops that are meant to teach you the basics of builiding on bitcoin.</p>
+      <ul class="mt-8 -my-8 divide-y max-w-full text-center grid mt-16 grid-cols-1 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">	
+      
+	<li class="flex flex-col items-center justify-between rounded-lg">
+	  <div class="w-full">
+	    <img class="aspect-[16/9] w-full object-cover rounded-2xl bg-gray-100 sm:aspect-[2/1] lg:aspect-[3/2]" src="/static/atx23/img/speakers/buck_unified.png" alt="">
+	   </div>
+	   <div class="ml-3 max-w-full">
+          <div class="group relative">
+            <h3 class="mt-3 text-2xl font-semibold leading-8 text-gray-900 group-hover:text-gray-600">
+              <a href="/static/atx23/talks.html#socratic">
+                <span class="absolute inset-0"></span>
+		Socratic Seminar: Fee Management
+              </a>
+	      </h3>
+              <p class="mt-2 text-lg"><a href="https://iris.to/buck" target="_blank"><span class="text-gray-900">buck </span></a></p>
+              <p class="mb-4 text-sm leading-6"><span class="text-gray-900">Unchained Capital </span></p>
+          </div>
+          <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">12:30 pm - 4:30 pm</span>
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900 font-bold">1h / cohort</span>
+	    <span class="flex-grow"></span>
+            <span class="grow-0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">Cohort Circuit</span> 
+            <span class="grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2PKH</span> 
+          </div>
+          </li>	
+    
+	<li class="flex flex-col items-center justify-between rounded-lg">
+	  <div class="w-full">
+	    <img class="aspect-[16/9] w-full object-cover rounded-2xl bg-gray-100 sm:aspect-[2/1] lg:aspect-[3/2]" src="/static/atx23/img/speakers/kelsay_unified.png" alt="">
+	   </div>
+	   <div class="ml-3 max-w-full">
+          <div class="group relative">
+            <h3 class="mt-3 text-2xl font-semibold leading-8 text-gray-900 group-hover:text-gray-600">
+              <a href="/static/atx23/talks.html#first_lightning">
+                <span class="absolute inset-0"></span>
+		Building your First Lightning App
+              </a>
+	      </h3>
+              <p class="mt-2 text-lg"><a href="https://twitter.com/@bitcoinplebdev" target="_blank"><span class="text-gray-900">Austin </span></a></p>
+              <p class="mb-4 text-sm leading-6"><span class="text-gray-900">Fold / PlebLab </span></p>
+          </div>
+          <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">12:30 pm - 4:30 pm</span>
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900 font-bold">1h / cohort</span>
+	    <span class="flex-grow"></span>
+            <span class="grow-0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">Cohort Circuit</span> 
+            <span class="grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2WSH</span> 
+          </div>
+          </li>	
+    
+	<li class="flex flex-col items-center justify-between rounded-lg">
+	  <div class="w-full">
+	    <img class="aspect-[16/9] w-full object-cover rounded-2xl bg-gray-100 sm:aspect-[2/1] lg:aspect-[3/2]" src="/static/atx23/img/speakers/topher_unified.png" alt="">
+	   </div>
+	   <div class="ml-3 max-w-full">
+          <div class="group relative">
+            <h3 class="mt-3 text-2xl font-semibold leading-8 text-gray-900 group-hover:text-gray-600">
+              <a href="/static/atx23/talks.html#workbench">
+                <span class="absolute inset-0"></span>
+		Build your own Lightning Workbench
+              </a>
+	      </h3>
+              <p class="mt-2 text-lg"><a href="https://twitter.com/btctechsupport" target="_blank"><span class="text-gray-900">Christopher Scott </span></a></p>
+              <p class="mb-4 text-sm leading-6"><span class="text-gray-900">BitEscrow Inc. </span></p>
+          </div>
+          <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">12:30 pm - 4:30 pm</span>
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900 font-bold">1h / cohort</span>
+	    <span class="flex-grow"></span>
+            <span class="grow-0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">Cohort Circuit</span> 
+            <span class="grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+          </div>
+          </li>	
+    
+	<li class="flex flex-col items-center justify-between rounded-lg">
+	  <div class="w-full">
+	    <img class="aspect-[16/9] w-full object-cover rounded-2xl bg-gray-100 sm:aspect-[2/1] lg:aspect-[3/2]" src="/static/atx23/img/speakers/ben_unified.png" alt="">
+	   </div>
+	   <div class="ml-3 max-w-full">
+          <div class="group relative">
+            <h3 class="mt-3 text-2xl font-semibold leading-8 text-gray-900 group-hover:text-gray-600">
+              <a href="/static/atx23/talks.html#bitcoin_core">
+                <span class="absolute inset-0"></span>
+		Let’s Contribute to Bitcoin Core!
+              </a>
+	      </h3>
+              <p class="mt-2 text-lg"><a href="https://twitter.com/Empact" target="_blank"><span class="text-gray-900">Empact / Benjamin Woosley </span></a></p>
+              <p class="mb-4 text-sm leading-6"><span class="text-gray-900">Bitcoin Core </span></p>
+          </div>
+          <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">12:30 pm - 4:30 pm</span>
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900 font-bold">1h / cohort</span>
+	    <span class="flex-grow"></span>
+            <span class="grow-0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">Cohort Circuit</span> 
+            <span class="grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+          </div>
+          </li>	
+    
+	<li class="flex flex-col items-center justify-between rounded-lg">
+	  <div class="w-full">
+	    <img class="aspect-[16/9] w-full object-cover rounded-2xl bg-gray-100 sm:aspect-[2/1] lg:aspect-[3/2]" src="/static/atx23/img/speakers/nifty_unified.png" alt="">
+	   </div>
+	   <div class="ml-3 max-w-full">
+          <div class="group relative">
+            <h3 class="mt-3 text-2xl font-semibold leading-8 text-gray-900 group-hover:text-gray-600">
+              <a href="/static/atx23/talks.html#deepdive">
+                <span class="absolute inset-0"></span>
+		Base58&#39;s Transactions Deep Dive
+              </a>
+	      </h3>
+              <p class="mt-2 text-lg"><a href="https://twitter.com/niftynei" target="_blank"><span class="text-gray-900">niftynei </span></a></p>
+              <p class="mb-4 text-sm leading-6"><span class="text-gray-900">Base58⛓🔓 </span></p>
+          </div>
+          <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">12:30 pm - 4:30 pm</span>
+            <span class="pr-4 grow-0 text-sm leading-6 text-gray-900 font-bold">1h / cohort</span>
+	    <span class="flex-grow"></span>
+            <span class="grow-0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">Cohort Circuit</span> 
+            <span class="grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2SH-P2WPKH</span> 
+          </div>
+          </li>	
+    
+    </ul>
+	<div class="mt-12 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Hackathon Kickoff, in P2WSH @ 4:30 pm </span>
+	  </div>
+	</div>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Opening Party, Location + Time to Come</span>
+	  </div>
+	</div>
+        <div class="relative mt-16">
+          <div class="absolute inset-0 flex items-center" aria-hidden="true">
+           <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center">
+            <span class="bg-white px-2 text-gray-500">
+              <svg class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+             </span>
+          </div>
+       </div>
+      <h3 class="mt-8 text-xl tracking-tight text-gray-900 sm:text-xl">Saturday</h3>
+      <p class="mt-4 text-md text-gray-600">The second day of the conference is jam-packed with talks and more hands-on workshops from your favorite projects and builders.</p>
+        <div class="relative mt-16">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Check-in Opens, 9:00 am </span>
+	  </div>
+	</div>
+    <ul class="-my-8 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-16 sm:grid-cols-2 grid-cols-1 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+      
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/_JustinMoon_" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/jmoon_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#fedimint">Build a Fedimint Module</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Justin Moon</h5>
+       <p class="text-left text-sm text-gray-500">Fedi</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">9:30 am - 10:30 am</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2PKH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/glozow" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/gloria_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#mempool">Mempool as a Battleground: RBF Pinning, v3, Ephemeral Anchors (Remote)</a></h4>
+       <h5 class="text-left text-lg text-gray-500">glozow</h5>
+       <p class="text-left text-sm text-gray-500">Bitcoin Core</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">9:30 am - 10:30 am</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2WSH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/@urraca__" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/urraca_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#nix">Nix for Bitcoiners</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Julien</h5>
+       <p class="text-left text-sm text-gray-500">flox</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">9:30 am - 10:30 am</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/Truthcoin" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/pauls_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#police">Bip300: How we Police Sidechains Without Looking at Them</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Paul Sztorc</h5>
+       <p class="text-left text-sm text-gray-500">LayerTwo Labs</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">9:30 am - 10:30 am</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+ 
+     </ul>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	</div>
+    <ul class="-my-8 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-6 grid-cols-1 sm:grid-cols-2 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+      
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/@okjodom" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/okjodom_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#community_ln">Community Lightning: Building Lightning Gateways for Fedimint</a></h4>
+       <h5 class="text-left text-lg text-gray-500">okjodom</h5>
+       <p class="text-left text-sm text-gray-500">Fedimint</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">10:30 am - 12:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h 30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2PKH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/futurepaul" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/futurepaul_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#mutiny">Building a lightning node in the browser</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Paul</h5>
+       <p class="text-left text-sm text-gray-500">Mutiny</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">10:30 am - 12:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h 30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2WSH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/asherp" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/asherp.jpeg" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#doxxing">NostrMail - PGP for the plebs</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Asher Pembroke PhD</h5>
+       <p class="text-left text-sm text-gray-500">Rigly</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">10:30 am - 11:00 am</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/lightcoin" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/lightcoin_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#trustless_bridge">Building (trustless) Bridges</a></h4>
+       <h5 class="text-left text-lg text-gray-500">John Light</h5>
+       <p class="text-left text-sm text-gray-500">Sovryn</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">10:30 am - 11:15 am</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">45m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/Psifour" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/psfour.jpg" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#ordinals">Ordinals: More Than Inscriptions</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Psifour</h5>
+       <p class="text-left text-sm text-gray-500">Ordinals Project</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">11:00 am - 12:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h 30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/simanta_gautam" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/simanta_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#rollup">Towards a Validity Rollup on Bitcoin with Taproot</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Simanta Gautam</h5>
+       <p class="text-left text-sm text-gray-500">Alpen Labs</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">11:15 am - 12:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">45m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+ 
+     </ul>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Lunch, 12:00 - 1:00 pm @ Auditorium Shores</span>
+	  </div>
+	</div>
+    <ul class="mt-6 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-6 grid-cols-1 sm:grid-cols-2 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+      
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/satoshisbrew" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/alan_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#clams">Building Core Lightning Web Apps</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Aaron</h5>
+       <p class="text-left text-sm text-gray-500">Clams Tech</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">1:00 pm - 2:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2PKH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/ConorOkus" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/spiral_talk.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#ldk">Getting started with LDK Node</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Conor Okus &#43; Jeff Czyz</h5>
+       <p class="text-left text-sm text-gray-500">Spiral</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">1:00 pm - 3:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">2h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2WSH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/dusty_daemon" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/dustin_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#splicing">Splicing Plays w/Coach Dusty</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Dusty Daemon</h5>
+       <p class="text-left text-sm text-gray-500">Bitcoin</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">1:00 pm - 2:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/kodylow" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/kody_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#stablesats">Stablesats: Bringing Stability to Bitcoin</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Kody</h5>
+       <p class="text-left text-sm text-gray-500">Base58</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">1:00 pm - 2:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/cguida6" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/guida_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#guida">Writing Your First CLN Plugin</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Chris Guida</h5>
+       <p class="text-left text-sm text-gray-500">Bitcoiner</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">2:00 pm - 3:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2PKH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/@nick_slaney" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/nickslaney_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#lsp">LSPs: Lightning/Liquidity Service Providers</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Nick Slaney</h5>
+       <p class="text-left text-sm text-gray-500">c=</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">2:00 pm - 3:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/brqgoo" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/burak_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#built_right">Anchors &amp; Shackles</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Burak</h5>
+       <p class="text-left text-sm text-gray-500">Bitspace</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">2:00 pm - 3:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+ 
+     </ul>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Afternoon Break, 3:00 - 3:30 pm</span>
+	  </div>
+	</div>
+    <ul class="-my-8 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-6 grid-cols-1 sm:grid-cols-2 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+      
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/Turbolay" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/turbolay_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#wasabi">Settle channels privately through WabiSabi</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Turbolay</h5>
+       <p class="text-left text-sm text-gray-500">Wasabi Wallet</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">3:30 pm - 4:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2PKH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/Rob1Ham" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/rob_ham_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#miniscript">Leveraging Miniscript</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Rob Hamilton</h5>
+       <p class="text-left text-sm text-gray-500">AnchorWatch</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">3:30 pm - 4:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2WSH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/tdryja" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/tadge_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#donttrust">Translational Bitcoin Development (or why Johnny can&#39;t verify)</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Tadge Dryja</h5>
+       <p class="text-left text-sm text-gray-500">Lightspark</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">3:30 pm - 4:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/clewe_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#simple">Simple Layer Twos</a></h4>
+       <h5 class="text-left text-lg text-gray-500">uncomputable</h5>
+       <p class="text-left text-sm text-gray-500">Blockstream Research</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">3:30 pm - 4:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+ 
+     </ul>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	</div>
+    <ul class="-my-8 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-6 grid-cols-1 sm:grid-cols-2 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+      
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/scsibug" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/greg_announce.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#nostr">Notes &amp; Relays: The Nostr Protocol Explained</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Greg Heartsfield</h5>
+       <p class="text-left text-sm text-gray-500"></p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:00 pm - 4:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2PKH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/@nicop2010" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/nico_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#hashrate">Exploring P2P Hashrate Markets</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Nico</h5>
+       <p class="text-left text-sm text-gray-500">Rigly</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:00 pm - 4:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2WSH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/ClaraShik" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/clara_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#unjamming">Unjamming Lightning</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Clara</h5>
+       <p class="text-left text-sm text-gray-500">Chaincode</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:00 pm - 4:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/niftynei" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/nifty_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#layercake">bitcoin is a layer cake (a talk about layers)</a></h4>
+       <h5 class="text-left text-lg text-gray-500">niftynei</h5>
+       <p class="text-left text-sm text-gray-500">Base58</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:00 pm - 4:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+ 
+     </ul>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	</div>
+    <ul class="-my-8 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-6 grid-cols-1 sm:grid-cols-2 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+      
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/csuwildcat" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/daniel_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#web">Toward a More Decentralized Web</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Daniel Buchner</h5>
+       <p class="text-left text-sm text-gray-500">Block</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:30 pm - 5:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2WSH</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/tierotiero" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/tiero_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#liquid_ln">Liquid Network: Smart Contract Layer for Lightning Applications</a></h4>
+       <h5 class="text-left text-lg text-gray-500">tiero</h5>
+       <p class="text-left text-sm text-gray-500">Fuji Labs</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:30 pm - 5:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/arikaleph" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/arik_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#taproot">Lightning on Taproot</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Arik</h5>
+       <p class="text-left text-sm text-gray-500">Spiral</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:30 pm - 5:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">MULTISIG</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/super_testnet" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/super_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#spacechains">Spacechains: a modest sidechain proposal</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Super Testnet</h5>
+       <p class="text-left text-sm text-gray-500">Pleblab</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">4:30 pm - 5:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">P2TR</span> 
+  </div>
+  </li>	
+ 
+     </ul>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Venue open til 9p for Hacking</span>
+	  </div>
+	</div>
+	<div class="relative mt-16">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-center">
+	    <span class="bg-white px-2 text-gray-500">
+	      <svg class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+		<path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+	      </svg>
+	    </span>
+	  </div>
+	</div>
+      <h3 class="mt-8 text-xl tracking-tight text-gray-900 sm:text-xl">Sunday</h3>
+      <p class="mt-4 text-md text-gray-600">The last day of the conference is dedicated to working on a hackathon project, or organizing 'unconference' sessions </p>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Breakfast + Coffee, 9:30 am </span>
+	  </div>
+	</div>
+	<ul class="-my-8 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-6 grid-cols-1 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+	  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/btcplusplus" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/hackathon_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#hackathon">Hack Time &#43; Unconf</a></h4>
+       <h5 class="text-left text-lg text-gray-500"></h5>
+       <p class="text-left text-sm text-gray-500"></p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">9:30 am - 12:00 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">2h 30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">ALL</span> 
+  </div>
+  </li>	
+ 
+	</ul>
+	<div class="mt-6 relative">
+	  <div class="absolute inset-0 flex items-center" aria-hidden="true">
+	    <div class="w-full border-t border-gray-300"></div>
+	  </div>
+	  <div class="relative flex justify-start">
+	    <span class="bg-white px-2 text-sm text-gray-500">Lunch, 12:00 pm - 1:00 pm @ Auditorium Shores</span>
+	  </div>
+	</div>
+	<ul class="-my-8 divide-y divide-gray-100 mx-auto max-w-2xl text-center grid mt-6 grid-cols-1 gap-y-12 gap-x-8 lg:mx-0 lg:max-w-none">	
+	  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/btcplusplus" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/hackathon_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#hackathon">Hack Time &#43; Unconf</a></h4>
+       <h5 class="text-left text-lg text-gray-500"></h5>
+       <p class="text-left text-sm text-gray-500"></p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">12:00 pm - 3:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">3h 30m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">ALL</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/mecee" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/chris_c_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#keynote">Hackathon Keynote</a></h4>
+       <h5 class="text-left text-lg text-gray-500">Christopher Calicott</h5>
+       <p class="text-left text-sm text-gray-500">Trammell Venture Partners (TVP)</p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">3:20 pm - 3:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">10m</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">ALL</span> 
+  </div>
+  </li>	
+  
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="https://twitter.com/btcplusplus" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/atx23/img/speakers/hack_prize_unified.png" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/static/atx23/talks.html#hack_prize">Hackathon Presentations &#43; Awards</a></h4>
+       <h5 class="text-left text-lg text-gray-500"></h5>
+       <p class="text-left text-sm text-gray-500"></p>
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">3:30 pm - 4:30 pm</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">1h</span>
+    <span class="flex-grow"></span>
+    
+    
+    
+    
+    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">ALL</span> 
+  </div>
+  </li>	
+ 
+	</ul>
+  </div>
+</section>
+<section id="sponsors">
+<div class="bg-white py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="grid grid-cols-1 items-top gap-x-8 gap-y-16 lg:grid-cols-2">
+      <div class="mx-auto w-full max-w-xl lg:mx-0">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900">Made possible by the bitcoin community</h2>
+        <p class="mt-6 text-lg leading-8 text-gray-600"><span id="fixme">bitcoin++</span> is proud to be supported by a wide range of companies from across the space. Check out what they're up to, both here online as well as at the conference.</p>
+      </div>
+      <div class="mx-auto grid w-full max-w-xl grid-cols-2 items-center gap-y-12 sm:gap-y-14 lg:mx-0 lg:max-w-none lg:pl-8">
+        <a href="https://mempool.space/" target="_blank" style="background: #1d1f31!important" class="p-8">
+          <img class="max-h-12 w-full object-contain object-center" src="/static/atx23/img/mempool.svg" alt="Mempool.space" width="150" height="auto">
+        </a>
+        <a href="https://cequals.xyz/" target="_blank">
+        <img class="max-h-16 w-full object-contain object-center" src="/static/atx23/img/ceq.svg" alt="C=" width="auto" height="200">
+        </a>
+        <a href="https://spiral.xyz/" target="_blank">
+        <img class="max-h-24 w-full object-contain object-center" src="/static/atx23/img/spiral.svg" alt="Spiral" width="250" height="250">
+        </a>
+        <a href="https://base58.info" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="/static/atx23/img/base58.svg" alt="Base58" width="150" height="auto">
+        </a>
+        <a href="https://unchained.com/" target="_blank">
+        <img class="max-h-12 w-full object-contain object-center" src="/static/atx23/img/unchained.svg" alt="Unchained" width="150" height="auto">
+        </a>
+        <a href="https://www.fedi.xyz/" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="/static/atx23/img/fedi.svg" alt="Fedi" width="300" height="300">
+        </a>
+        <a href="https://tvp.fund/" target="_blank">
+        <img class="max-h-20 w-full object-contain object-center" src="/static/atx23/img/trammel.svg" alt="Trammel Venture Partners" width="300" height="300">
+        </a>
+        <a href="https://fulgur.ventures/" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="/static/atx23/img/fulgar.svg" alt="Fulgar Ventures" width="150" height="auto">
+        </a>
+        <a href="https://rigly.io/" target="_blank">
+        <img class="max-h-24 w-full object-contain object-center" src="/static/atx23/img/rigly.svg" alt="Rigly" width="250" height="250">
+        </a>
+        <a href="https://www.opennode.com/" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="/static/atx23/img/opennode.svg" alt="OpenNode" width="150" height="auto">
+        </a>
+        <a href="https://opensats.org/" target="_blank" class="p-4 sm:p-12">
+        <img class="max-h-12 w-full object-contain object-center" src="/static/atx23/img/opensats.svg" alt="OpenSats" width="150" height="auto">
+        </a>
+        <a href="https://wasabiwallet.io/" target="_blank" class="px-4 sm:px-12">
+        <img class="w-full object-contain object-center" style="max-height: 8rem;" src="/static/atx23/img/wasabi.svg" alt="Wasabi Wallet" width="250" height="auto">
+        </a>
+        <a href="https://atlbitlab.com/" target="_blank" class="p-4">
+        <img class="max-h-20 w-full object-contain object-center" src="/static/atx23/img/atlbitlab.jpg" alt="ATL BitLab" width="200" height="auto">
+        </a>
+        <a href="https://www.pleblab.com/" target="_blank">
+        <img class="max-h-24 w-full object-contain object-center" src="/static/atx23/img/pleblab.jpg" alt="PlebLab_" width="200" height="auto">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>
