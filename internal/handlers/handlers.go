@@ -38,13 +38,18 @@ func MiniCss() string {
 /* https://www.calhoun.io/intro-to-templates-p3-functions/ */
 func loadTemplates(app *config.AppContext) error {
 
-	index, err := template.ParseFiles("templates/index.tmpl", "templates/nav.tmpl", "templates/session.tmpl")
+	index, err := template.ParseFiles("templates/index.tmpl", "templates/main_nav.tmpl")
 	if err != nil {
 		return err
 	}
 	app.TemplateCache["index.tmpl"] = index
 
-	// Parse the template file
+	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/nav.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["berlin.tmpl"] = berlin
+
 	sched, err := template.ParseFiles("templates/sched.tmpl",
 		"templates/sched_desc.tmpl",
 		"templates/nav.tmpl")
@@ -97,6 +102,9 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	// Set up the routes, we'll have one page per course
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		Home(w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
+		Berlin(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
 		Talks(w, r, app)
@@ -176,10 +184,23 @@ type HomePage struct {
 	GoogleKey   string
 }
 
+func Berlin(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	// Define the data to be rendered in the template
+	tmpl := ctx.TemplateCache["berlin.tmpl"]
+
+	err := tmpl.ExecuteTemplate(w, "berlin.tmpl", &HomePage{})
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/ ExecuteTemplate failed ! %s\n", err.Error())
+		return
+	}
+}
+
 func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 	// Define the data to be rendered in the template
 	tmpl := ctx.TemplateCache["index.tmpl"]
+	/*
 	var talks talkTime
 	talks, err := getters.ListTalks(ctx.Notion)
 	if err != nil {
@@ -224,16 +245,9 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 		ctx.Err.Printf("/ failed to build Sundays ! %s\n", err.Error())
 		return
 	}
+	*/
 
-	err = tmpl.ExecuteTemplate(w, "index.tmpl", &HomePage{
-		Talks: talks,
-		Dee: dee,
-		Sessions: sessions,
-		Saturday: saturday,
-		Sunday: sunday,
-		RoundRobins: roundRobins,
-		GoogleKey: ctx.Env.Google.Key,
-	})
+	err := tmpl.ExecuteTemplate(w, "index.tmpl", &HomePage{})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("/ ExecuteTemplate failed ! %s\n", err.Error())
@@ -452,6 +466,9 @@ type TicketTmpl struct {
 	Domain string
 	CSS string
 	Type string
+	ConfLocation string
+	ConfDate string
+	ConfVenue string
 }
 
 func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -516,6 +533,9 @@ func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 		CSS: MiniCss(),
 		Domain: ctx.Env.GetDomain(),
 		Type: tixType,
+		ConfLocation: "", // Berlin
+		ConfDate: "", // Oct 6+7, 2023
+		ConfVenue: "",  // Säälchen at Holzmarkt 25
 	}
 
 	err = ctx.TemplateCache["ticket.tmpl"].Execute(w, tix)
