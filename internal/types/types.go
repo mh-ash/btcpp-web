@@ -31,6 +31,15 @@ type (
 		Key string
 	}
 
+	Speaker struct {
+		Name string
+		Desc string
+		Org string
+		Photo string
+		Github string
+		Twitter string
+	}
+
 	Talk struct {
 		ID string
 		Name string

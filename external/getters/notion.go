@@ -40,6 +40,19 @@ func fileGetURL(file *notion.File) string {
 	return ""
 }
 
+func parseSpeaker(pageID string, props map[string]notion.PropertyValue) *types.Speaker {
+	speaker := &types.Speaker{
+		Name:         parseRichText("Name", props),
+		Desc:      parseRichText("Desc", props),
+		Org:      parseRichText("Org", props),
+		Photo:      parseRichText("Photo", props),
+		Github:      parseRichText("Github", props),
+		Twitter:      parseRichText("Twitter", props),
+	}
+
+	return speaker
+}
+
 func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk {
 
 	var photoURL string
@@ -101,22 +114,30 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 	return talk
 }
 
-func ListTalks(n *types.Notion) ([]*types.Talk, error) {
-	var talks []*types.Talk
+func ListBerlinSpeakers(n *types.Notion) ([]*types.Speaker, error) {
+	var speakers []*types.Speaker
 
-	/* FIXME: pagination */
-	pages, _, _, err := n.Client.QueryDatabase(context.Background(),
-		n.Config.TalksDb, notion.QueryDatabaseParam{})
+	hasMore := true;
+	nextCursor := "";
+	for hasMore {
+		var err error
+		var pages []*notion.Page
 
-	if err != nil {
-		return nil, err
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
+			n.Config.BerlinTalksDb, notion.QueryDatabaseParam{
+				StartCursor: nextCursor,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+		for _, page := range pages {
+			speaker := parseSpeaker(page.ID, page.Properties)
+			speakers = append(speakers, speaker)
+		}
 	}
-	for _, page := range pages {
-		talk := parseTalk(page.ID, page.Properties)
-		talks = append(talks, talk)
-	}
 
-	return talks, nil
+	return speakers, nil
 }
 
 func CheckIn(n *types.Notion, ticket string) (string, bool, error) {

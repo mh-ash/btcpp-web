@@ -24,6 +24,9 @@
             <a href="#tickets" class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Buy Tickets</a>
             <a href="https://ykdl62lcpgz.typeform.com/to/Y76fbIfx" class="text-sm font-semibold leading-6 text-gray-900" target="_blank">Submit a Talk<span aria-hidden="true">→</span></a>
           </div>
+	  <div class="mt-16">
+  	    <blockquote class="twitter-tweet pt-10"><p lang="en" dir="ltr">I&#39;m actively trying to work through my Nix God complex. It&#39;s been so long that when I see non-Nix users complain about issues getting software to run, I&#39;m truly confused. It&#39;s like someone looking at a river lamenting about having to ford it while I&#39;m riding a bicycle on a bridge</p>&mdash; Mitchell Hashimoto (@mitchellh) <a href="https://twitter.com/mitchellh/status/1650201460234412032?ref_src=twsrc%5Etfw" target="_blank">April 23, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+	  </div>
         </div>
         <img src="/static/img/pills_two.png" alt="" class="mt-10 aspect-[6/5] w-full max-w-lg rounded-2xl object-cover sm:mt-16 lg:mt-0 lg:max-w-none xl:row-span-2 xl:row-end-2 xl:mt-10">
       </div>
@@ -31,10 +34,85 @@
     <div class="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32"></div>
   </div>
 </section>
+<section id="about">
+<div class="bg-white py-10 sm:py-10">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h3 class="mt-2 text-xl tracking-tight text-gray-900 sm:text-xl">Why nix</h3>
+      <p class="mt-6 text-lg leading-8 text-gray-600">Nix is a system for reproducible builds of open-source software. Some really cool bitcoiners have been packaging up bitcoin software for deployment on nix systems for years; this conference is an opportunity for the bitcoin open source community to come together with some of Nix's best and brightest to share their projects, tips+tricks, and general knowledge about reproducibility, deploying bitcoin and other open source projects in easy to reproduce ways.</p>
+    <div class="mx-auto grid max-w-2xl grid-cols-1 gap-8 overflow-hidden lg:mx-0 lg:max-w-none lg:grid-cols-4 mt-12">
+      <div>
+        <time datetime="2021-08" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+	  Reproducibility
+      </div>
+
+      <div>
+        <time datetime="2021-12" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+          Easy Install
+      </div>
+      <div>
+        <time datetime="2022-02" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+          Quick On-Boarding
+      </div>
+      <div>
+        <time datetime="2022-12" class="flex items-center text-sm font-semibold leading-6 text-indigo-600">
+          <svg viewBox="0 0 4 4" class="mr-4 h-1 w-1 flex-none" aria-hidden="true">
+            <circle cx="2" cy="2" r="2" fill="currentColor" />
+          </svg>
+         Open Source 
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
 <section id="speakers">
+<div class="bg-white py-32">
+  <div class="mx-auto max-w-7xl px-6 text-center lg:px-8">
+    <div class="mx-auto max-w-2xl">
+      <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Who's Coming</h2>
+      <p class="mt-4 text-lg leading-8 text-gray-600">bitcoin++'s first ever European conference is going to have an all-star lineup of nix and bitcoin experts.</p>
+    </div>
+    <ul role="list" class="mx-auto mt-20 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+      {{ range .Speakers }}
+      <li>
+        <img class="mx-auto h-56 w-56 rounded-full" src="/static/img/{{ .Photo }}" alt="">
+        <h3 class="mt-6 text-base font-semibold leading-7 tracking-tight text-gray-900">{{ .Name }}</h3>
+        <p class="text-sm leading-6 text-gray-600">{{ .Desc }}</p>
+        <p class="text-sm leading-6 text-gray-600">{{ .Org }}</p>
+        <ul role="list" class="mt-6 flex justify-center gap-x-6">
+          <li>
+            <a href="{{ .Twitter }}" class="text-gray-400 hover:text-gray-500">
+              <span class="sr-only">Twitter</span>
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
+              </svg>
+            </a>
+          </li>
+          <li>
+            <a href="{{ .Github }}" class="text-gray-400 hover:text-gray-500">
+              <span class="sr-only">Github</span>
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 100 100" aria-hidden="true">
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" />
+              </svg>
+            </a>
+          </li>
+        </ul>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+</div>
 </section>
 <section id="tickets">
-<div class="relative isolate bg-white py-24 px-6 sm:py-32 lg:px-8">
+<div class="relative isolate bg-white py-24 px-6 sm:py-32 lg:px-16">
   <div class="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl" aria-hidden="true">
     <svg class="mx-auto w-[72.1875rem]" viewBox="0 0 1155 678">
       <path fill="url(#083c110e-60c8-42bb-a9db-29bba74cc569)" fill-opacity=".3" d="M317.219 518.975L203.852 678 0 438.341l317.219 80.634 204.172-286.402c1.307 132.337 45.083 346.658 209.733 145.248C936.936 126.058 882.053-94.234 1031.02 41.331c119.18 108.451 130.68 295.337 121.53 375.223L855 299l21.173 362.054-558.954-142.079z" />

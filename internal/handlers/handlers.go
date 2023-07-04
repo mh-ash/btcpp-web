@@ -107,7 +107,7 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 		Berlin(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
-		Talks(w, r, app)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}).Methods("GET")
 	r.HandleFunc("/check-in/{ticket}", func(w http.ResponseWriter, r *http.Request) {
 		CheckIn(w, r, app)
@@ -184,11 +184,24 @@ type HomePage struct {
 	GoogleKey   string
 }
 
+type BerlinHome struct {
+	Speakers []*types.Speaker
+}
+
 func Berlin(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	// Define the data to be rendered in the template
 	tmpl := ctx.TemplateCache["berlin.tmpl"]
 
-	err := tmpl.ExecuteTemplate(w, "berlin.tmpl", &HomePage{})
+	speakers, err := getters.ListBerlinSpeakers(ctx.Notion)
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/berlin list speakers failed ! %s\n", err.Error())
+		return
+	}
+
+	err = tmpl.ExecuteTemplate(w, "berlin.tmpl", &BerlinHome{
+		Speakers: speakers,
+	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("/ ExecuteTemplate failed ! %s\n", err.Error())
@@ -430,30 +443,6 @@ func listSaturdayTalks(talks talkTime) ([]talkTime, error) {
 		}
 	}
 	return saturdays, nil
-}
-
-func Talks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	// Define the data to be rendered in the template
-	var talks talkTime
-	talks, err := getters.ListTalks(ctx.Notion)
-	if err != nil {
-		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/talks ListTalks failed! %s\n", err.Error())
-		return
-	}
-
-	sort.Sort(talks)
-
-	// Render the template with the data
-	err = ctx.TemplateCache["sched.tmpl"].ExecuteTemplate(w, "sched.tmpl",
-	&SchedulePage{
-		Talks: talks,
-	})
-	if err != nil {
-		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/talks ExecuteTemplate failed! %s\n", err.Error())
-		return
-	}
 }
 
 type EmailTmpl struct {

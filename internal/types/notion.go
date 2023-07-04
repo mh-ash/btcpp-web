@@ -7,7 +7,7 @@ import (
 type (
 	NotionConfig struct {
 		Token      string
-		TalksDb    string
+		BerlinTalksDb    string
 		PurchasesDb string
 	}
 
