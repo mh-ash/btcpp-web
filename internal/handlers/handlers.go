@@ -44,7 +44,7 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["index.tmpl"] = index
 
-	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/nav.tmpl")
+	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/berlin_nav.tmpl")
 	if err != nil {
 		return err
 	}
