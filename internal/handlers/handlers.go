@@ -92,6 +92,15 @@ func loadTemplates(app *config.AppContext) error {
 	return nil
 }
 
+func maybeReload(app *config.AppContext) {
+	if !app.InProduction {
+		err := loadTemplates(app)
+		if err != nil {
+			panic(err)	
+		}
+	}
+}
+
 // Routes sets up the routes for the application
 func Routes(app *config.AppContext) (http.Handler, error) {
 	// Create a file server to serve static files from the "static" directory
@@ -101,24 +110,30 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 
 	// Set up the routes, we'll have one page per course
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
 		Home(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
 		Berlin(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}).Methods("GET")
 	r.HandleFunc("/check-in/{ticket}", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
 		CheckIn(w, r, app)
 	}).Methods("GET", "POST")
 	r.HandleFunc("/welcome-email", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
 		TicketCheck(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/ticket/{ticket}", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
 		Ticket(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/trial-email", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
 		SendMailTest(w, r, app)
 	}).Methods("GET")
 
@@ -166,7 +181,6 @@ func addFaviconRoutes(r *mux.Router) error {
 
 	return nil
 }
-
 
 func getSessionKey(p string, r *http.Request) (string, bool) {
 	ok := r.URL.Query().Has(p)
