@@ -55,14 +55,6 @@ func parseSpeaker(pageID string, props map[string]notion.PropertyValue) *types.S
 
 func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk {
 
-	var photoURL string
-	if len(props["NormPhoto"].Files) > 0 {
-		file := props["NormPhoto"].Files[0]
-		photoURL = fileGetURL(file)
-	} else {
-		photoURL = ""
-	}
-
 	var twitter string
 	parseTwitter := parseRichText("Twitter", props)
 	if strings.Contains(parseTwitter, "http") {
@@ -84,10 +76,8 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 		ID:           pageID,
 		Name:         parseRichText("Talk Name", props),
 		Clipart:      parseRichText("Clipart", props),
-		Email:        props["Speaker Email"].Email,
 		Description:  parseRichText("Description", props),
-		Setup:        parseRichText("Setup", props),
-		Photo:        photoURL,
+		Photo:        parseRichText("NormPhoto", props),
 		Website:      props["Website"].URL,
 		Twitter:      twitter,
 		BadgeName:    parseRichText("Badge Name", props),
@@ -103,12 +93,20 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 		talk.Venue = props["Venue"].Select.Name
 	}
 
+	if props["Event"].Select != nil {
+		talk.Event = props["Event"].Select.Name
+	}
+
 	if sched != nil {
 		talk.TimeDesc = sched.Desc()
 		talk.DayTag = sched.Day()
 	}
 	if props["TalkType"].Select != nil {
 		talk.Type = props["TalkType"].Select.Name
+	}
+
+	if props["Section"].Select != nil {
+		talk.Section = props["Section"].Select.Name
 	}
 
 	return talk
@@ -138,6 +136,46 @@ func ListBerlinSpeakers(n *types.Notion) ([]*types.Speaker, error) {
 	}
 
 	return speakers, nil
+}
+
+func ListTalks(n *types.Notion) ([]*types.Talk, error) {
+	var talks []*types.Talk
+
+	hasMore := true;
+	nextCursor := "";
+	for hasMore {
+		var err error
+		var pages []*notion.Page
+
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
+			n.Config.TalksDb, notion.QueryDatabaseParam{
+				StartCursor: nextCursor,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+		for _, page := range pages {
+			talk := parseTalk(page.ID, page.Properties)
+			talks = append(talks, talk)
+		}
+	}
+
+	return talks, nil
+}
+
+func GetTalksFor(n *types.Notion, event string) ([]*types.Talk, error) {
+	talks, err := ListTalks(n)
+	if err != nil {
+		return nil, err
+	}
+	var filtered []*types.Talk
+	for _, talk := range talks {
+		if talk.Event == event {
+			filtered = append(filtered, talk)	
+		}
+	}
+	return filtered, nil
 }
 
 func CheckIn(n *types.Notion, ticket string) (string, bool, error) {

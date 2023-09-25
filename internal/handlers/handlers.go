@@ -44,7 +44,7 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["index.tmpl"] = index
 
-	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/berlin_nav.tmpl")
+	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/berlin_nav.tmpl", "templates/session.tmpl")
 	if err != nil {
 		return err
 	}
@@ -52,11 +52,11 @@ func loadTemplates(app *config.AppContext) error {
 
 	sched, err := template.ParseFiles("templates/sched.tmpl",
 		"templates/sched_desc.tmpl",
-		"templates/nav.tmpl")
+		"templates/berlin_nav.tmpl")
 	if err != nil {
 		return err
 	}
-	app.TemplateCache["sched.tmpl"] = sched
+	app.TemplateCache["berlin_talks.tmpl"] = sched
 
 	ticket, err := template.New("ticket.tmpl").Funcs(template.FuncMap{
 		"safesrc": func(s string) template.HTMLAttr {
@@ -116,6 +116,10 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
 		Berlin(w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/berlin23/talks", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		BerlinTalks(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -199,26 +203,56 @@ type HomePage struct {
 }
 
 type BerlinHome struct {
-	Speakers []*types.Speaker
+	Talks []*types.Talk
+	Buckets map[string]sessionTime
 }
 
 func Berlin(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	// Define the data to be rendered in the template
 	tmpl := ctx.TemplateCache["berlin.tmpl"]
 
-	speakers, err := getters.ListBerlinSpeakers(ctx.Notion)
+	var talks talkTime
+	talks, err := getters.GetTalksFor(ctx.Notion, "berlin23")
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/berlin list speakers failed ! %s\n", err.Error())
+		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
 		return
 	}
 
+	buckets, err  := bucketTalks(talks)
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to bucket talks from Notion!! %s\n", err.Error())
+		return
+	}
 	err = tmpl.ExecuteTemplate(w, "berlin.tmpl", &BerlinHome{
-		Speakers: speakers,
+		Talks: talks,
+		Buckets: buckets,
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/ ExecuteTemplate failed ! %s\n", err.Error())
+		ctx.Err.Printf("/berlin23 ExecuteTemplate failed ! %s\n", err.Error())
+		return
+	}
+}
+
+func BerlinTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	tmpl := ctx.TemplateCache["berlin_talks.tmpl"]
+
+	var talks talkTime
+	talks, err := getters.GetTalksFor(ctx.Notion, "berlin23")
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
+		return
+	}
+
+	sort.Sort(talks)
+	err = tmpl.ExecuteTemplate(w, "sched.tmpl", &BerlinHome{
+		Talks: talks,
+	})
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/berlin/talks ExecuteTemplate failed ! %s\n", err.Error())
 		return
 	}
 }
@@ -287,7 +321,9 @@ type Session struct {
 	Speaker string
 	Company string
 	Twitter string
+	Website string
 	Photo string
+	TalkPhoto string
 	Sched *types.Times
 	StartTime string
 	Len     string
@@ -302,8 +338,10 @@ func TalkToSession(talk *types.Talk) *Session {
 		Name: talk.Name,
 		Speaker: talk.BadgeName,
 		Twitter: talk.Twitter,
+		Website: talk.Website,
 		Company: talk.Company,
 		Photo: talk.Photo,
+		TalkPhoto: talk.Clipart,
 		Sched: talk.Sched,
 		Type: talk.Type,
 		Venue: strings.ToUpper(talk.Venue),
@@ -314,11 +352,6 @@ func TalkToSession(talk *types.Talk) *Session {
 		sesh.Len = talk.Sched.LenStr()
 		sesh.StartTime = talk.Sched.StartTime()
 		sesh.DayTag = talk.Sched.Day()
-	}
-
-	/* Hard over-ride for the special days */
-	if sesh.Type == "round-robin" {
-		sesh.Len = "1h"
 	}
 
 	return sesh
@@ -357,106 +390,20 @@ func (p talkTime) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
 
-func listCutoffs() ([6]time.Time, error) {
-	var cutoffs [6]time.Time
-
-	cst, err := time.LoadLocation("America/Chicago")
-	if err != nil {
-		return cutoffs, err
-	}
-
-	cutoffs[0] = time.Date(2023, time.April, 29, 10, 25, 0, 0, cst)
-	cutoffs[1] = time.Date(2023, time.April, 29, 11, 55, 0, 0, cst)
-	cutoffs[2] = time.Date(2023, time.April, 29, 14, 55, 0, 0, cst)
-	cutoffs[3] = time.Date(2023, time.April, 29, 15, 55, 0, 0, cst)
-	cutoffs[4] = time.Date(2023, time.April, 29, 16, 25, 0, 0, cst)
-	cutoffs[5] = time.Date(2023, time.April, 29, 17, 25, 0, 0, cst)
-	return cutoffs, nil
-}
-
-func listSundaySessions(talks talkTime) ([]sessionTime, error) {
-	var cutoffs [2]time.Time
-
-	cst, err := time.LoadLocation("America/Chicago")
-	if err != nil {
-		return nil, err
-	}
-
-	/* Before + After Lunch sessions */
-	cutoffs[0] = time.Date(2023, time.April, 30, 11, 55, 0, 0, cst)
-	cutoffs[1] = time.Date(2023, time.April, 30, 16, 55, 0, 0, cst)
-
+func bucketTalks(talks talkTime) (map[string]sessionTime, error) {
 	sort.Sort(talks)
 
-	sessions := make([]sessionTime, len(cutoffs))
-	for i, _:= range sessions {
-		sessions[i] = make(sessionTime, 0)
-	}
+	sessions := make(map[string]sessionTime)
 	for _, talk := range talks {
-		if talk.DayTag != "Sunday" {
-			continue
+		session := TalkToSession(talk)
+		section, ok := sessions[talk.Section]
+		if !ok {
+			section = make(sessionTime, 0)
 		}
-		for i, cutoff := range cutoffs {
-			if talk.Sched.Start.Before(cutoff) {
-				session := TalkToSession(talk)
-				sessions[i] = append(sessions[i], session)
-				break
-			}
-		}
+		section = append(section, session)
+		sessions[talk.Section] = section
 	}
 	return sessions, nil
-}
-
-func listSaturdaySessions(talks talkTime) ([]sessionTime, error) {
-	cutoffs, err := listCutoffs()
-	if err != nil {
-		return nil, err
-	}
-
-	sort.Sort(talks)
-
-	sessions := make([]sessionTime, len(cutoffs))
-	for i, _:= range sessions {
-		sessions[i] = make(sessionTime, 0)
-	}
-	for _, talk := range talks {
-		if talk.DayTag != "Saturday" {
-			continue
-		}
-		for i, cutoff := range cutoffs {
-			if talk.Sched.Start.Before(cutoff) {
-				session := TalkToSession(talk)
-				sessions[i] = append(sessions[i], session)
-				break
-			}
-		}
-	}
-	return sessions, nil
-}
-
-func listSaturdayTalks(talks talkTime) ([]talkTime, error) {
-	cutoffs, err := listCutoffs()
-	if err != nil {
-		return nil, err
-	}
-	saturdays := make([]talkTime, len(cutoffs))
-	for i, _:= range saturdays {
-		saturdays[i] = make(talkTime, 0)
-	}
-
-	sort.Sort(talks)
-	for _, talk := range talks {
-		if talk.DayTag != "Saturday" {
-			continue
-		}
-		for i, cutoff := range cutoffs {
-			if talk.Sched.Start.Before(cutoff) {
-				saturdays[i] = append(saturdays[i], talk)
-				break
-			}
-		}
-	}
-	return saturdays, nil
 }
 
 type EmailTmpl struct {

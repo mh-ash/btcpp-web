@@ -43,10 +43,8 @@ type (
 	Talk struct {
 		ID string
 		Name string
-		Email string
 		Description string
 		Clipart string
-		Setup string
 		Photo string
 		Website string
 		Twitter string
@@ -58,7 +56,9 @@ type (
 		DayTag  string
 		Type    string
 		Venue   string
+		Event   string
 		AnchorTag string
+		Section string
 	}
 
 	Ticket struct {

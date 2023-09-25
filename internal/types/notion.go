@@ -9,6 +9,7 @@ type (
 		Token      string
 		BerlinTalksDb    string
 		PurchasesDb string
+		TalksDb string
 	}
 
 	Notion struct {

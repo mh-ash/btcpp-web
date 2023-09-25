@@ -7,11 +7,11 @@
   <div>
     <div class="flex items-center gap-x-4 text-xs">
     <time datetime="2020-03-16" class="text-gray-500">{{ .TimeDesc }}</time>
-    {{ if eq .Type "mixer" }}
-    <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">All-Conf Ice Breaker</span>
+    {{ if eq .Type "keynote" }}
+    <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Keynote</span>
     {{ end }}
-    {{ if eq .Type "round-robin" }}
-      <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Cohort Workshops</span>
+    {{ if eq .Type "hackathon" }}
+      <span class="relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600 hover:bg-pink-100">Hackathon</span>
     {{ end }}
     {{ if eq .Type "workshop" }}
     <span class="relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600 hover:bg-green-100">Workshop</span>
@@ -27,20 +27,22 @@
       </h3>
       <p class="mt-5 text-sm leading-6 text-gray-600">{{ .Description }}</p>
     </div>
+    {{ if ne .BadgeName "" }}
     <div class="mt-6 flex border-t border-gray-900/5 pt-6">
       <div class="relative flex items-center gap-x-4">
-	<img src="{{ .Photo }}" alt="" class="h-10 w-10 rounded-full bg-gray-50">
-	<div class="text-sm leading-6">
-	  <p class="font-semibold text-gray-900">
-	    <a href="{{ .Twitter }}" target="_blank">
-	      <span class="absolute inset-0"></span>
-	     {{ .BadgeName }}
-	    </a>
-	  </p>
-	  <p class="text-gray-600">{{ .Company }}</p>
-	</div>
+	      <img src="/static/img/speakers/{{ .Photo }}" alt="" class="h-10 w-10 rounded-full bg-gray-50" />
+	      <div class="text-sm leading-6">
+	        <p class="font-semibold text-gray-900">
+	          <a href="{{ .Twitter }}" target="_blank">
+	            <span class="absolute inset-0"></span>
+	             {{ .BadgeName }}
+	          </a>
+	        </p>
+	        <p class="text-gray-600">{{ .Company }}</p>
+	      </div>
       </div>
     </div>
+    {{ end }}
   </div>
 </article>
 {{ end }}

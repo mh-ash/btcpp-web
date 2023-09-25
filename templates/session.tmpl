@@ -1,36 +1,29 @@
 {{ define "session" }}
-<li class="flex-row py-8">
-  <div class="flex">
-    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
-     <a href="{{ .Twitter }}" target="_blank">
-     <img class="inline-block h-28 w-28 rounded-md" src="{{ .Photo }}" alt="" />
-     </a>
-    </div>
-   <div class="ml-3">
-       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
-       <a href="/talks#{{ .AnchorTag }}">{{ .Name }}</a></h4>
-       <h5 class="text-left text-lg text-gray-500">{{ .Speaker }}</h5>
-       <p class="text-left text-sm text-gray-500">{{ .Company }}</p>
-    </a>
-   </div>
-  </div>
-  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
-    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">{{ .StartTime }}</span>
-    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">{{ .Len }}</span>
-    <span class="flex-grow"></span>
-    {{ if eq .Type "mixer" }}
-    <span class="grow0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">All-Conf Ice Breaker</span>
-    {{ end }}
-    {{ if eq .Type "round-robin" }}
-      <span class="grow0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">Cohort Workshops</span>
-    {{ end }}
-    {{ if eq .Type "workshop" }}
-    <span class="grow0 relative z-10 rounded-full bg-green-50 py-1.5 px-3 font-medium text-green-600">Workshop</span>
-    {{ end }}
-    {{ if eq .Type "talk" }}
-    <span class="grow-0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">Talk</span>
-    {{ end }}
-    <span class="ml-2 lg:ml-0 grow-0 relative z-10 rounded-full bg-blue-50 py-1.5 px-3 font-medium text-blue-600">{{ .Venue }}</span> 
-  </div>
-  </li>	
+<!-- <li class="flex-row py-8"> -->
+      <article class="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pb-8 pt-80 sm:pt-48 lg:pt-80">
+        <img src="/static/img/talks/{{ .TalkPhoto }}" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover">
+        <div class="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40"></div>
+        <div class="absolute inset-0 -z-10 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+
+        <div class="flex flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+          <time datetime="2020-03-16" class="mr-8">{{ .StartTime }}</time>
+          {{ if ne .Speaker "" }}
+          <div class="-ml-4 flex items-center gap-x-4">
+            <svg viewBox="0 0 2 2" class="-ml-0.5 h-0.5 w-0.5 flex-none fill-white/50">
+              <circle cx="1" cy="1" r="1" />
+            </svg>
+            <div class="flex gap-x-2.5">
+              <img src="/static/img/speakers/{{ .Photo }}" alt="" class="h-6 w-6 flex-none rounded-full bg-white/10">
+              {{ .Speaker }}
+            </div>
+          </div>
+          {{ end }}
+        </div>
+        <a href="/berlin23/talks#{{ .AnchorTag }}" class="shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bitcoin">
+        <h3 class="mt-3 text-lg font-semibold leading-6 text-white">
+            <span class="absolute inset-0"></span>
+            {{ .Name }}
+        </h3>
+        </a>
+      </article>
 {{ end }}

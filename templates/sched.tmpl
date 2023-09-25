@@ -2,34 +2,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>bitcoin++</title>
-  <link rel="stylesheet" href="/static/css/styles.css">
+  <title>bitcoin++ berlin!</title>
+  <link rel="stylesheet" href="/static/css/mini.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/static/script.js" type="text/javascript"></script>
 </head>
 <body>
-{{ block "nav" . }} {{ end }}
+{{ block "berlin_nav" . }} {{ end }}
   <section id="talks">
     <div class="bg-white py-20 sm:py-20">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="max-w-2xl text-start">
          <h2 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl">Workshops + Talks</h2>
-         <p class="mt-2 text-base leading-7">Upcoming talks at <span class="btcpp">bitcoin++</span>, April 28+29+30</p>
-       <a href="https://docs.google.com/spreadsheets/d/1TTauIlar50I62sACCa8n69o80yZcJR1WyaafFn63kzE/edit?usp=sharing" target="_blank">
-	<span class="mt-8 flex items-center space-x-2 text-sm font-medium leading-6 text-gray-600">
-	  <span>See as spreadsheet</span>
-	  <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-	    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-	  </svg>
-	</span>
-      </a>
-	</div>
+         <p class="mt-2 text-base leading-7">Upcoming talks at <span class="btcpp">bitcoin++</span> nix-edition, Oct 6+7</p>
+	      </div>
         <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-y-20 gap-x-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
          {{ range .Talks }}
            {{ if ne .Clipart "" }}
-		{{ block "details" . }} {{ end }}
-	   {{ end }}
-	 {{ end }}
+		         {{ block "details" . }} {{ end }}
+	         {{ end }}
+	       {{ end }}
          </div>
        </div>
     </div>
