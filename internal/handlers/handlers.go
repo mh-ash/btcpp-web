@@ -776,9 +776,3 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 
 	w.WriteHeader(http.StatusOK)
 }
-
-
-func Styles(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "text/css")
-	http.ServeFile(w, r, "static/css/styles.css")
-}
