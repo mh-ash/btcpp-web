@@ -6,15 +6,16 @@
   <link rel="stylesheet" href="/static/css/mini.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/static/script.js" type="text/javascript"></script>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💊</text></svg>">
 </head>
 <body>
-{{ block "berlin_nav" . }} {{ end }}
+{{ block "conf_nav" .Conf }} {{ end }}
   <section id="talks">
     <div class="bg-white py-20 sm:py-20">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="max-w-2xl text-start">
          <h2 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-4xl">Workshops + Talks</h2>
-         <p class="mt-2 text-base leading-7">Upcoming talks at <span class="btcpp">bitcoin++</span> nix-edition, Oct 6+7</p>
+         <p class="mt-2 text-base leading-7">Upcoming talks at <span class="font-bitcoin">bitcoin++</span> nix-edition, Oct 6+7</p>
 	      </div>
         <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-y-20 gap-x-8 lg:mx-0 lg:max-w-none lg:grid-cols-2">
          {{ range .Talks }}

@@ -44,19 +44,31 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["index.tmpl"] = index
 
-	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/berlin_nav.tmpl", "templates/session.tmpl")
+	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl")
 	if err != nil {
 		return err
 	}
 	app.TemplateCache["berlin.tmpl"] = berlin
 
-	sched, err := template.ParseFiles("templates/sched.tmpl",
+	talks, err := template.ParseFiles("templates/sched.tmpl",
 		"templates/sched_desc.tmpl",
-		"templates/berlin_nav.tmpl")
+		"templates/conf_nav.tmpl")
 	if err != nil {
 		return err
 	}
-	app.TemplateCache["berlin_talks.tmpl"] = sched
+	app.TemplateCache["talks.tmpl"] = talks
+
+	buenos, err := template.ParseFiles("templates/buenos.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["buenos.tmpl"] = buenos
+
+	atx, err := template.ParseFiles("templates/atx.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["atx.tmpl"] = atx
 
 	ticket, err := template.New("ticket.tmpl").Funcs(template.FuncMap{
 		"safesrc": func(s string) template.HTMLAttr {
@@ -83,7 +95,7 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["register-text"] = registertext
 
-	checkin, err := template.ParseFiles("templates/checkin.tmpl", "templates/nav.tmpl")
+	checkin, err := template.ParseFiles("templates/checkin.tmpl", "templates/main_nav.tmpl")
 	if err != nil {
 		return err
 	}
@@ -103,9 +115,6 @@ func maybeReload(app *config.AppContext) {
 
 // Routes sets up the routes for the application
 func Routes(app *config.AppContext) (http.Handler, error) {
-	// Create a file server to serve static files from the "static" directory
-	fs := http.FileServer(http.Dir("static"))
-
 	r := mux.NewRouter()
 
 	// Set up the routes, we'll have one page per course
@@ -115,11 +124,50 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	}).Methods("GET")
 	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
-		Berlin(w, r, app)
+		conf := &Conf{ 
+			Tag: "berlin23",
+			Template: "berlin.tmpl",
+			ShowAgenda: true,
+			ShowTalks: true,
+			HasSatellites: true,
+			Color: "pills",
+		}
+		RenderConf(conf, w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/atx24", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		conf := &Conf{ 
+			Tag: "atx24",
+			Template: "atx.tmpl",
+			BTC: 159,
+			USD: 189,
+			Color: "txgreen",
+		}
+		RenderConf(conf, w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/ba24", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		conf := &Conf{ 
+			Tag: "ba24", 
+			Template: "buenos.tmpl",
+			BTC: 109,
+			USD: 139,
+			Local: 39,
+			Color: "buenos",
+		}
+		RenderConf(conf, w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/berlin23/talks", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
-		BerlinTalks(w, r, app)
+		conf := &Conf{ 
+			Tag: "berlin23", 
+			Template: "berlin.tmpl",
+			ShowAgenda: true,
+			ShowTalks: true,
+			HasSatellites: true,
+			Color: "pills",
+		}
+		RenderTalks(conf, w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -150,6 +198,8 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 		OpenNodeCallback(w, r, app)
 	}).Methods("POST")
 
+	// Create a file server to serve static files from the "static" directory
+	fs := http.FileServer(http.Dir("static"))
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
 	err := addFaviconRoutes(r)
 
@@ -192,26 +242,59 @@ func getSessionKey(p string, r *http.Request) (string, bool) {
 	return key, ok
 }
 
-type HomePage struct {
-	Talks      talkTime
-	Dee         *Session
-	RoundRobins []*Session
-	Sessions    []*Session
-	Saturday    []sessionTime
-	Sunday      []sessionTime
-	GoogleKey   string
+type Conf struct {
+	Tag string
+	Template string
+	ShowAgenda bool
+	ShowTalks bool
+	HasSatellites bool
+	USD           uint32
+	BTC           uint32
+	Local         uint32
+	Color	string
 }
 
-type BerlinHome struct {
+func (c *Conf) GetColor() string {
+	if c.Color == "" {
+		return "indigo-600"
+	}
+	return c.Color
+}
+
+type HomePage struct {}
+
+type ConfPage struct {
+	Conf *Conf
 	Talks []*types.Talk
 	Buckets map[string]sessionTime
 }
 
-func Berlin(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	tmpl := ctx.TemplateCache["berlin.tmpl"]
+func RenderTalks(conf *Conf, w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	tmpl := ctx.TemplateCache["talks.tmpl"]
 
 	var talks talkTime
-	talks, err := getters.GetTalksFor(ctx.Notion, "berlin23")
+	talks, err := getters.GetTalksFor(ctx.Notion, conf.Tag)
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
+		return
+	}
+
+	sort.Sort(talks)
+	err = tmpl.ExecuteTemplate(w, "sched.tmpl", &ConfPage{
+		Talks: talks,
+		Conf: conf,
+	})
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/%s/talks ExecuteTemplate failed ! %s\n", conf.Tag, err.Error())
+		return
+	}
+}
+
+func RenderConf(conf *Conf, w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	var talks talkTime
+	talks, err := getters.GetTalksFor(ctx.Notion, conf.Tag)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
@@ -221,38 +304,19 @@ func Berlin(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	buckets, err  := bucketTalks(talks)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to bucket talks from Notion!! %s\n", err.Error())
+		ctx.Err.Printf("Unable to bucket '%s' talks from Notion!! %s\n", conf.Tag, err.Error())
 		return
 	}
-	err = tmpl.ExecuteTemplate(w, "berlin.tmpl", &BerlinHome{
+
+	tmpl := ctx.TemplateCache[conf.Template]
+	err = tmpl.ExecuteTemplate(w, conf.Template, &ConfPage{
+		Conf: conf,
 		Talks: talks,
 		Buckets: buckets,
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/berlin23 ExecuteTemplate failed ! %s\n", err.Error())
-		return
-	}
-}
-
-func BerlinTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	tmpl := ctx.TemplateCache["berlin_talks.tmpl"]
-
-	var talks talkTime
-	talks, err := getters.GetTalksFor(ctx.Notion, "berlin23")
-	if err != nil {
-		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
-		return
-	}
-
-	sort.Sort(talks)
-	err = tmpl.ExecuteTemplate(w, "sched.tmpl", &BerlinHome{
-		Talks: talks,
-	})
-	if err != nil {
-		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/berlin/talks ExecuteTemplate failed ! %s\n", err.Error())
+		ctx.Err.Printf("/%s ExecuteTemplate failed ! %s\n", conf.Tag, err.Error())
 		return
 	}
 }

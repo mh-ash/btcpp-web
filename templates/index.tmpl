@@ -6,29 +6,56 @@
     <script src="/static/script.js" type="text/javascript"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
   </head>
 <body>
 {{ block "mainnav" . }} {{ end }}
 <section>
- <div class="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-8 sm:pt-0">
+ <div class="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-8 sm:pt-16">
     <div class="mx-auto max-w-7xl px-6 pt-4 pb-12 lg:px-8">
       <div class="mx-auto max-w-2xl lg:mx-0 flex flex-col lg:max-w-none gap-y-8 lg:gap-y-16">
-        <a href="/berlin23">
-          <div class="filter hover:hue-rotate-180">
-            <img src="/static/img/berlin_promo.png" alt="" class="aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none" />
-          </div>
-       </a>
-       <!-- <img src="/static/img/buenos_aires_btcpp.png" alt="" class="mt-10 aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none"> -->
-        <!-- <img src="/static/img/austin_btcpp_2024.png" alt="" class="mt-10 aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none"> -->
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">✨ Upcoming Events ✨</h1>
+        <article class="relative isolate flex flex-col justify-end rounded-2xl">
+          <a href="/berlin23">
+             <img src="/static/img/pill_bath.png" alt="" class="aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none hover:hue-rotate-180 filter" />
+              <div class="px-8 flex flex-col flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+                <h3 class="my-3 text-lg font-semibold leading-6 text-pills">
+                <span class="font-bitcoin">bitcoin++</span> is serving nix-pills | Berlin | Oct 6 + 7
+                </h3>
+                <a href="/berlin23" class="rounded-md bg-pills px-3.5 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-bitcoin focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pills">Attend Berlin</a>
+              </div>
+          </a>
+       </article>
+        <article class="relative isolate flex flex-col justify-end rounded-2xl">
+          <a href="/ba24">
+             <img src="/static/img/sun_lady.png" alt="" class="aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none hover:hue-rotate-180 filter" />
+              <div class="px-8 flex flex-col flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+                <h3 class="my-3 text-lg font-semibold leading-6 text-buenos">
+                <span class="font-bitcoin">bitcoin++</span> is getting paid in Bitcoin | Buenos Aires | Feb 22 - 24, 2024
+                </h3>
+                <a href="/ba24" class="rounded-md bg-buenos px-3.5 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-bitcoin focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos">Attend Buenos Aires</a>
+              </div>
+          </a>
+       </article>
+        <article class="relative isolate flex flex-col justify-end rounded-2xl">
+          <a href="/atx24">
+             <img src="/static/img/tx_rainbow.png" alt="" class="aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none hover:hue-rotate-180 filter" />
+              <div class="px-8 flex flex-col flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
+                <h3 class="my-3 text-lg font-semibold leading-6 text-txgreen">
+                <span class="font-bitcoin">bitcoin++</span> is script happy | Austin, TX | May 1 - 4, 2024
+                </h3>
+                <a href="/atx24" class="rounded-md bg-txgreen px-3.5 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-bitcoin focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-txgreen">Attend Austin, TX</a>
+              </div>
+          </a>
+       </article>
       </div>
       </div>
     </div>
-    <div class="absolute inset-x-0 bottom-0 -z-10 h-24 bg-gradient-to-t from-white sm:h-32"></div>
   </div>
 </section>
 
 <section>
-<div class="relative isolate overflow-hidden bg-gray-900 py-24 sm:py-32" id="about">
+<div class="relative isolate overflow-hidden bg-gray-900 mt-16 py-24 sm:py-32" id="about">
   <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply" alt="" class="absolute inset-0 -z-10 h-full w-full object-cover object-right md:object-center">
   <svg viewBox="0 0 1097 845" aria-hidden="true" class="hidden transform-gpu blur-3xl sm:absolute sm:-top-10 sm:right-1/2 sm:-z-10 sm:mr-10 sm:block sm:w-[68.5625rem]">
     <path fill="url(#10724532-9d81-43d2-bb94-866e98dd6e42)" fill-opacity=".2" d="M301.174 646.641 193.541 844.786 0 546.172l301.174 100.469 193.845-356.855c1.241 164.891 42.802 431.935 199.124 180.978 195.402-313.696 143.295-588.18 284.729-419.266 113.148 135.13 124.068 367.989 115.378 467.527L811.753 372.553l20.102 451.119-530.681-177.031Z" />
@@ -50,10 +77,10 @@
   </svg>
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl lg:mx-0">
-      <h2 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">About bitcoin++</h2>
-      <p class="mt-6 text-lg leading-8 text-gray-300">Bitcoin++ is a developer-focused conference series. We place a heavy emphasis on long form lectures and workshops, with smaller more-focused audiences who are excited to get deeper into the cutting edge of bitcoin tech.</p>
+      <h2 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">About <span class="font-bitcoin">bitcoin++</span></h2>
+      <p class="mt-6 text-lg leading-8 text-gray-300"><span class="font-bitcoin">bitcoin++</span> is a developer-focused conference series. We place a heavy emphasis on long form lectures and workshops, with smaller more-focused audiences who are excited to get deeper into the cutting edge of bitcoin tech.</p>
  <p class="mt-6 text-lg leading-8 text-gray-300">Our upcoming conferences will take place at various locations around the globe; we’ve invited a range of experts, educators, and builders across the bitcoin tech ecosystem to talk about their projects and on-board devs + users.</p>
-<p class="mt-6 text-lg leading-8 text-gray-300">bitcoin++ is proudly put on by <a href="https://base58.school" target="_blank">Base58⛓🔓</a>, the premier bitcoin protocol academy.</p>
+<p class="mt-6 text-lg leading-8 text-gray-300"><span class="font-bitcoin">bitcoin++</span> is proudly put on by <a href="https://base58.school" target="_blank">Base58⛓🔓</a>, the premier bitcoin protocol academy.</p>
 </p>
     </div>
     <div class="mx-auto mt-10 max-w-2xl lg:mx-0 lg:max-w-none">

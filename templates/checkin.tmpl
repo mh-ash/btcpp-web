@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="/static/css/mini.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="/static/script.js" type="text/javascript"></script>
+  <!-- FIXME: Show emoji that maps to the conf you're checking in for? -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
 </head>
 {{ if eq .TicketType "sponsor" }}
 <body class="h-full bg-lime-300">
@@ -25,7 +27,7 @@
   {{ end }}
     <body class="h-full bg-red-500">
 {{ end }}
-{{ block "nav" . }} {{ end }}
+{{ block "mainnav" . }} {{ end }}
 <!-- can i get tailwind to pick up these colors? -->
   <section id="check-in">
     <div class="flex flex-col" >
