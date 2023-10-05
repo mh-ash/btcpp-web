@@ -112,32 +112,6 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 	return talk
 }
 
-func ListBerlinSpeakers(n *types.Notion) ([]*types.Speaker, error) {
-	var speakers []*types.Speaker
-
-	hasMore := true;
-	nextCursor := "";
-	for hasMore {
-		var err error
-		var pages []*notion.Page
-
-		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
-			n.Config.BerlinTalksDb, notion.QueryDatabaseParam{
-				StartCursor: nextCursor,
-		})
-
-		if err != nil {
-			return nil, err
-		}
-		for _, page := range pages {
-			speaker := parseSpeaker(page.ID, page.Properties)
-			speakers = append(speakers, speaker)
-		}
-	}
-
-	return speakers, nil
-}
-
 func ListTalks(n *types.Notion) ([]*types.Talk, error) {
 	var talks []*types.Talk
 

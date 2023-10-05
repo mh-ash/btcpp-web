@@ -6,10 +6,10 @@ import (
 
 type (
 	NotionConfig struct {
-		Token      string
-		BerlinTalksDb    string
+		Token       string
+		EmailDb     string
 		PurchasesDb string
-		TalksDb string
+		TalksDb     string
 	}
 
 	Notion struct {

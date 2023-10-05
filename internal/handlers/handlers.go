@@ -261,52 +261,6 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 	// Define the data to be rendered in the template
 	tmpl := ctx.TemplateCache["index.tmpl"]
-	/*
-	var talks talkTime
-	talks, err := getters.ListTalks(ctx.Notion)
-	if err != nil {
-		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
-		return
-	}
-
-	sort.Sort(talks)
-
-	var sessions []*Session
-	var roundRobins []*Session
-	var dee *Session
-	for _, talk := range talks {
-		if talk.Sched == nil {
-			continue
-		}
-		session := TalkToSession(talk)
-
-		if session.Type == "round-robin" {
-			roundRobins = append(roundRobins, session)
-			continue
-		} else if session.Type == "mixer" {
-			dee = session
-			continue
-		}
-
-		sessions = append(sessions, session)
-	}
-
-	// Render the template with the data
-	saturday, err := listSaturdaySessions(talks)
-	if err != nil {
-		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/ failed to build Saturdays! %s\n", err.Error())
-		return
-	}
-
-	sunday, err := listSundaySessions(talks)
-	if err != nil {
-		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/ failed to build Sundays ! %s\n", err.Error())
-		return
-	}
-	*/
 
 	err := tmpl.ExecuteTemplate(w, "index.tmpl", &HomePage{})
 	if err != nil {

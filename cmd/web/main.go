@@ -50,7 +50,6 @@ func loadConfig() *types.EnvConfig {
 		config.RegistryPin = os.Getenv("REGISTRY_PIN")
 		config.Notion = types.NotionConfig{
 			Token: os.Getenv("NOTION_TOKEN"),
-			BerlinTalksDb: os.Getenv("NOTION_BERLIN_TALKS_DB"),
 			PurchasesDb: os.Getenv("NOTION_PURCHASES_DB"),
 			TalksDb: os.Getenv("NOTION_TALKS_DB"),
 		}
