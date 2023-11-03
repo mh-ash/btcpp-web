@@ -112,6 +112,110 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 	return talk
 }
 
+func parseConf(pageID string, props map[string]notion.PropertyValue) *types.Conf {
+	conf := &types.Conf{
+		Ref: pageID,
+		Tag: parseRichText("Name", props),
+		Template: parseRichText("Template", props),
+		ShowAgenda: props["Show Agenda"].Checkbox,
+		ShowTalks: props["Show Talks"].Checkbox,
+		HasSatellites: props["Has Satellites"].Checkbox,
+	}
+
+	if props["Color"].Select != nil {
+		conf.Color = props["Color"].Select.Name
+	}
+
+	return conf
+}
+
+func parseConfTicket(pageID string, props map[string]notion.PropertyValue) *types.ConfTicket {
+	ticket := &types.ConfTicket {
+		ConfRef: props["Conf"].Relation[0].ID,
+		Tier: parseRichText("Tier", props),
+		Local: uint(props["Local"].Number),
+		BTC: uint(props["BTC"].Number),
+		USD: uint(props["USD"].Number),
+		Max: uint(props["Max"].Number),
+	}
+
+	if props["Expires"].Date != nil {
+		ticket.Expires = &types.Times{
+			Start: props["Expires"].Date.Start,
+		}
+	}
+
+	return ticket
+}
+
+func ListConfTickets(n *types.Notion) ([]*types.ConfTicket, error) {
+	var confTix []*types.ConfTicket
+
+	hasMore := true;
+	nextCursor := "";
+	for hasMore {
+		var err error
+		var pages []*notion.Page
+
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
+			n.Config.ConfsTixDb, notion.QueryDatabaseParam{
+				StartCursor: nextCursor,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+		for _, page := range pages {
+			tix := parseConfTicket(page.ID, page.Properties)
+			confTix = append(confTix, tix)
+		}
+	}
+
+	return confTix, nil
+}
+
+/* Grabs the conferences + their tickets buckets */
+func ListConferences(n *types.Notion) ([]*types.Conf, error) {
+	var confs []*types.Conf
+
+	hasMore := true;
+	nextCursor := "";
+	for hasMore {
+		var err error
+		var pages []*notion.Page
+
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
+			n.Config.ConfsDb, notion.QueryDatabaseParam{
+				StartCursor: nextCursor,
+		})
+
+		if err != nil {
+			return nil, err
+		}
+		for _, page := range pages {
+			conf := parseConf(page.ID, page.Properties)
+			confs = append(confs, conf)
+		}
+	}
+
+	confTix, err := ListConfTickets(n)
+	if err != nil {
+		return nil, err
+	}
+
+	/* Add conf tixs to confs */
+	for _, tix := range confTix {
+		for _, conf := range confs {
+			if conf.Ref == tix.ConfRef {
+				conf.Tickets = append(conf.Tickets, tix)
+				break
+			}
+		}
+	}
+
+	return confs, nil
+}
+
 func ListTalks(n *types.Notion) ([]*types.Talk, error) {
 	var talks []*types.Talk
 
@@ -198,11 +302,41 @@ func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
 func parseRegistration(props map[string]notion.PropertyValue) *types.Registration {
 	regis := &types.Registration{
 		RefID: parseRichText("RefID", props),
+		ConfRef: parseRichText("conf", props),
 		Type:  props["Type"].Select.Name,
 		Email: props["Email"].Email,
 		ItemBought: parseRichText("Item Bought", props),
 	}
 	return regis
+}
+
+func SoldTixCount(n *types.Notion, confRef string) (uint, error) {
+	var regisCount uint
+
+	hasMore := true;
+	nextCursor := "";
+	db := n.Config.PurchasesDb
+	for hasMore {
+		var err error
+		var pages []*notion.Page
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(), db,
+		notion.QueryDatabaseParam{
+			Filter: &notion.Filter{
+				Property: "conf",
+				Relation: &notion.RelationFilterCondition{
+					Contains: confRef,
+				},
+			},
+			StartCursor: nextCursor,
+		})
+		if err != nil {
+			return 0, err
+		}
+
+		regisCount += uint(len(pages))
+	}
+
+	return regisCount, nil
 }
 
 func fetchRegistrations(ctx *config.AppContext) ([]*types.Registration, error) {

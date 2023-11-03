@@ -12,6 +12,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/base58btc/btcpp-web/internal/handlers"
+	"github.com/base58btc/btcpp-web/external/getters"
 	"github.com/base58btc/btcpp-web/internal/types"
 )
 
@@ -52,6 +53,8 @@ func loadConfig() *types.EnvConfig {
 			Token: os.Getenv("NOTION_TOKEN"),
 			PurchasesDb: os.Getenv("NOTION_PURCHASES_DB"),
 			TalksDb: os.Getenv("NOTION_TALKS_DB"),
+			ConfsDb: os.Getenv("NOTION_CONFS_DB"),
+			ConfsTixDb: os.Getenv("NOTION_CONFSTIX_DB"),
 		}
 		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
 	}
@@ -79,8 +82,14 @@ func main() {
 		log.Fatal(err)
 	}
 
+	/* Load up conference info */
+	confs, err := getters.ListConferences(app.Notion)
+	if err != nil {
+		app.Err.Fatal(err)
+	}
+
 	/* Set up Routes + Templates */
-	routes, err := handlers.Routes(&app)
+	routes, err := handlers.Routes(&app, confs)
 	if err != nil {
 		app.Err.Fatal(err)
 	}

@@ -10,6 +10,8 @@ type (
 		EmailDb     string
 		PurchasesDb string
 		TalksDb     string
+		ConfsDb     string
+		ConfsTixDb  string
 	}
 
 	Notion struct {

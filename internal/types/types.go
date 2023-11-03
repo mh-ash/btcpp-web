@@ -31,6 +31,28 @@ type (
 		Key string
 	}
 
+	Conf struct {
+		Ref string
+		Tag string
+		Template string
+		ShowAgenda bool
+		ShowTalks bool
+		HasSatellites bool
+		Color	string
+		Tickets []*ConfTicket
+	}
+
+	ConfTicket struct {
+		ConfRef string
+		Tier string
+		Local uint	
+		BTC uint
+		USD uint
+		Expires *Times
+		Max uint
+	}
+	ConfTickets []*ConfTicket
+
 	Speaker struct {
 		Name string
 		Desc string
@@ -73,6 +95,7 @@ type (
 
 	Registration struct {
 		RefID string
+		ConfRef string
 		Type string
 		Email string
 		ItemBought string
@@ -135,6 +158,11 @@ func (t *Times) Desc() string {
 	return t.Start.Format("Mon. Jan 2, 2006 @ 3:04 pm")
 }
 
+func (t *Times) DateDesc() string {
+	// Apr 29, 2020
+	return t.Start.Format("Jan 2, 2006")
+}
+
 func (t *Times) StartTime() string {
 	// 10 am
 	return fmt.Sprintf("%s - %s", t.Start.Format("3:04 pm"), t.End.Format("3:04 pm"))
@@ -189,4 +217,25 @@ var mapEnumShirtSize = func() map[string]ShirtSize {
 func ParseShirtSize(str string) (ShirtSize, bool) {
 	ss, ok := mapEnumShirtSize[strings.ToLower(str)]
 	return ss, ok
+}
+
+func (c *Conf) GetColor() string {
+	if c.Color == "" {
+		return "indigo-600"
+	}
+	return c.Color
+}
+
+/* Functions to sort conference tickets */
+func (t ConfTickets) Len() int {
+	return len(t)
+}
+
+func (t ConfTickets) Swap(i, j int) {
+	t[i], t[j] = t[j], t[i]
+}
+
+func (s ConfTickets) Less(i, j int) bool {
+	/* Sort by time first */
+	return s[i].Expires.Start.Before(s[j].Expires.Start)
 }

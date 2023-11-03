@@ -391,14 +391,16 @@
   <div class="mx-auto max-w-7xl px-6 text-center lg:px-8">
     <div class="mx-auto max-w-2xl">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Get Your All Conference Pass</h2>
-      <p class="mt-6 text-lg leading-8 text-gray-600">Coming soon... 🙈</p>
-      <!--
-      <p class="mt-6 text-lg leading-8 text-gray-600">Early bird pricing is in effect! Get yours before prices rise Nov 15, 2023.</p>
-      -->
+      {{ if .Tix }}
+      <p class="mt-6 text-xl leading-8 text-gray-600">Next ticket hike {{ .Tix.Expires.DateDesc }}; <span class="text-buenos font-bold">{{ .TixLeft }}</span> left at this price!</p>
+      {{ else }}
+      <p class="mt-6 text-lg leading-8 text-gray-600">This event is sold out! 🙈</p>
+      {{ end }}
     </div>
-    <!--
   </div>
+  {{ if .Tix }}
   <div class="relative isolate bg-white pb-24 px-6 sm:pb-32 lg:px-16">
+    {{ if gt .Tix.Local 0 }}
     <div class="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl" aria-hidden="true">
       <svg class="mx-auto w-[72.1875rem]" viewBox="0 0 1155 678">
         <path fill="url(#083c110e-60c8-42bb-a9db-29bba74cc569)" fill-opacity=".3" d="M317.219 518.975L203.852 678 0 438.341l317.219 80.634 204.172-286.402c1.307 132.337 45.083 346.658 209.733 145.248C936.936 126.058 882.053-94.234 1031.02 41.331c119.18 108.451 130.68 295.337 121.53 375.223L855 299l21.173 362.054-558.954-142.079z" />
@@ -416,7 +418,7 @@
        <div>
         <h3 id="tier-fiat" class="text-base font-semibold leading-7 text-buenos">Locals Only</h3>
         <p class="mt-4 flex items-baseline gap-x-2">
-          <span class="text-3xl font-bold tracking-tight text-gray-900">${{ .Conf.Local }} USD</span>
+          <span class="text-3xl font-bold tracking-tight text-gray-900">${{ .Tix.Local }} USD</span>
           <span class="text-base text-gray-500">/ticket</span>
         </p>
         <p class="mt-6 text-base leading-7 text-gray-600">Are you a local Argentinian? This ticket tier is for you! Proof of Residency will be required at the door.</p>
@@ -456,11 +458,12 @@
         </div>
         <a href="https://buy.stripe.com/fZeeXx3CId3Ranm7ss" aria-describedby="tier-fiat" class="mt-8 block rounded-md py-2.5 px-3.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos sm:mt-10 text-buenos ring-1 ring-inset ring-buenos hover:ring-buenos">Checkout</a>
     </div>
+    {{ end }}
     <div class="flex flex-col justify-between rounded-3xl bg-white p-8 ring-1 ring-gray-200 xl:p-10 lg:z-10 lg:rounded-b-none">
       <div>
         <h3 id="tier-bitcoin" class="text-base font-semibold leading-7 text-bitcoin">Pay with Bitcoin</h3>
         <p class="mt-4 flex items-baseline gap-x-2">
-          <span class="text-3xl font-bold tracking-tight text-gray-900">${{ .Conf.BTC }} USD</span>
+          <span class="text-3xl font-bold tracking-tight text-gray-900">${{ .Tix.BTC }} USD</span>
           <span class="text-base text-gray-500">/ticket</span>
         </p>
         <p class="mt-6 text-base leading-7 text-gray-600">Spend bitcoin, save money.</p>
@@ -521,7 +524,7 @@
       <div>
           <h3 id="tier-fiat" class="text-base font-semibold leading-7 text-buenos">Pay with Fiat</h3>
           <p class="mt-4 flex items-baseline gap-x-2">
-            <span class="text-3xl font-bold tracking-tight text-gray-900">${{ .Conf.USD }} USD</span>
+            <span class="text-3xl font-bold tracking-tight text-gray-900">${{ .Tix.USD }} USD</span>
             <span class="text-base text-gray-500">/ticket</span>
           </p>
           <p class="mt-6 text-base leading-7 text-gray-600">Get your <span class="font-bitcoin">bitcoin++</span> ticket using Stripe checkout</p>
@@ -567,7 +570,7 @@
         </div>
         <a href="https://buy.stripe.com/cN27v5ehm0h52UU3cd" aria-describedby="tier-fiat" class="mt-8 block rounded-md py-2.5 px-3.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos sm:mt-10 text-buenos ring-1 ring-inset ring-buenos hover:ring-buenos">Checkout</a>
       </div>
-    -->
+    {{ end }}
     </div> 
 </section>
 <section id="sponsors">

@@ -27,6 +27,9 @@ import (
 	"github.com/stripe/stripe-go/v74/webhook"
 )
 
+/* Static variable for conferences */
+var allConfs []*types.Conf
+
 func MiniCss() string {
 	css, err := ioutil.ReadFile("static/css/mini.css")
 	if err != nil {
@@ -113,8 +116,44 @@ func maybeReload(app *config.AppContext) {
 	}
 }
 
+func findConf(r *http.Request) (*types.Conf, error) {
+	params := mux.Vars(r)
+	confTag := params["conf"]
+
+	for _, conf := range allConfs {
+		if conf.Tag == confTag {
+			return conf, nil
+		}
+	}
+
+	return nil, fmt.Errorf("conf '%s' not found", confTag)
+}
+
+/* Find ticket where current sold + date > inputs */
+func findCurrTix(conf *types.Conf, soldCount uint) (*types.ConfTicket) {
+	now := time.Now()
+	/* Sort the tickets! */
+	tixs := types.ConfTickets(conf.Tickets)
+	sort.Sort(&tixs)
+	for _, tix := range tixs {
+		if tix.Expires.Start.Before(now) {
+			continue
+		}
+		if tix.Max < soldCount {
+			continue
+		}
+		return tix
+	}
+
+	/* No tix available! */
+	return nil
+}
+
 // Routes sets up the routes for the application
-func Routes(app *config.AppContext) (http.Handler, error) {
+func Routes(app *config.AppContext, confs []*types.Conf) (http.Handler, error) {
+	/* Set all confs! */
+	allConfs = confs
+
 	r := mux.NewRouter()
 
 	// Set up the routes, we'll have one page per course
@@ -122,56 +161,35 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 		maybeReload(app)
 		Home(w, r, app)
 	}).Methods("GET")
+	/* Legacy redirects! */
 	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
-		maybeReload(app)
-		conf := &Conf{ 
-			Tag: "berlin23",
-			Template: "berlin.tmpl",
-			ShowAgenda: true,
-			ShowTalks: true,
-			HasSatellites: true,
-			Color: "pills",
-		}
-		RenderConf(conf, w, r, app)
+		http.Redirect(w, r, "/conf/berlin23", http.StatusSeeOther)
 	}).Methods("GET")
 	r.HandleFunc("/atx24", func(w http.ResponseWriter, r *http.Request) {
-		maybeReload(app)
-		conf := &Conf{ 
-			Tag: "atx24",
-			Template: "atx.tmpl",
-			BTC: 159,
-			USD: 189,
-			Color: "txgreen",
-		}
-		RenderConf(conf, w, r, app)
+		http.Redirect(w, r, "/conf/atx24", http.StatusSeeOther)
 	}).Methods("GET")
 	r.HandleFunc("/ba24", func(w http.ResponseWriter, r *http.Request) {
-		maybeReload(app)
-		conf := &Conf{ 
-			Tag: "ba24", 
-			Template: "buenos.tmpl",
-			BTC: 109,
-			USD: 139,
-			Local: 39,
-			Color: "buenos",
-		}
-		RenderConf(conf, w, r, app)
+		http.Redirect(w, r, "/conf/ba24", http.StatusSeeOther)
 	}).Methods("GET")
 	r.HandleFunc("/berlin23/talks", func(w http.ResponseWriter, r *http.Request) {
-		maybeReload(app)
-		conf := &Conf{ 
-			Tag: "berlin23", 
-			Template: "berlin.tmpl",
-			ShowAgenda: true,
-			ShowTalks: true,
-			HasSatellites: true,
-			Color: "pills",
-		}
-		RenderTalks(conf, w, r, app)
+		http.Redirect(w, r, "/conf/berlin23/talks", http.StatusSeeOther)
 	}).Methods("GET")
 	r.HandleFunc("/talks", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}).Methods("GET")
+
+	r.HandleFunc("/conf/{conf}", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		RenderConf(w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/conf/{conf}/talks", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		RenderTalks(w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/conf-reload", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		ReloadConf(w, r, app)
+	}).Methods("GET", "POST")
 	r.HandleFunc("/check-in/{ticket}", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
 		CheckIn(w, r, app)
@@ -242,38 +260,98 @@ func getSessionKey(p string, r *http.Request) (string, bool) {
 	return key, ok
 }
 
-type Conf struct {
-	Tag string
-	Template string
-	ShowAgenda bool
-	ShowTalks bool
-	HasSatellites bool
-	USD           uint32
-	BTC           uint32
-	Local         uint32
-	Color	string
-}
-
-func (c *Conf) GetColor() string {
-	if c.Color == "" {
-		return "indigo-600"
-	}
-	return c.Color
-}
-
 type HomePage struct {}
 
 type ConfPage struct {
-	Conf *Conf
+	Conf *types.Conf
+	Tix *types.ConfTicket
+	Sold uint
+	TixLeft uint
 	Talks []*types.Talk
 	Buckets map[string]sessionTime
 }
 
-func RenderTalks(conf *Conf, w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	/* Check for logged in */
+	pin := ctx.Session.GetString(r.Context(), "pin")
+	tmpl := ctx.TemplateCache["checkin.tmpl"]
+
+	if pin == "" {
+		w.Header().Set("x-missing-field", "pin")
+		w.WriteHeader(http.StatusBadRequest)
+		err := tmpl.ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
+			NeedsPin: true,
+		})
+		if err != nil {
+			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+		}
+		return
+	}
+
+	if pin != ctx.Env.RegistryPin {
+		w.WriteHeader(http.StatusUnauthorized)
+		err := tmpl.ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
+			Msg: "Wrong registration PIN",
+		})
+		if err != nil {
+			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+			ctx.Err.Printf("/conf-reload ExecuteTemplate failed ! %s\n", err.Error())
+		}
+		return
+	}
+
+	confs, err := getters.ListConferences(ctx.Notion)
+	if err != nil {
+		http.Error(w, "Unable to load confereneces, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/conf-reload conf load failed ! %s\n", err.Error())
+	}
+
+	/* We redirect to home on success */
+	allConfs = confs
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func ReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	switch r.Method {
+	case http.MethodGet:
+		GetReloadConf(w, r, ctx)
+		return
+	case http.MethodPost:
+		r.ParseForm()
+		pin := r.Form.Get("pin")
+		if pin != ctx.Env.RegistryPin {
+			w.WriteHeader(http.StatusBadRequest)
+			err := ctx.TemplateCache["checkin.tmpl"].ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
+				NeedsPin: true,
+				Msg: "Wrong pin",
+			})
+			if err != nil {
+				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+				fmt.Printf("/conf-reload ExecuteTemplate failed ! %s\n", err.Error())
+			}
+			ctx.Err.Printf("/conf-reload wrong pin submitted! %s\n", pin)
+			return
+		}
+
+		/* Set pin?? */
+		ctx.Session.Put(r.Context(), "pin", pin)
+		GetReloadConf(w, r, ctx)
+	}
+}
+
+func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	tmpl := ctx.TemplateCache["talks.tmpl"]
 
+	conf, err := findConf(r)
+	if err != nil {
+		http.Error(w, "Unable to find page", 404)
+		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
+		return
+	}
+
 	var talks talkTime
-	talks, err := getters.GetTalksFor(ctx.Notion, conf.Tag)
+	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
@@ -292,25 +370,49 @@ func RenderTalks(conf *Conf, w http.ResponseWriter, r *http.Request, ctx *config
 	}
 }
 
-func RenderConf(conf *Conf, w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	conf, err := findConf(r)
+	if err != nil {
+		http.Error(w, "Unable to find page", 404)
+		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
+		return
+	}
+
 	var talks talkTime
-	talks, err := getters.GetTalksFor(ctx.Notion, conf.Tag)
+	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
 		return
 	}
 
-	buckets, err  := bucketTalks(talks)
+	soldCount, err := getters.SoldTixCount(ctx.Notion, conf.Ref)
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to fetch ticket count from Notion!! %s\n", err.Error())
+		return
+	}
+
+	buckets, err := bucketTalks(talks)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("Unable to bucket '%s' talks from Notion!! %s\n", conf.Tag, err.Error())
 		return
 	}
 
+	currTix := findCurrTix(conf, soldCount)
+	var tixLeft uint
+	if currTix == nil {
+		tixLeft = 0
+	} else {
+		tixLeft = currTix.Max - soldCount
+	}
 	tmpl := ctx.TemplateCache[conf.Template]
 	err = tmpl.ExecuteTemplate(w, conf.Template, &ConfPage{
 		Conf: conf,
+		Tix: currTix,
+		Sold: soldCount,
+		TixLeft: tixLeft,
 		Talks: talks,
 		Buckets: buckets,
 	})
