@@ -356,9 +356,6 @@ func fetchRegistrations(ctx *config.AppContext) ([]*types.Registration, error) {
 			return nil, err
 		}
 
-		ctx.Infos.Println("Got back pages:", len(pages))
-		ctx.Infos.Println("Has more pages?", hasMore)
-
 		for _, page := range pages {
 			r := parseRegistration(page.Properties)
 			regis = append(regis, r)
