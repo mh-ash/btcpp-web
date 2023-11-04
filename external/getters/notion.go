@@ -116,6 +116,7 @@ func parseConf(pageID string, props map[string]notion.PropertyValue) *types.Conf
 	conf := &types.Conf{
 		Ref: pageID,
 		Tag: parseRichText("Name", props),
+		Desc: parseRichText("Desc", props),
 		Template: parseRichText("Template", props),
 		ShowAgenda: props["Show Agenda"].Checkbox,
 		ShowTalks: props["Show Talks"].Checkbox,
@@ -131,6 +132,7 @@ func parseConf(pageID string, props map[string]notion.PropertyValue) *types.Conf
 
 func parseConfTicket(pageID string, props map[string]notion.PropertyValue) *types.ConfTicket {
 	ticket := &types.ConfTicket {
+		ID: pageID,
 		ConfRef: props["Conf"].Relation[0].ID,
 		Tier: parseRichText("Tier", props),
 		Local: uint(props["Local"].Number),

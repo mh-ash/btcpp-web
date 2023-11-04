@@ -34,6 +34,7 @@ type (
 	Conf struct {
 		Ref string
 		Tag string
+		Desc string
 		Template string
 		ShowAgenda bool
 		ShowTalks bool
@@ -43,6 +44,7 @@ type (
 	}
 
 	ConfTicket struct {
+		ID string
 		ConfRef string
 		Tier string
 		Local uint	
