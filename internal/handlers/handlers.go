@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+	"slices"
 	"sort"
 	"strings"
 
@@ -129,6 +130,48 @@ func findConf(r *http.Request) (*types.Conf, error) {
 	return nil, fmt.Errorf("conf '%s' not found", confTag)
 }
 
+func findTicket(tixID string) (*types.ConfTicket, *types.Conf) {
+	for _, conf := range allConfs {
+		for _, tix := range conf.Tickets {
+			if tix.ID == tixID {
+				return tix, conf
+			}
+		}
+	}
+
+	return nil, nil
+}
+
+func determineTixPrice(tixSlug string) (*types.Conf, *types.ConfTicket, uint, bool, error) {
+	
+	tixParts := strings.Split(tixSlug, "+")
+	if len(tixParts) != 3 {
+		return nil, nil, 0, false, fmt.Errorf("not enough ticket parts?? needed 3. %s", tixSlug)
+	}
+
+	tix, conf := findTicket(tixParts[0])
+	if tix == nil {
+		return nil, nil, 0, false, fmt.Errorf("Unable to find tix %s", tixParts[0])
+	}
+	tixTypeOpts := []string{ "default", "local" }
+	if !slices.Contains(tixTypeOpts, tixParts[1]) {
+		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[1], tixTypeOpts)
+	}
+	if tixParts[1] == "local" {
+		return conf, tix, tix.Local, true, nil
+	}
+
+	currencyTypeOpts := []string{ "btc", "fiat" }
+	if !slices.Contains(currencyTypeOpts, tixParts[2]) {
+		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[2], currencyTypeOpts)
+	}
+	if tixParts[2] == "btc" {
+		return conf, tix, tix.BTC, true, nil
+	}
+
+	return conf, tix, tix.USD, false, nil
+}
+
 /* Find ticket where current sold + date > inputs */
 func findCurrTix(conf *types.Conf, soldCount uint) (*types.ConfTicket) {
 	now := time.Now()
@@ -178,6 +221,10 @@ func Routes(app *config.AppContext, confs []*types.Conf) (http.Handler, error) {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}).Methods("GET")
 
+	r.HandleFunc("/conf/{conf}/success", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		RenderConfSuccess(w, r, app)
+	}).Methods("GET")
 	r.HandleFunc("/conf/{conf}", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
 		RenderConf(w, r, app)
@@ -186,6 +233,9 @@ func Routes(app *config.AppContext, confs []*types.Conf) (http.Handler, error) {
 		maybeReload(app)
 		RenderTalks(w, r, app)
 	}).Methods("GET")
+	r.HandleFunc("/tix/{tix}", func(w http.ResponseWriter, r *http.Request) {
+		HandleTixSelection(w, r, app)
+	})
 	r.HandleFunc("/conf-reload", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
 		ReloadConf(w, r, app)
@@ -368,6 +418,10 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 		ctx.Err.Printf("/%s/talks ExecuteTemplate failed ! %s\n", conf.Tag, err.Error())
 		return
 	}
+}
+
+func RenderConfSuccess(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	w.WriteHeader(http.StatusOK)
 }
 
 func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -813,6 +867,69 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 	}
 	ctx.Infos.Println("Added ticket!", entry.ID)
 	w.WriteHeader(http.StatusOK)
+}
+
+func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	params := mux.Vars(r)
+	tixSlug := params["tix"]
+
+	if tixSlug == "" {
+		http.Redirect(w, r, "/conf/berlin23", http.StatusSeeOther)
+		return
+	}
+
+	conf, tix, tixPrice, processBTC, err := determineTixPrice(tixSlug)
+	if err != nil {
+		ctx.Err.Printf("/tix/%s unable to determine tix price: %s", tixSlug, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !processBTC {
+		StripeInit(w, r, ctx, conf, tix, tixPrice)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+	//return OpenNodeInit(w, r, ctx, conf, tix, tixPrice)
+}
+
+func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint) {
+
+	// FIXME: actual callback domain for website?!
+	domain := "http://localhost:8888"
+
+	priceAsCents := int64(tixPrice * 100)
+	confDesc := fmt.Sprintf("1 ticket for the %s", conf.Desc)
+	params := &stripe.CheckoutSessionParams{
+		LineItems: []*stripe.CheckoutSessionLineItemParams{
+		&stripe.CheckoutSessionLineItemParams{
+			PriceData: &stripe.CheckoutSessionLineItemPriceDataParams {
+				ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
+					Description: stripe.String(confDesc),
+					Name: stripe.String(conf.Desc),
+				},
+				UnitAmount: stripe.Int64(priceAsCents),
+				Currency: stripe.String("USD"),
+
+			},
+			Quantity: stripe.Int64(1),
+		},},
+		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL: stripe.String(domain + "/conf/" + conf.Tag + "/success"),
+		CancelURL: stripe.String(domain + "/conf/" + conf.Tag),
+		AutomaticTax: &stripe.CheckoutSessionAutomaticTaxParams{Enabled: stripe.Bool(true)},
+		AllowPromotionCodes: stripe.Bool(true),
+	}
+
+	s, err := session.New(params)
+	if err != nil {
+		ctx.Err.Printf("!!! Unable to create stripe session: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, s.URL, http.StatusSeeOther)
 }
 
 func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
