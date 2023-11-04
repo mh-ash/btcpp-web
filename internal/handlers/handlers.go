@@ -22,9 +22,9 @@ import (
 	qrcode "github.com/skip2/go-qrcode"
 	"encoding/base64"
 
-	stripe "github.com/stripe/stripe-go/v74"
-	"github.com/stripe/stripe-go/v74/checkout/session"
-	"github.com/stripe/stripe-go/v74/webhook"
+	stripe "github.com/stripe/stripe-go/v76"
+	"github.com/stripe/stripe-go/v76/checkout/session"
+	"github.com/stripe/stripe-go/v76/webhook"
 )
 
 /* Static variable for conferences */
