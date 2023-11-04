@@ -59,7 +59,6 @@ func loadConfig() *types.EnvConfig {
 		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
 	}
 
-	config.Tickets = []string { "bitcoin++ atx", "btcpp", "bitcoinery" }
 	return &config
 }
 

@@ -24,7 +24,6 @@ type (
 		SendGrid SendGridConfig
 		Google   GoogleConfig
 		Host string
-		Tickets []string
 	}
 
 	GoogleConfig struct {

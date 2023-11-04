@@ -855,12 +855,6 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 		return
 	}
 
-	if !ticketMatch(ctx.Env.Tickets, ev.Description) {
-		w.WriteHeader(http.StatusOK)
-		ctx.Infos.Printf("Not a btcpp ticket: %s", ev.Description)
-		return
-	}
-
 	/* Go get the actual event data */
 	charge, err := GetCharge(ctx, ev.ID)
 	if err != nil {

@@ -133,12 +133,15 @@ func parseConf(pageID string, props map[string]notion.PropertyValue) *types.Conf
 func parseConfTicket(pageID string, props map[string]notion.PropertyValue) *types.ConfTicket {
 	ticket := &types.ConfTicket {
 		ID: pageID,
-		ConfRef: props["Conf"].Relation[0].ID,
 		Tier: parseRichText("Tier", props),
 		Local: uint(props["Local"].Number),
 		BTC: uint(props["BTC"].Number),
 		USD: uint(props["USD"].Number),
 		Max: uint(props["Max"].Number),
+	}
+
+	if len(props["Conf"].Relation) > 0 {
+		ticket.ConfRef = props["Conf"].Relation[0].ID
 	}
 
 	if props["Expires"].Date != nil {
@@ -304,10 +307,12 @@ func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
 func parseRegistration(props map[string]notion.PropertyValue) *types.Registration {
 	regis := &types.Registration{
 		RefID: parseRichText("RefID", props),
-		ConfRef: parseRichText("conf", props),
 		Type:  props["Type"].Select.Name,
 		Email: props["Email"].Email,
 		ItemBought: parseRichText("Item Bought", props),
+	}
+	if len(props["conf"].Relation) > 0 {
+		regis.ConfRef = props["conf"].Relation[0].ID
 	}
 	return regis
 }
@@ -377,7 +382,7 @@ func ticketMatch(tickets []string, rez *types.Registration) bool {
 	return false
 }
 
-func FetchBtcppRegistrations(tickets []string, ctx *config.AppContext) ([]*types.Registration, error) {
+func FetchBtcppRegistrations(ctx *config.AppContext) ([]*types.Registration, error) {
 	var btcppres []*types.Registration
 	rezzies, err := fetchRegistrations(ctx)
 
@@ -385,13 +390,16 @@ func FetchBtcppRegistrations(tickets []string, ctx *config.AppContext) ([]*types
 		return nil, err
 	}
 
+	ctx.Infos.Printf("found %d rezzies!", len(rezzies))
 	for _, r := range rezzies {
 		if r.RefID == "" {
 			continue
 		}
-		if ticketMatch(tickets, r) {
-			btcppres = append(btcppres, r)
+		if r.ConfRef == "" {
+			continue
 		}
+
+		btcppres = append(btcppres, r)
 	}
 
 	return btcppres, nil
