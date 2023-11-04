@@ -42,7 +42,7 @@ func MiniCss() string {
 /* https://www.calhoun.io/intro-to-templates-p3-functions/ */
 func loadTemplates(app *config.AppContext) error {
 
-	index, err := template.ParseFiles("templates/index.tmpl", "templates/main_nav.tmpl")
+	index, err := template.ParseFiles("templates/index.tmpl", "templates/main_nav.tmpl", "templates/section/about.tmpl")
 	if err != nil {
 		return err
 	}
