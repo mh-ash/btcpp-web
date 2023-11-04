@@ -110,6 +110,7 @@ type (
 
 	Entry struct {
 		ID       string
+		ConfRef  string
 		Total    int64
 		Currency string
 		Created  time.Time

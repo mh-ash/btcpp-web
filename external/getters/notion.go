@@ -433,6 +433,9 @@ func AddTickets(n *types.Notion, entry *types.Entry, src string) error {
 						Name: src,
 					},
 				},
+				"conf": notion.NewRelationPropertyValue(
+					[]*notion.ObjectReference{{ID: entry.ConfRef}}...,
+				),
 				"Type": &notion.PropertyValue{
 					Type: notion.PropertySelect,
 					Select: &notion.SelectOption{

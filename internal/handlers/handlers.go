@@ -137,6 +137,15 @@ func findConf(r *http.Request) (*types.Conf, error) {
 	return nil, fmt.Errorf("conf '%s' not found", confTag)
 }
 
+func findConfByRef(confRef string) (*types.Conf) {
+	for _, conf := range allConfs {
+		if conf.Ref == confRef {
+			return conf
+		}
+	}
+	return nil
+}
+
 func findTicket(tixID string) (*types.ConfTicket, *types.Conf) {
 	for _, conf := range allConfs {
 		for _, tix := range conf.Tickets {
@@ -930,6 +939,10 @@ func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, 
 
 	priceAsCents := int64(tixPrice * 100)
 	confDesc := fmt.Sprintf("1 ticket for the %s", conf.Desc)
+	metadata := make(map[string]string)
+	metadata["conf-tag"] = conf.Tag
+	metadata["conf-ref"] = conf.Ref
+	metadata["tix-id"] = tix.ID
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 		&stripe.CheckoutSessionLineItemParams{
@@ -937,6 +950,7 @@ func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, 
 				ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
 					Description: stripe.String(confDesc),
 					Name: stripe.String(conf.Desc),
+					Metadata: metadata,
 				},
 				UnitAmount: stripe.Int64(priceAsCents),
 				Currency: stripe.String("USD"),
@@ -944,6 +958,7 @@ func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, 
 			},
 			Quantity: stripe.Int64(1),
 		},},
+		Metadata: metadata,
 		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
 		SuccessURL: stripe.String(domain + "/conf/" + conf.Tag + "/success"),
 		CancelURL: stripe.String(domain + "/conf/" + conf.Tag),
@@ -989,8 +1004,22 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 			return
 		}
 
+		confRef, ok := checkout.Metadata["conf-ref"]
+		if !ok {
+			ctx.Infos.Println("No conf-ref present")
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		conf := findConfByRef(confRef)
+		if conf == nil {
+			ctx.Err.Println("Couldn't find conf %s", confRef)
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
 		entry := types.Entry{
 			ID:       checkout.ID,
+			ConfRef:  conf.Ref,
 			Total:    checkout.AmountTotal,
 			Currency: string(checkout.Currency),
 			Created:  time.Unix(checkout.Created, 0).UTC(),
@@ -1003,9 +1032,6 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		items := session.ListLineItems(itemParams)
 		for items.Next() {
 			si := items.LineItem()
-			if !ticketMatch(ctx.Env.Tickets, si.Description) {
-				continue
-			}
 			var i int64
 			for i = 0; i < si.Quantity; i++ {
 				item := types.Item{
@@ -1013,7 +1039,6 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 					Desc:     si.Description,
 				}
 				entry.Items = append(entry.Items, item)
-				ctx.Infos.Println("got back an item:", si.Description, i)
 			}
 		}
 
@@ -1036,6 +1061,7 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		ctx.Infos.Printf("Added %d tickets!!", len(entry.Items))
 	default:
 		ctx.Infos.Printf("Unhandled event type: %s\n", event.Type)
 	}
