@@ -48,6 +48,13 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["index.tmpl"] = index
 
+	success, err := template.ParseFiles("templates/success.tmpl", "templates/main_nav.tmpl", "templates/section/about.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["success.tmpl"] = success
+
+
 	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl")
 	if err != nil {
 		return err
@@ -325,6 +332,10 @@ type ConfPage struct {
 	Buckets map[string]sessionTime
 }
 
+type SuccessPage struct {
+	Conf *types.Conf
+}
+
 func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	/* Check for logged in */
 	pin := ctx.Session.GetString(r.Context(), "pin")
@@ -425,7 +436,22 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 }
 
 func RenderConfSuccess(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	w.WriteHeader(http.StatusOK)
+	conf, err := findConf(r)
+	if err != nil {
+		http.Error(w, "Unable to find page", 404)
+		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
+		return
+	}
+
+	tmpl := ctx.TemplateCache["success.tmpl"]
+	err = tmpl.ExecuteTemplate(w, "success.tmpl", &SuccessPage{
+		Conf: conf,
+	})
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/conf/%s/success ExecuteTemplate failed ! %s\n", conf.Tag, err.Error())
+		return
+	}
 }
 
 func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
