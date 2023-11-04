@@ -62,13 +62,13 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["talks.tmpl"] = talks
 
-	buenos, err := template.ParseFiles("templates/buenos.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl")
+	buenos, err := template.ParseFiles("templates/buenos.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/btcbutton.tmpl")
 	if err != nil {
 		return err
 	}
 	app.TemplateCache["buenos.tmpl"] = buenos
 
-	atx, err := template.ParseFiles("templates/atx.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl")
+	atx, err := template.ParseFiles("templates/atx.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/btcbutton.tmpl")
 	if err != nil {
 		return err
 	}
@@ -157,18 +157,22 @@ func determineTixPrice(tixSlug string) (*types.Conf, *types.ConfTicket, uint, bo
 	if !slices.Contains(tixTypeOpts, tixParts[1]) {
 		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[1], tixTypeOpts)
 	}
-	if tixParts[1] == "local" {
-		return conf, tix, tix.Local, true, nil
-	}
+	isLocal := tixParts[1] == "local"
 
 	currencyTypeOpts := []string{ "btc", "fiat" }
 	if !slices.Contains(currencyTypeOpts, tixParts[2]) {
 		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[2], currencyTypeOpts)
 	}
 	if tixParts[2] == "btc" {
+		if isLocal {
+			return conf, tix, tix.Local, true, nil
+		}
 		return conf, tix, tix.BTC, true, nil
 	}
 
+	if isLocal {
+		return conf, tix, tix.Local, false, nil
+	}
 	return conf, tix, tix.USD, false, nil
 }
 
