@@ -439,7 +439,7 @@ func AddTickets(n *types.Notion, entry *types.Entry, src string) error {
 				"Type": &notion.PropertyValue{
 					Type: notion.PropertySelect,
 					Select: &notion.SelectOption{
-						Name: "genpop",
+						Name: item.Type,
 					},
 				},
 				"Amount Paid": &notion.PropertyValue{

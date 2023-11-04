@@ -106,6 +106,7 @@ type (
 	Item struct {
 		Total    int64
 		Desc     string
+		Type     string
 	}
 
 	Entry struct {

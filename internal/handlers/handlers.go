@@ -943,6 +943,9 @@ func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, 
 	metadata["conf-tag"] = conf.Tag
 	metadata["conf-ref"] = conf.Ref
 	metadata["tix-id"] = tix.ID
+	if tixPrice == tix.Local {
+		metadata["tix-local"] = "yes"
+	}
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 		&stripe.CheckoutSessionLineItemParams{
@@ -1029,6 +1032,14 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		itemParams := &stripe.CheckoutSessionListLineItemsParams{
 			Session: stripe.String(checkout.ID),
 		}
+
+		_, isLocal := checkout.Metadata["tix-local"]
+		var tixType string
+		if isLocal {
+			tixType = "local"
+		} else {
+			tixType = "genpop"
+		}
 		items := session.ListLineItems(itemParams)
 		for items.Next() {
 			si := items.LineItem()
@@ -1037,6 +1048,7 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 				item := types.Item{
 					Total:    si.AmountTotal,
 					Desc:     si.Description,
+					Type:     tixType,
 				}
 				entry.Items = append(entry.Items, item)
 			}
