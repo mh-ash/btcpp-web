@@ -793,7 +793,6 @@ func validHash(key, id, msgMAC string) bool {
 var decoder = schema.NewDecoder()
 
 func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-
 	err := r.ParseForm()
 	if err != nil {
 		ctx.Err.Printf("Error reading request body: %v\n", err)
@@ -812,7 +811,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 
 	/* Check the hashed order is ok */
 	if !validHash(ctx.Env.OpenNodeKey, ev.ID, ev.HashedOrder) {
-		ctx.Err.Printf("Invalid request")
+		ctx.Err.Printf("Invalid request from opennode %s %s", ev.ID, ev.HashedOrder)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
