@@ -513,7 +513,7 @@
             </li>
           </ul>
         </div>
-        <a href="/tix/{{ .Tix.ID }}+default+btc" aria-describedby="tier-bitcoin" target="_blank" class="mt-8 block rounded-md py-2.5 px-3.5 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos sm:mt-10 bg-bitcoin" style="background: #FF8A00">{{ block "btcbutton" . }}{{ end }}</a>
+        <a href="/tix/{{ .Tix.ID }}+default+btc" aria-describedby="tier-bitcoin" class="mt-8 block rounded-md py-2.5 px-3.5 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos sm:mt-10 bg-bitcoin" style="background: #FF8A00">{{ block "btcbutton" . }}{{ end }}</a>
       </div>
 
       {{ if gt .Tix.Local 0 }}
@@ -559,7 +559,7 @@
             </li>
           </ul>
         </div>
-        <a href="/tix/{{ .Tix.ID }}+local+btc" aria-describedby="tier-bitcoin" target="_blank" class="mt-8 block rounded-md py-2.5 px-3.5 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos sm:mt-10 bg-bitcoin" style="background: #FF8A00">{{ block "btcbutton" . }}{{ end }}</a>
+        <a href="/tix/{{ .Tix.ID }}+local+btc" aria-describedby="tier-bitcoin" class="mt-8 block rounded-md py-2.5 px-3.5 font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos sm:mt-10 bg-bitcoin" style="background: #FF8A00">{{ block "btcbutton" . }}{{ end }}</a>
         <a href="/tix/{{ .Tix.ID }}+local+fiat" aria-describedby="tier-fiat" class="mt-2 block rounded-md py-2.5 px-3.5 text-center text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos sm:mt-4 text-buenos ring-1 ring-inset ring-buenos hover:ring-buenos">Pay with $$</a>
       </div>
       {{ end }}

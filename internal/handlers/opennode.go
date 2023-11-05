@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"io/ioutil"
 	"github.com/base58btc/btcpp-web/internal/config"
+	"github.com/base58btc/btcpp-web/internal/types"
 )
 
 type (
@@ -24,12 +25,7 @@ type (
 		FiatVal float64 `json:"fiat_value"`
 		Price int64 `json:"price"`
 		CreatedAt time.Time `json:"created_at"`
-		Metadata *Metadata `json:"metadata"`
-	}
-
-	Metadata struct {
-		Email string `json:"email"`
-		Quantity float64 `json:"quantity"`
+		Metadata *types.OpenNodeMetadata `json:"metadata"`
 	}
 
 	envelope struct {
@@ -46,7 +42,7 @@ func GetCharge(ctx *config.AppContext, ID string) (*Charge, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", ctx.Env.OpenNodeKey)
+	req.Header.Set("Authorization", ctx.Env.OpenNode.Key)
 	req.Header.Set("accept", "application/json")
 
 	res, err := http.DefaultClient.Do(req)

@@ -44,7 +44,8 @@ func loadConfig() *types.EnvConfig {
 		}
 		config.MailerJob = int(mailSec)
 
-		config.OpenNodeKey = os.Getenv("OPENNODE_KEY")
+		config.OpenNode.Key = os.Getenv("OPENNODE_KEY")
+		config.OpenNode.Endpoint = os.Getenv("OPENNODE_ENDPOINT")
 
 		config.StripeKey = os.Getenv("STRIPE_KEY")
 		config.StripeEndpointSec = os.Getenv("STRIPE_END_SECRET")

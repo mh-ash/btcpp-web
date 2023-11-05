@@ -17,13 +17,14 @@ type (
 		MailOff   bool
 		StripeKey string
 		StripeEndpointSec string
-		OpenNodeKey string
 		RegistryPin string
 		LogFile  string
 		Notion   NotionConfig
 		SendGrid SendGridConfig
 		Google   GoogleConfig
+		OpenNode OpenNodeConfig
 		Host string
+		LocalExternal string
 	}
 
 	GoogleConfig struct {
@@ -135,6 +136,10 @@ func (env *EnvConfig) GetDomain() string {
 func (env *EnvConfig) GetURI() string {
 	if env.Prod {
 		return fmt.Sprintf("https://%s", env.GetDomain())
+	}
+
+	if env.LocalExternal != "" {
+		return env.LocalExternal
 	}
 
 	return fmt.Sprintf("http://%s", env.GetDomain())

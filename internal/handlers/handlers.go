@@ -867,7 +867,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 	}
 
 	/* Check the hashed order is ok */
-	if !validHash(ctx.Env.OpenNodeKey, ev.ID, ev.HashedOrder) {
+	if !validHash(ctx.Env.OpenNode.Key, ev.ID, ev.HashedOrder) {
 		ctx.Err.Printf("Invalid request from opennode %s %s", ev.ID, ev.HashedOrder)
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -881,9 +881,11 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 		return
 	}
 
+	ctx.Infos.Println(charge)
 	entry := types.Entry{
 		ID:       charge.ID,
-		Total:    int64(charge.FiatVal),
+		ConfRef:  charge.Metadata.ConfRef,
+		Total:    int64(charge.FiatVal * 100),
 		Currency: "USD",
 		Created:  charge.CreatedAt,
 		Email:    charge.Metadata.Email,
@@ -894,10 +896,15 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	tixType := "genpop"
+	if charge.Metadata.TixLocal {
+		tixType = "local"
+	}
 	for i := 0; i < int(charge.Metadata.Quantity); i++ {
 		item := types.Item{
-			Total:    int64(charge.FiatVal / charge.Metadata.Quantity) * 100,
+			Total:    int64(charge.FiatVal * 100),
 			Desc:     charge.Description,
+			Type:     tixType,
 		}
 		entry.Items = append(entry.Items, item)
 	}
@@ -911,7 +918,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 	err = getters.AddTickets(ctx.Notion, &entry, "opennode")
 
 	if err != nil {
-		ctx.Err.Printf("!!! Unable to add ticket %s: %v", err)
+		ctx.Err.Printf("!!! Unable to add ticket %s: %v", err, entry)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -940,8 +947,22 @@ func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppC
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
-	//return OpenNodeInit(w, r, ctx, conf, tix, tixPrice)
+	OpenNodeInit(w, r, ctx, conf, tix, tixPrice)
+}
+
+func OpenNodeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint) {
+	payment, err := getters.InitOpenNodeCheckout(ctx, tixPrice, tix, conf)
+
+	if err != nil {
+		http.Error(w, "unable to init btc payment", http.StatusInternalServerError)
+		ctx.Err.Printf("opennode payment init failed", err.Error())
+		return
+	}
+
+	/* FIXME: v2: implement on-site btc checkout */
+	/* for now we go ahead and just redirect to opennode, see you latrrr */
+	ctx.Infos.Println(payment)
+	http.Redirect(w, r, payment.HostedCheckoutURL, http.StatusSeeOther)
 }
 
 func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint) {
