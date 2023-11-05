@@ -15,6 +15,9 @@
 {{ if eq .TicketType "genpop" }}
 <body class="h-full bg-blue-300">
 {{ end }}
+{{ if eq .TicketType "local" }}
+<body class="h-full bg-indigo-300">
+{{ end }}
 {{ if eq .TicketType "volunteer" }}
 <body class="h-full bg-cyan-300">
 {{ end }}

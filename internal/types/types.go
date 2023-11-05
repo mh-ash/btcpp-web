@@ -33,7 +33,10 @@ type (
 	Conf struct {
 		Ref string
 		Tag string
+		Active bool
 		Desc string
+		DateDesc string
+		Venue string
 		Template string
 		ShowAgenda bool
 		ShowTalks bool

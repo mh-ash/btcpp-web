@@ -91,17 +91,26 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["ticket.tmpl"] = ticket
 
-	register, err := template.ParseFiles("templates/emails/register.tmpl")
-	if err != nil {
-		return err
-	}
-	app.TemplateCache["register"] = register
+	for _, conf := range app.Confs {
+		if !conf.Active {
+			continue
+		}
 
-	registertext, err := template.ParseFiles("templates/emails/register-text.tmpl")
-	if err != nil {
-		return err
+		htmlEmailTmpl := fmt.Sprintf("templates/emails/%s.tmpl", conf.Tag)
+		textEmailTmpl := fmt.Sprintf("templates/emails/text-%s.tmpl", conf.Tag)
+
+		htmlEmail, err := template.ParseFiles(htmlEmailTmpl)
+		if err != nil {
+			return err
+		}
+		app.TemplateCache["email-html-" + conf.Tag] = htmlEmail
+
+		textEmail, err := template.ParseFiles(textEmailTmpl)
+		if err != nil {
+			return err
+		}
+		app.TemplateCache["email-text-" + conf.Tag] = textEmail
 	}
-	app.TemplateCache["register-text"] = registertext
 
 	checkin, err := template.ParseFiles("templates/checkin.tmpl", "templates/main_nav.tmpl")
 	if err != nil {
@@ -623,9 +632,7 @@ type TicketTmpl struct {
 	Domain string
 	CSS string
 	Type string
-	ConfLocation string
-	ConfDate string
-	ConfVenue string
+	Conf *types.Conf
 }
 
 func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -653,7 +660,7 @@ func sendMail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, re
 		ID: reg.RefID,
 	}
 
-	err = SendTickets(ctx, tickets, reg.Email, time.Now())
+	err = SendTickets(ctx, tickets, reg.ConfRef, reg.Email, time.Now())
 
 	/* Return the error */
 	if err != nil {
@@ -669,10 +676,18 @@ func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	ticket := params["ticket"]
 
 	tixType, _ := getSessionKey("type", r)
+	confRef, _ := getSessionKey("conf", r)
 
 	/* make it pretty */
 	if tixType == "genpop" {
 		tixType = "general"
+	}
+
+	conf := findConfByRef(ctx, confRef)
+	if conf == nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/ticket-pdf unable to find conf! %s", confRef)
+		return
 	}
 
 	/* URL */
@@ -690,25 +705,32 @@ func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 		CSS: MiniCss(),
 		Domain: ctx.Env.GetDomain(),
 		Type: tixType,
-		ConfLocation: "", // Berlin
-		ConfDate: "", // Oct 6+7, 2023
-		ConfVenue: "",  // Säälchen at Holzmarkt 25
+		Conf: conf,
 	}
 
 	err = ctx.TemplateCache["ticket.tmpl"].Execute(w, tix)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		fmt.Printf("/ticket-pdf ExecuteTemplate failed ! %s\n", err.Error())
+		ctx.Infos.Printf("/ticket-pdf ExecuteTemplate failed ! %s", err.Error())
 	}
 }
 
 func TicketCheck(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	err := ctx.TemplateCache["register"].Execute(w, &EmailTmpl{
+	confTag, _ := getSessionKey("tag", r)
+
+	tmplTag := "email-html-" + confTag
+	tmpl, ok := ctx.TemplateCache[tmplTag]	
+	if !ok {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Infos.Printf("/welcome-email template %s not found", tmplTag)
+		return
+	}
+	err := tmpl.Execute(w, &EmailTmpl{
 		URI: ctx.Env.GetURI(),
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		fmt.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+		ctx.Infos.Printf("/welcome-email ExecuteTemplate failed ! %s", err.Error())
 	}
 }
 

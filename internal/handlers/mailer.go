@@ -69,7 +69,7 @@ func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
         chromedp.Navigate(url),
         chromedp.WaitVisible(`body`, chromedp.ByQuery),
         chromedp.ActionFunc(func(ctx context.Context) error {
-            buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPreferCSSPageSize(true).WithPaperWidth(3.2).WithPaperHeight(10.0).Do(ctx)
+            buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPreferCSSPageSize(true).WithPaperWidth(3.8).WithPaperHeight(12.0).Do(ctx)
             if err != nil {
                 return err
             }
@@ -103,7 +103,7 @@ func buildChromePdf(ctx *config.AppContext, fromURL string) ([]byte, error) {
 }
 
 func MakeTicketPDF(ctx *config.AppContext, rez *types.Registration) ([]byte, error) {
-	ticketPage := fmt.Sprintf("http://localhost:%s/ticket/%s?type=%s", ctx.Env.Port, rez.RefID, rez.Type)
+	ticketPage := fmt.Sprintf("http://localhost:%s/ticket/%s?type=%s&conf=%s", ctx.Env.Port, rez.RefID, rez.Type, rez.ConfRef)
 	return buildChromePdf(ctx, ticketPage)
 }
 
@@ -119,14 +119,19 @@ func SendMail(ctx *config.AppContext, rez *types.Registration) error {
 		ID: rez.RefID,
 	}
 
-	return SendTickets(ctx, tickets, rez.Email, time.Now())
+	return SendTickets(ctx, tickets, rez.ConfRef, rez.Email, time.Now())
 }
 
 /* Send a request to our mailer to send a ticket at time */
-func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, sendAt time.Time) error {
+func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, confRef, email string, sendAt time.Time) error {
 	/* Send the ticket email! */
+	conf := findConfByRef(ctx, confRef)
+	if conf == nil {
+		return fmt.Errorf("No conference found for ref %s", confRef)
+	}
+
 	var htmlBody bytes.Buffer
-	err := ctx.TemplateCache["register"].Execute(io.Writer(&htmlBody), &EmailTmpl{
+	err := ctx.TemplateCache["email-html-" + conf.Tag].Execute(io.Writer(&htmlBody), &EmailTmpl{
 		URI: ctx.Env.GetURI(),
 		CSS: MiniCss(),
 	})
@@ -139,7 +144,7 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 	}
 
 	var textBody bytes.Buffer
-	err = ctx.TemplateCache["register-text"].Execute(io.Writer(&textBody), &EmailTmpl{
+	err = ctx.TemplateCache["email-text-" + conf.Tag].Execute(io.Writer(&textBody), &EmailTmpl{
 		URI: ctx.Env.GetURI(),
 	})
 	if err != nil {
@@ -152,7 +157,7 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 		attaches[i] = &mailer.Attachment{
 			Content: ticket.Pdf,
 			Type: "application/pdf",
-			Name: fmt.Sprintf("btcpp23_ticket_%s.pdf", ticket.ID[:6]),
+			Name: fmt.Sprintf("btcpp_%s_ticket_%s.pdf", conf.Tag, ticket.ID[:6]),
 		}
 	}
 
@@ -171,14 +176,14 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, email string, 
 
 	ctx.Infos.Printf("Sending ticket to %s\n", email)
 
-	title := fmt.Sprintf("[bitcoin++ Ticket #%s] You're Going! @ Austin, April 28-30", tickets[0].ID[:6])
+	title := fmt.Sprintf("[%s] Your Conference Pass is Here!", conf.Desc)
 
 	/* Build a mail to send */
 	mail := &mailer.MailRequest{
-		JobKey: fmt.Sprintf("%s-%s", "btcpp23", ticketJob),
+		JobKey: fmt.Sprintf("%s-%s", "btcpp", ticketJob),
 		ToAddr: email,
 		FromAddr: "hello@btcpp.dev",
-		FromName: "bitcoin++ 🍰",
+		FromName: "bitcoin++ ✨",
 		Title: title,
 		HTMLBody: htmlBody.String(),
 		TextBody: textBody.String(),
