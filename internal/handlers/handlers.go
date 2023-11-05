@@ -361,7 +361,7 @@ func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContex
 		})
 		if err != nil {
 			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s", err.Error())
 		}
 		return
 	}
@@ -373,7 +373,7 @@ func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContex
 		})
 		if err != nil {
 			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-			ctx.Err.Printf("/conf-reload ExecuteTemplate failed ! %s\n", err.Error())
+			ctx.Err.Printf("/conf-reload ExecuteTemplate failed ! %s", err.Error())
 		}
 		return
 	}
@@ -405,9 +405,10 @@ func ReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 			})
 			if err != nil {
 				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-				fmt.Printf("/conf-reload ExecuteTemplate failed ! %s\n", err.Error())
+				ctx.Err.Printf("/conf-reload ExecuteTemplate failed ! %s", err.Error())
+				return
 			}
-			ctx.Err.Printf("/conf-reload wrong pin submitted! %s\n", pin)
+			ctx.Err.Printf("/conf-reload wrong pin submitted! %s", pin)
 			return
 		}
 
@@ -423,7 +424,7 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	conf, err := findConf(r, ctx)
 	if err != nil {
 		http.Error(w, "Unable to find page", 404)
-		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
+		ctx.Err.Printf("Unable to find conf %s: %s", err.Error())
 		return
 	}
 
@@ -431,7 +432,7 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
+		ctx.Err.Printf("Unable to fetch talks from Notion!! %s", err.Error())
 		return
 	}
 
@@ -442,7 +443,7 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/%s/talks ExecuteTemplate failed ! %s\n", conf.Tag, err.Error())
+		ctx.Err.Printf("/%s/talks ExecuteTemplate failed ! %s", conf.Tag, err.Error())
 		return
 	}
 }
@@ -451,7 +452,7 @@ func RenderConfSuccess(w http.ResponseWriter, r *http.Request, ctx *config.AppCo
 	conf, err := findConf(r, ctx)
 	if err != nil {
 		http.Error(w, "Unable to find page", 404)
-		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
+		ctx.Err.Printf("Unable to find conf %s: %s", err.Error())
 		return
 	}
 
@@ -461,7 +462,7 @@ func RenderConfSuccess(w http.ResponseWriter, r *http.Request, ctx *config.AppCo
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/conf/%s/success ExecuteTemplate failed ! %s\n", conf.Tag, err.Error())
+		ctx.Err.Printf("/conf/%s/success ExecuteTemplate failed ! %s", conf.Tag, err.Error())
 		return
 	}
 }
@@ -470,7 +471,7 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	conf, err := findConf(r, ctx)
 	if err != nil {
 		http.Error(w, "Unable to find page", 404)
-		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
+		ctx.Err.Printf("Unable to find conf %s: %s", err.Error())
 		return
 	}
 
@@ -478,21 +479,21 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to fetch talks from Notion!! %s\n", err.Error())
+		ctx.Err.Printf("Unable to fetch talks from Notion!! %s", err.Error())
 		return
 	}
 
 	soldCount, err := getters.SoldTixCount(ctx.Notion, conf.Ref)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to fetch ticket count from Notion!! %s\n", err.Error())
+		ctx.Err.Printf("Unable to fetch ticket count from Notion!! %s", err.Error())
 		return
 	}
 
 	buckets, err := bucketTalks(talks)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to bucket '%s' talks from Notion!! %s\n", conf.Tag, err.Error())
+		ctx.Err.Printf("Unable to bucket '%s' talks from Notion!! %s", conf.Tag, err.Error())
 		return
 	}
 
@@ -514,7 +515,7 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/%s ExecuteTemplate failed ! %s\n", conf.Tag, err.Error())
+		ctx.Err.Printf("/%s ExecuteTemplate failed ! %s", conf.Tag, err.Error())
 		return
 	}
 }
@@ -527,7 +528,7 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	err := tmpl.ExecuteTemplate(w, "index.tmpl", &HomePage{})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/ ExecuteTemplate failed ! %s\n", err.Error())
+		ctx.Err.Printf("/ ExecuteTemplate failed ! %s", err.Error())
 		return
 	}
 }
@@ -651,7 +652,8 @@ func sendMail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, re
 
 	if err != nil {
 		http.Error(w, "Unable to make ticket, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/send test mail failed ! %s\n", err.Error())
+		ctx.Err.Printf("/send test mail failed ! %s", err.Error())
+		return
 	}
 
 	tickets := make([]*types.Ticket, 1)
@@ -665,10 +667,9 @@ func sendMail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, re
 	/* Return the error */
 	if err != nil {
 		http.Error(w, "Unable to send ticket, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/send test mail failed to send! %s\n", err.Error())
+		ctx.Err.Printf("/send test mail failed to send! %s", err.Error())
+		return
 	}
-
-	return
 }
 
 func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -756,9 +757,10 @@ func CheckIn(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 			})
 			if err != nil {
 				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-				fmt.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+				ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s", err.Error())
+				return
 			}
-			ctx.Err.Printf("/check-in wrong pin submitted! %s\n", pin)
+			ctx.Err.Printf("/check-in wrong pin submitted! %s", pin)
 			return
 		}
 
@@ -781,7 +783,7 @@ func CheckInGet(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 		})
 		if err != nil {
 			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s", err.Error())
 		}
 		return
 	}
@@ -793,7 +795,7 @@ func CheckInGet(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 		})
 		if err != nil {
 			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+			ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s", err.Error())
 		}
 		return
 	}
@@ -804,7 +806,7 @@ func CheckInGet(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	tix_type, ok, err := getters.CheckIn(ctx.Notion, ticket)
 	if !ok && err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("Unable to check-in %s:\n", ticket, err.Error())
+		ctx.Err.Printf("Unable to check-in %s:", ticket, err.Error())
 		return
 	}
 
@@ -820,7 +822,7 @@ func CheckInGet(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s\n", err.Error())
+		ctx.Err.Printf("/conf/check-in ExecuteTemplate failed ! %s", err.Error())
 	}
 }
 
@@ -850,7 +852,7 @@ var decoder = schema.NewDecoder()
 func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	err := r.ParseForm()
 	if err != nil {
-		ctx.Err.Printf("Error reading request body: %v\n", err)
+		ctx.Err.Printf("Error reading request body: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -859,7 +861,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 	decoder.IgnoreUnknownKeys(true)
 	err = decoder.Decode(&ev, r.PostForm)
 	if err != nil {
-		ctx.Err.Printf("Unable to unmarshal: %v\n", err)
+		ctx.Err.Printf("Unable to unmarshal: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -909,7 +911,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 	err = getters.AddTickets(ctx.Notion, &entry, "opennode")
 
 	if err != nil {
-		ctx.Err.Printf("!!! Unable to add ticket %s: %v\n", err)
+		ctx.Err.Printf("!!! Unable to add ticket %s: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -994,7 +996,7 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 	r.Body = http.MaxBytesReader(w, r.Body, MaxBodyBytes)
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		ctx.Err.Printf("Error reading request body: %v\n", err)
+		ctx.Err.Printf("Error reading request body: %v", err)
 		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
@@ -1012,7 +1014,7 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		var checkout stripe.CheckoutSession
 		err := json.Unmarshal(event.Data.Raw, &checkout)
 		if err != nil {
-			ctx.Err.Printf("Error parsing webhook JSON: %v\n", err)
+			ctx.Err.Printf("Error parsing webhook JSON: %v", err)
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -1079,13 +1081,13 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		err = getters.AddTickets(ctx.Notion, &entry, "stripe")
 
 		if err != nil {
-			ctx.Err.Printf("!!! Unable to add ticket %s: %v\n", err)
+			ctx.Err.Printf("!!! Unable to add ticket %s: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		ctx.Infos.Printf("Added %d tickets!!", len(entry.Items))
 	default:
-		ctx.Infos.Printf("Unhandled event type: %s\n", event.Type)
+		ctx.Infos.Printf("Unhandled event type: %s", event.Type)
 	}
 
 	w.WriteHeader(http.StatusOK)
