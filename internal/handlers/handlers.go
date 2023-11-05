@@ -118,6 +118,12 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["checkin.tmpl"] = checkin
 
+	collect, err := template.ParseFiles("templates/collect-email.tmpl", "templates/main_nav.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["collect-email.tmpl"] = collect
+
 	return nil
 }
 
@@ -256,9 +262,13 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 		maybeReload(app)
 		RenderTalks(w, r, app)
 	}).Methods("GET")
+	r.HandleFunc("/tix/{tix}/collect-email", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		HandleEmail(w, r, app)
+	}).Methods("GET", "POST")
 	r.HandleFunc("/tix/{tix}", func(w http.ResponseWriter, r *http.Request) {
 		HandleTixSelection(w, r, app)
-	})
+	}).Methods("GET")
 	r.HandleFunc("/conf-reload", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
 		ReloadConf(w, r, app)
@@ -346,6 +356,14 @@ type ConfPage struct {
 
 type SuccessPage struct {
 	Conf *types.Conf
+}
+
+type TixFormPage struct {
+	Conf *types.Conf
+	Discount string
+	Count uint
+	Tix   *types.ConfTicket
+	Price uint
 }
 
 func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -931,7 +949,7 @@ func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppC
 	tixSlug := params["tix"]
 
 	if tixSlug == "" {
-		http.Redirect(w, r, "/conf/berlin23", http.StatusSeeOther)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -947,11 +965,73 @@ func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppC
 		return
 	}
 
-	OpenNodeInit(w, r, ctx, conf, tix, tixPrice)
+	http.Redirect(w, r, fmt.Sprintf("/tix/%s/collect-email", tixSlug), http.StatusSeeOther)
 }
 
-func OpenNodeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint) {
-	payment, err := getters.InitOpenNodeCheckout(ctx, tixPrice, tix, conf)
+func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	params := mux.Vars(r)
+	tixSlug := params["tix"]
+
+	if tixSlug == "" {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	conf, tix, tixPrice, processBTC, err := determineTixPrice(ctx, tixSlug)
+	if err != nil {
+		ctx.Err.Printf("/tix/%s/collect-email unable to determine tix price: %s", tixSlug, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if !processBTC {
+		http.Redirect(w, r, fmt.Sprintf("/tix/%s", tixSlug), http.StatusSeeOther)
+		return
+	}
+
+	switch r.Method {
+		case http.MethodGet:
+			pageTpl := ctx.TemplateCache["collect-email.tmpl"]
+			err = pageTpl.Execute(w, &TixFormPage{
+				Conf:        conf,
+				Tix:         tix,
+				Price:       tixPrice,
+				Discount:    "",
+			        Count:       uint(1),	
+			})
+			if err != nil {
+				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+				ctx.Err.Printf("/tix/{%s}/collect-email templ exec failed %s", tixSlug, err.Error())
+				return
+			}
+			return
+		case http.MethodPost:
+			r.ParseForm()
+			dec := schema.NewDecoder()
+			dec.IgnoreUnknownKeys(true)
+			var form types.TixForm
+			err = dec.Decode(&form, r.PostForm)
+			if err != nil {
+				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+				ctx.Err.Printf("/collect-email unable to decode form %s", err)
+				return
+			}
+
+			if form.Email == "" || form.Count < 1 {
+				http.Redirect(w, r, fmt.Sprintf("/collect-email/%s", tixSlug), http.StatusSeeOther)
+			}
+
+			/* The goal is that we hit opennode init, with an email! */
+			OpenNodeInit(w, r, ctx, conf, tix, tixPrice, &form)
+			return
+		default:
+			http.NotFound(w, r)
+			return
+	}
+}
+
+func OpenNodeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint, tixForm *types.TixForm) {
+	payment, err := getters.InitOpenNodeCheckout(ctx, tixPrice, tix, conf, tixForm.Count, tixForm.Email)
 
 	if err != nil {
 		http.Error(w, "unable to init btc payment", http.StatusInternalServerError)

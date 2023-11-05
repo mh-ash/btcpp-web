@@ -58,6 +58,12 @@ type (
 	}
 	ConfTickets []*ConfTicket
 
+	TixForm struct {
+		Email string
+		Discount string
+		Count uint
+	}
+
 	Speaker struct {
 		Name string
 		Desc string

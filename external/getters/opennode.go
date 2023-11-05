@@ -13,11 +13,11 @@ import (
 
 const CHARGES_ENDPOINT string = "/charges"
 
-func InitOpenNodeCheckout(ctx *config.AppContext, tixPrice uint, tix *types.ConfTicket, conf *types.Conf) (*types.OpenNodePayment, error) {
+func InitOpenNodeCheckout(ctx *config.AppContext, tixPrice uint, tix *types.ConfTicket, conf *types.Conf, count uint, email string) (*types.OpenNodePayment, error) {
 
 	metadata := &types.OpenNodeMetadata{
-		Email: "stripe@example.com", // FIXME
-		Quantity: float64(1),
+		Email: email,
+		Quantity: float64(count),
 		ConfRef: conf.Ref,
 		TixLocal: tixPrice == tix.Local,
 	}
@@ -32,8 +32,12 @@ func InitOpenNodeCheckout(ctx *config.AppContext, tixPrice uint, tix *types.Conf
 		AutoSettle:    false,
 		TTL:           360,
 		Metadata:      metadata,
-		NotifEmail:    "niftynei@gmail.com", // FIXME
-		CustomerEmail: "niftynei@gmail.com", // FIXME
+		NotifEmail:    email,
+		CustomerEmail: email,
+	}
+
+	if !ctx.Env.Prod {
+		onReq.Amount = float64(0.01)
 	}
 
 	payload, err := json.Marshal(onReq)
