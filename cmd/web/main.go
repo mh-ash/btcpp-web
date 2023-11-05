@@ -82,13 +82,13 @@ func main() {
 	}
 
 	/* Load up conference info */
-	confs, err := getters.ListConferences(app.Notion)
+	app.Confs, err = getters.ListConferences(app.Notion)
 	if err != nil {
 		app.Err.Fatal(err)
 	}
 
 	/* Set up Routes + Templates */
-	routes, err := handlers.Routes(&app, confs)
+	routes, err := handlers.Routes(&app)
 	if err != nil {
 		app.Err.Fatal(err)
 	}

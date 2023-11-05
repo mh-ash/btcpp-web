@@ -18,4 +18,5 @@ type AppContext struct {
 	Infos         *log.Logger
 	Session       *scs.SessionManager
 	TemplateCache map[string]*template.Template
+	Confs         []*types.Conf
 }

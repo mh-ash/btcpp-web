@@ -28,9 +28,6 @@ import (
 	"github.com/stripe/stripe-go/v76/webhook"
 )
 
-/* Static variable for conferences */
-var allConfs []*types.Conf
-
 func MiniCss() string {
 	css, err := ioutil.ReadFile("static/css/mini.css")
 	if err != nil {
@@ -124,11 +121,11 @@ func maybeReload(app *config.AppContext) {
 	}
 }
 
-func findConf(r *http.Request) (*types.Conf, error) {
+func findConf(r *http.Request, app *config.AppContext) (*types.Conf, error) {
 	params := mux.Vars(r)
 	confTag := params["conf"]
 
-	for _, conf := range allConfs {
+	for _, conf := range app.Confs {
 		if conf.Tag == confTag {
 			return conf, nil
 		}
@@ -137,8 +134,8 @@ func findConf(r *http.Request) (*types.Conf, error) {
 	return nil, fmt.Errorf("conf '%s' not found", confTag)
 }
 
-func findConfByRef(confRef string) (*types.Conf) {
-	for _, conf := range allConfs {
+func findConfByRef(app *config.AppContext, confRef string) (*types.Conf) {
+	for _, conf := range app.Confs {
 		if conf.Ref == confRef {
 			return conf
 		}
@@ -146,8 +143,8 @@ func findConfByRef(confRef string) (*types.Conf) {
 	return nil
 }
 
-func findTicket(tixID string) (*types.ConfTicket, *types.Conf) {
-	for _, conf := range allConfs {
+func findTicket(app *config.AppContext, tixID string) (*types.ConfTicket, *types.Conf) {
+	for _, conf := range app.Confs {
 		for _, tix := range conf.Tickets {
 			if tix.ID == tixID {
 				return tix, conf
@@ -158,14 +155,14 @@ func findTicket(tixID string) (*types.ConfTicket, *types.Conf) {
 	return nil, nil
 }
 
-func determineTixPrice(tixSlug string) (*types.Conf, *types.ConfTicket, uint, bool, error) {
+func determineTixPrice(ctx *config.AppContext, tixSlug string) (*types.Conf, *types.ConfTicket, uint, bool, error) {
 	
 	tixParts := strings.Split(tixSlug, "+")
 	if len(tixParts) != 3 {
 		return nil, nil, 0, false, fmt.Errorf("not enough ticket parts?? needed 3. %s", tixSlug)
 	}
 
-	tix, conf := findTicket(tixParts[0])
+	tix, conf := findTicket(ctx, tixParts[0])
 	if tix == nil {
 		return nil, nil, 0, false, fmt.Errorf("Unable to find tix %s", tixParts[0])
 	}
@@ -213,10 +210,7 @@ func findCurrTix(conf *types.Conf, soldCount uint) (*types.ConfTicket) {
 }
 
 // Routes sets up the routes for the application
-func Routes(app *config.AppContext, confs []*types.Conf) (http.Handler, error) {
-	/* Set all confs! */
-	allConfs = confs
-
+func Routes(app *config.AppContext) (http.Handler, error) {
 	r := mux.NewRouter()
 
 	// Set up the routes, we'll have one page per course
@@ -378,11 +372,11 @@ func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContex
 	confs, err := getters.ListConferences(ctx.Notion)
 	if err != nil {
 		http.Error(w, "Unable to load confereneces, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/conf-reload conf load failed ! %s\n", err.Error())
+		ctx.Err.Printf("/conf-reload conf load failed ! %s", err.Error())
 	}
 
 	/* We redirect to home on success */
-	allConfs = confs
+	ctx.Confs = confs
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -417,7 +411,7 @@ func ReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	tmpl := ctx.TemplateCache["talks.tmpl"]
 
-	conf, err := findConf(r)
+	conf, err := findConf(r, ctx)
 	if err != nil {
 		http.Error(w, "Unable to find page", 404)
 		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
@@ -445,7 +439,7 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 }
 
 func RenderConfSuccess(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	conf, err := findConf(r)
+	conf, err := findConf(r, ctx)
 	if err != nil {
 		http.Error(w, "Unable to find page", 404)
 		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
@@ -464,7 +458,7 @@ func RenderConfSuccess(w http.ResponseWriter, r *http.Request, ctx *config.AppCo
 }
 
 func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
-	conf, err := findConf(r)
+	conf, err := findConf(r, ctx)
 	if err != nil {
 		http.Error(w, "Unable to find page", 404)
 		ctx.Err.Printf("Unable to find conf %s: %s\n", err.Error())
@@ -910,7 +904,7 @@ func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppC
 		return
 	}
 
-	conf, tix, tixPrice, processBTC, err := determineTixPrice(tixSlug)
+	conf, tix, tixPrice, processBTC, err := determineTixPrice(ctx, tixSlug)
 	if err != nil {
 		ctx.Err.Printf("/tix/%s unable to determine tix price: %s", tixSlug, err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -1007,7 +1001,7 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 			w.WriteHeader(http.StatusOK)
 			return
 		}
-		conf := findConfByRef(confRef)
+		conf := findConfByRef(ctx, confRef)
 		if conf == nil {
 			ctx.Err.Println("Couldn't find conf %s", confRef)
 			w.WriteHeader(http.StatusOK)
