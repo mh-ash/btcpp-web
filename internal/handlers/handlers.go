@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
-	"slices"
 	"sort"
 	"strings"
 
@@ -136,6 +135,15 @@ func maybeReload(app *config.AppContext) {
 	}
 }
 
+func contains(list []string, item string) bool {
+	for _, x := range list {
+		if item == x {
+			return true
+		}
+	}
+	return false
+}
+
 func findConf(r *http.Request, app *config.AppContext) (*types.Conf, error) {
 	params := mux.Vars(r)
 	confTag := params["conf"]
@@ -182,13 +190,13 @@ func determineTixPrice(ctx *config.AppContext, tixSlug string) (*types.Conf, *ty
 		return nil, nil, 0, false, fmt.Errorf("Unable to find tix %s", tixParts[0])
 	}
 	tixTypeOpts := []string{ "default", "local" }
-	if !slices.Contains(tixTypeOpts, tixParts[1]) {
+	if !contains(tixTypeOpts, tixParts[1]) {
 		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[1], tixTypeOpts)
 	}
 	isLocal := tixParts[1] == "local"
 
 	currencyTypeOpts := []string{ "btc", "fiat" }
-	if !slices.Contains(currencyTypeOpts, tixParts[2]) {
+	if !contains(currencyTypeOpts, tixParts[2]) {
 		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[2], currencyTypeOpts)
 	}
 	if tixParts[2] == "btc" {
