@@ -946,9 +946,7 @@ func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppC
 
 func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint) {
 
-	// FIXME: actual callback domain for website?!
-	domain := "http://localhost:8888"
-
+	domain := ctx.Env.GetURI()
 	priceAsCents := int64(tixPrice * 100)
 	confDesc := fmt.Sprintf("1 ticket for the %s", conf.Desc)
 	metadata := make(map[string]string)
