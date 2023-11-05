@@ -10,8 +10,8 @@ import (
 
 /* application configuration settings */
 type AppContext struct {
-	Env      *types.EnvConfig
-	Notion   *types.Notion
+	Env    *types.EnvConfig
+	Notion *types.Notion
 
 	InProduction  bool
 	Err           *log.Logger

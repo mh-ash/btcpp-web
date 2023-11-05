@@ -1,22 +1,22 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"time"
 	"io"
 	"io/ioutil"
-	"bytes"
+	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/base58btc/btcpp-web/external/getters"
 	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/base58btc/btcpp-web/internal/types"
-	"github.com/base58btc/btcpp-web/external/getters"
 	mailer "github.com/base58btc/mailer/mail"
 
 	"github.com/chromedp/cdproto/emulation"
@@ -60,23 +60,23 @@ func CheckForNewMails(ctx *config.AppContext) {
 			fails++
 		}
 	}
-	ctx.Infos.Printf("Of %d, sent %d mails, %d failed, %d retries", success + fails + resent, success, fails, resent)
+	ctx.Infos.Printf("Of %d, sent %d mails, %d failed, %d retries", success+fails+resent, success, fails, resent)
 }
 
 func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
-    return chromedp.Tasks{
-        emulation.SetUserAgentOverride("WebScraper 1.0"),
-        chromedp.Navigate(url),
-        chromedp.WaitVisible(`body`, chromedp.ByQuery),
-        chromedp.ActionFunc(func(ctx context.Context) error {
-            buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPreferCSSPageSize(true).WithPaperWidth(3.8).WithPaperHeight(12.0).Do(ctx)
-            if err != nil {
-                return err
-            }
-            *res = buf
-            return nil
-        }),
-    }
+	return chromedp.Tasks{
+		emulation.SetUserAgentOverride("WebScraper 1.0"),
+		chromedp.Navigate(url),
+		chromedp.WaitVisible(`body`, chromedp.ByQuery),
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			buf, _, err := page.PrintToPDF().WithPrintBackground(true).WithPreferCSSPageSize(true).WithPaperWidth(3.8).WithPaperHeight(12.0).Do(ctx)
+			if err != nil {
+				return err
+			}
+			*res = buf
+			return nil
+		}),
+	}
 }
 
 func buildChromePdf(ctx *config.AppContext, fromURL string) ([]byte, error) {
@@ -90,14 +90,14 @@ func buildChromePdf(ctx *config.AppContext, fromURL string) ([]byte, error) {
 	defer cancel()
 
 	taskCtx, cancel := chromedp.NewContext(
-            allocCtx,
-            chromedp.WithLogf(ctx.Infos.Printf),
-        )
-        defer cancel()
-        var pdfBuffer []byte
+		allocCtx,
+		chromedp.WithLogf(ctx.Infos.Printf),
+	)
+	defer cancel()
+	var pdfBuffer []byte
 	if err := chromedp.Run(taskCtx, pdfGrabber(fromURL, &pdfBuffer)); err != nil {
 		return pdfBuffer, err
-        }
+	}
 
 	return pdfBuffer, nil
 }
@@ -116,7 +116,7 @@ func SendMail(ctx *config.AppContext, rez *types.Registration) error {
 	tickets := make([]*types.Ticket, 1)
 	tickets[0] = &types.Ticket{
 		Pdf: pdf,
-		ID: rez.RefID,
+		ID:  rez.RefID,
 	}
 
 	return SendTickets(ctx, tickets, rez.ConfRef, rez.Email, time.Now())
@@ -131,7 +131,7 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, confRef, email
 	}
 
 	var htmlBody bytes.Buffer
-	err := ctx.TemplateCache["email-html-" + conf.Tag].Execute(io.Writer(&htmlBody), &EmailTmpl{
+	err := ctx.TemplateCache["email-html-"+conf.Tag].Execute(io.Writer(&htmlBody), &EmailTmpl{
 		URI: ctx.Env.GetURI(),
 		CSS: MiniCss(),
 	})
@@ -144,7 +144,7 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, confRef, email
 	}
 
 	var textBody bytes.Buffer
-	err = ctx.TemplateCache["email-text-" + conf.Tag].Execute(io.Writer(&textBody), &EmailTmpl{
+	err = ctx.TemplateCache["email-text-"+conf.Tag].Execute(io.Writer(&textBody), &EmailTmpl{
 		URI: ctx.Env.GetURI(),
 	})
 	if err != nil {
@@ -156,8 +156,8 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, confRef, email
 	for i, ticket := range tickets {
 		attaches[i] = &mailer.Attachment{
 			Content: ticket.Pdf,
-			Type: "application/pdf",
-			Name: fmt.Sprintf("btcpp_%s_ticket_%s.pdf", conf.Tag, ticket.ID[:6]),
+			Type:    "application/pdf",
+			Name:    fmt.Sprintf("btcpp_%s_ticket_%s.pdf", conf.Tag, ticket.ID[:6]),
 		}
 	}
 
@@ -180,15 +180,15 @@ func SendTickets(ctx *config.AppContext, tickets []*types.Ticket, confRef, email
 
 	/* Build a mail to send */
 	mail := &mailer.MailRequest{
-		JobKey: fmt.Sprintf("%s-%s", "btcpp", ticketJob),
-		ToAddr: email,
-		FromAddr: "hello@btcpp.dev",
-		FromName: "bitcoin++ ✨",
-		Title: title,
-		HTMLBody: htmlBody.String(),
-		TextBody: textBody.String(),
+		JobKey:      fmt.Sprintf("%s-%s", "btcpp", ticketJob),
+		ToAddr:      email,
+		FromAddr:    "hello@btcpp.dev",
+		FromName:    "bitcoin++ ✨",
+		Title:       title,
+		HTMLBody:    htmlBody.String(),
+		TextBody:    textBody.String(),
 		Attachments: attaches,
-		SendAt: float64(sendAt.UTC().Unix()),
+		SendAt:      float64(sendAt.UTC().Unix()),
 	}
 
 	return SendMailRequest(ctx, mail)
@@ -247,4 +247,3 @@ func SendMailRequest(ctx *config.AppContext, mail *mailer.MailRequest) error {
 	}
 	return nil
 }
-

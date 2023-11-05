@@ -1,30 +1,30 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 	"time"
-	"fmt"
 )
 
 type (
 
 	/* Configs for the app! */
 	EnvConfig struct {
-		Port     string
-		Prod     bool
-		MailerSecret string
-		MailerJob int
-		MailOff   bool
-		StripeKey string
+		Port              string
+		Prod              bool
+		MailerSecret      string
+		MailerJob         int
+		MailOff           bool
+		StripeKey         string
 		StripeEndpointSec string
-		RegistryPin string
-		LogFile  string
-		Notion   NotionConfig
-		SendGrid SendGridConfig
-		Google   GoogleConfig
-		OpenNode OpenNodeConfig
-		Host string
-		LocalExternal string
+		RegistryPin       string
+		LogFile           string
+		Notion            NotionConfig
+		SendGrid          SendGridConfig
+		Google            GoogleConfig
+		OpenNode          OpenNodeConfig
+		Host              string
+		LocalExternal     string
 	}
 
 	GoogleConfig struct {
@@ -32,70 +32,70 @@ type (
 	}
 
 	Conf struct {
-		Ref string
-		Tag string
-		Active bool
-		Desc string
-		DateDesc string
-		Venue string
-		Template string
-		ShowAgenda bool
-		ShowTalks bool
+		Ref           string
+		Tag           string
+		Active        bool
+		Desc          string
+		DateDesc      string
+		Venue         string
+		Template      string
+		ShowAgenda    bool
+		ShowTalks     bool
 		HasSatellites bool
-		Color	string
-		Tickets []*ConfTicket
+		Color         string
+		Tickets       []*ConfTicket
 	}
 
 	ConfTicket struct {
-		ID string
+		ID      string
 		ConfRef string
-		Tier string
-		Local uint	
-		BTC uint
-		USD uint
+		Tier    string
+		Local   uint
+		BTC     uint
+		USD     uint
 		Expires *Times
-		Max uint
+		Max     uint
 	}
 	ConfTickets []*ConfTicket
 
 	TixForm struct {
-		Email string
+		Email    string
 		Discount string
-		Count uint
+		Count    uint
 	}
 
 	Speaker struct {
-		Name string
-		Desc string
-		Org string
-		Photo string
-		Github string
+		Name    string
+		Desc    string
+		Org     string
+		Photo   string
+		Github  string
 		Twitter string
 	}
 
 	Talk struct {
-		ID string
-		Name string
+		ID          string
+		Name        string
 		Description string
-		Clipart string
-		Photo string
-		Website string
-		Twitter string
-		BadgeName string
-		Company string
-		Sched   *Times
-		TimeDesc string
-		Duration string
-		DayTag  string
-		Type    string
-		Venue   string
-		Event   string
-		AnchorTag string
-		Section string
+		Clipart     string
+		Photo       string
+		Website     string
+		Twitter     string
+		BadgeName   string
+		Company     string
+		Sched       *Times
+		TimeDesc    string
+		Duration    string
+		DayTag      string
+		Type        string
+		Venue       string
+		Event       string
+		AnchorTag   string
+		Section     string
 	}
 
 	Ticket struct {
-		ID string
+		ID  string
 		Pdf []byte
 	}
 
@@ -105,17 +105,17 @@ type (
 	}
 
 	Registration struct {
-		RefID string
-		ConfRef string
-		Type string
-		Email string
+		RefID      string
+		ConfRef    string
+		Type       string
+		Email      string
 		ItemBought string
 	}
 
 	Item struct {
-		Total    int64
-		Desc     string
-		Type     string
+		Total int64
+		Desc  string
+		Type  string
 	}
 
 	Entry struct {
@@ -150,7 +150,6 @@ func (env *EnvConfig) GetURI() string {
 
 	return fmt.Sprintf("http://%s", env.GetDomain())
 }
-
 
 /* Silly thing to return a value for a venue, for ordering */
 func (t *Talk) VenueValue() int {
@@ -190,7 +189,7 @@ func (t *Times) Day() string {
 }
 
 func (t *Times) LenStr() string {
-	if t.End == nil{
+	if t.End == nil {
 		return ""
 	}
 	dur := t.End.Sub(t.Start)

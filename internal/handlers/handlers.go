@@ -5,22 +5,22 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"html/template"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
-	"time"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/base58btc/btcpp-web/external/getters"
-	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/base58btc/btcpp-web/internal/config"
+	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 
-	qrcode "github.com/skip2/go-qrcode"
 	"encoding/base64"
+	qrcode "github.com/skip2/go-qrcode"
 
 	stripe "github.com/stripe/stripe-go/v76"
 	"github.com/stripe/stripe-go/v76/checkout/session"
@@ -49,7 +49,6 @@ func loadTemplates(app *config.AppContext) error {
 		return err
 	}
 	app.TemplateCache["success.tmpl"] = success
-
 
 	berlin, err := template.ParseFiles("templates/berlin.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl")
 	if err != nil {
@@ -102,13 +101,13 @@ func loadTemplates(app *config.AppContext) error {
 		if err != nil {
 			return err
 		}
-		app.TemplateCache["email-html-" + conf.Tag] = htmlEmail
+		app.TemplateCache["email-html-"+conf.Tag] = htmlEmail
 
 		textEmail, err := template.ParseFiles(textEmailTmpl)
 		if err != nil {
 			return err
 		}
-		app.TemplateCache["email-text-" + conf.Tag] = textEmail
+		app.TemplateCache["email-text-"+conf.Tag] = textEmail
 	}
 
 	checkin, err := template.ParseFiles("templates/checkin.tmpl", "templates/main_nav.tmpl")
@@ -130,7 +129,7 @@ func maybeReload(app *config.AppContext) {
 	if !app.InProduction {
 		err := loadTemplates(app)
 		if err != nil {
-			panic(err)	
+			panic(err)
 		}
 	}
 }
@@ -157,7 +156,7 @@ func findConf(r *http.Request, app *config.AppContext) (*types.Conf, error) {
 	return nil, fmt.Errorf("conf '%s' not found", confTag)
 }
 
-func findConfByRef(app *config.AppContext, confRef string) (*types.Conf) {
+func findConfByRef(app *config.AppContext, confRef string) *types.Conf {
 	for _, conf := range app.Confs {
 		if conf.Ref == confRef {
 			return conf
@@ -179,7 +178,7 @@ func findTicket(app *config.AppContext, tixID string) (*types.ConfTicket, *types
 }
 
 func determineTixPrice(ctx *config.AppContext, tixSlug string) (*types.Conf, *types.ConfTicket, uint, bool, error) {
-	
+
 	tixParts := strings.Split(tixSlug, "+")
 	if len(tixParts) != 3 {
 		return nil, nil, 0, false, fmt.Errorf("not enough ticket parts?? needed 3. %s", tixSlug)
@@ -189,13 +188,13 @@ func determineTixPrice(ctx *config.AppContext, tixSlug string) (*types.Conf, *ty
 	if tix == nil {
 		return nil, nil, 0, false, fmt.Errorf("Unable to find tix %s", tixParts[0])
 	}
-	tixTypeOpts := []string{ "default", "local" }
+	tixTypeOpts := []string{"default", "local"}
 	if !contains(tixTypeOpts, tixParts[1]) {
 		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[1], tixTypeOpts)
 	}
 	isLocal := tixParts[1] == "local"
 
-	currencyTypeOpts := []string{ "btc", "fiat" }
+	currencyTypeOpts := []string{"btc", "fiat"}
 	if !contains(currencyTypeOpts, tixParts[2]) {
 		return nil, nil, 0, false, fmt.Errorf("type %s not in list %v", tixParts[2], currencyTypeOpts)
 	}
@@ -213,7 +212,7 @@ func determineTixPrice(ctx *config.AppContext, tixSlug string) (*types.Conf, *ty
 }
 
 /* Find ticket where current sold + date > inputs */
-func findCurrTix(conf *types.Conf, soldCount uint) (*types.ConfTicket) {
+func findCurrTix(conf *types.Conf, soldCount uint) *types.ConfTicket {
 	now := time.Now()
 	/* Sort the tickets! */
 	tixs := types.ConfTickets(conf.Tickets)
@@ -351,14 +350,14 @@ func getSessionKey(p string, r *http.Request) (string, bool) {
 	return key, ok
 }
 
-type HomePage struct {}
+type HomePage struct{}
 
 type ConfPage struct {
-	Conf *types.Conf
-	Tix *types.ConfTicket
-	Sold uint
+	Conf    *types.Conf
+	Tix     *types.ConfTicket
+	Sold    uint
 	TixLeft uint
-	Talks []*types.Talk
+	Talks   []*types.Talk
 	Buckets map[string]sessionTime
 }
 
@@ -367,11 +366,11 @@ type SuccessPage struct {
 }
 
 type TixFormPage struct {
-	Conf *types.Conf
+	Conf     *types.Conf
 	Discount string
-	Count uint
-	Tix   *types.ConfTicket
-	Price uint
+	Count    uint
+	Tix      *types.ConfTicket
+	Price    uint
 }
 
 func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -427,7 +426,7 @@ func ReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 			w.WriteHeader(http.StatusBadRequest)
 			err := ctx.TemplateCache["checkin.tmpl"].ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
 				NeedsPin: true,
-				Msg: "Wrong pin",
+				Msg:      "Wrong pin",
 			})
 			if err != nil {
 				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
@@ -465,7 +464,7 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	sort.Sort(talks)
 	err = tmpl.ExecuteTemplate(w, "sched.tmpl", &ConfPage{
 		Talks: talks,
-		Conf: conf,
+		Conf:  conf,
 	})
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
@@ -532,11 +531,11 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	}
 	tmpl := ctx.TemplateCache[conf.Template]
 	err = tmpl.ExecuteTemplate(w, conf.Template, &ConfPage{
-		Conf: conf,
-		Tix: currTix,
-		Sold: soldCount,
+		Conf:    conf,
+		Tix:     currTix,
+		Sold:    soldCount,
 		TixLeft: tixLeft,
-		Talks: talks,
+		Talks:   talks,
 		Buckets: buckets,
 	})
 	if err != nil {
@@ -560,34 +559,34 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 }
 
 type Session struct {
-	Name string
-	Speaker string
-	Company string
-	Twitter string
-	Website string
-	Photo string
+	Name      string
+	Speaker   string
+	Company   string
+	Twitter   string
+	Website   string
+	Photo     string
 	TalkPhoto string
-	Sched *types.Times
+	Sched     *types.Times
 	StartTime string
-	Len     string
-	DayTag  string
-	Type    string
-	Venue   string
+	Len       string
+	DayTag    string
+	Type      string
+	Venue     string
 	AnchorTag string
 }
 
 func TalkToSession(talk *types.Talk) *Session {
 	sesh := &Session{
-		Name: talk.Name,
-		Speaker: talk.BadgeName,
-		Twitter: talk.Twitter,
-		Website: talk.Website,
-		Company: talk.Company,
-		Photo: talk.Photo,
+		Name:      talk.Name,
+		Speaker:   talk.BadgeName,
+		Twitter:   talk.Twitter,
+		Website:   talk.Website,
+		Company:   talk.Company,
+		Photo:     talk.Photo,
 		TalkPhoto: talk.Clipart,
-		Sched: talk.Sched,
-		Type: talk.Type,
-		Venue: strings.ToUpper(talk.Venue),
+		Sched:     talk.Sched,
+		Type:      talk.Type,
+		Venue:     strings.ToUpper(talk.Venue),
 		AnchorTag: talk.AnchorTag,
 	}
 
@@ -601,7 +600,7 @@ func TalkToSession(talk *types.Talk) *Session {
 }
 
 type SchedulePage struct {
-	Talks []*types.Talk
+	Talks    []*types.Talk
 	Sessions []talkTime
 }
 
@@ -656,17 +655,17 @@ type EmailTmpl struct {
 
 type TicketTmpl struct {
 	QRCodeURI string
-	Domain string
-	CSS string
-	Type string
-	Conf *types.Conf
+	Domain    string
+	CSS       string
+	Type      string
+	Conf      *types.Conf
 }
 
 func SendMailTest(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	reg := &types.Registration{
-		RefID: "testticket",
-		Type: "volunteer",
-		Email: "niftynei@gmail.com",
+		RefID:      "testticket",
+		Type:       "volunteer",
+		Email:      "niftynei@gmail.com",
 		ItemBought: "bitcoin++",
 	}
 
@@ -685,7 +684,7 @@ func sendMail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, re
 	tickets := make([]*types.Ticket, 1)
 	tickets[0] = &types.Ticket{
 		Pdf: pdf,
-		ID: reg.RefID,
+		ID:  reg.RefID,
 	}
 
 	err = SendTickets(ctx, tickets, reg.ConfRef, reg.Email, time.Now())
@@ -729,10 +728,10 @@ func Ticket(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 	tix := &TicketTmpl{
 		QRCodeURI: dataURI,
-		CSS: MiniCss(),
-		Domain: ctx.Env.GetDomain(),
-		Type: tixType,
-		Conf: conf,
+		CSS:       MiniCss(),
+		Domain:    ctx.Env.GetDomain(),
+		Type:      tixType,
+		Conf:      conf,
 	}
 
 	err = ctx.TemplateCache["ticket.tmpl"].Execute(w, tix)
@@ -746,7 +745,7 @@ func TicketCheck(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	confTag, _ := getSessionKey("tag", r)
 
 	tmplTag := "email-html-" + confTag
-	tmpl, ok := ctx.TemplateCache[tmplTag]	
+	tmpl, ok := ctx.TemplateCache[tmplTag]
 	if !ok {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Infos.Printf("/welcome-email template %s not found", tmplTag)
@@ -779,7 +778,7 @@ func CheckIn(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 			w.WriteHeader(http.StatusBadRequest)
 			err := ctx.TemplateCache["checkin.tmpl"].ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
 				NeedsPin: true,
-				Msg: "Wrong pin",
+				Msg:      "Wrong pin",
 			})
 			if err != nil {
 				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
@@ -843,7 +842,7 @@ func CheckInGet(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	}
 	err = tmpl.ExecuteTemplate(w, "checkin.tmpl", &CheckInPage{
 		TicketType: tix_type,
-		Msg: msg,
+		Msg:        msg,
 	})
 
 	if err != nil {
@@ -928,9 +927,9 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 	}
 	for i := 0; i < int(charge.Metadata.Quantity); i++ {
 		item := types.Item{
-			Total:    int64(charge.FiatVal * 100),
-			Desc:     charge.Description,
-			Type:     tixType,
+			Total: int64(charge.FiatVal * 100),
+			Desc:  charge.Description,
+			Type:  tixType,
 		}
 		entry.Items = append(entry.Items, item)
 	}
@@ -998,43 +997,43 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	}
 
 	switch r.Method {
-		case http.MethodGet:
-			pageTpl := ctx.TemplateCache["collect-email.tmpl"]
-			err = pageTpl.Execute(w, &TixFormPage{
-				Conf:        conf,
-				Tix:         tix,
-				Price:       tixPrice,
-				Discount:    "",
-			        Count:       uint(1),	
-			})
-			if err != nil {
-				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-				ctx.Err.Printf("/tix/{%s}/collect-email templ exec failed %s", tixSlug, err.Error())
-				return
-			}
+	case http.MethodGet:
+		pageTpl := ctx.TemplateCache["collect-email.tmpl"]
+		err = pageTpl.Execute(w, &TixFormPage{
+			Conf:     conf,
+			Tix:      tix,
+			Price:    tixPrice,
+			Discount: "",
+			Count:    uint(1),
+		})
+		if err != nil {
+			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+			ctx.Err.Printf("/tix/{%s}/collect-email templ exec failed %s", tixSlug, err.Error())
 			return
-		case http.MethodPost:
-			r.ParseForm()
-			dec := schema.NewDecoder()
-			dec.IgnoreUnknownKeys(true)
-			var form types.TixForm
-			err = dec.Decode(&form, r.PostForm)
-			if err != nil {
-				http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
-				ctx.Err.Printf("/collect-email unable to decode form %s", err)
-				return
-			}
+		}
+		return
+	case http.MethodPost:
+		r.ParseForm()
+		dec := schema.NewDecoder()
+		dec.IgnoreUnknownKeys(true)
+		var form types.TixForm
+		err = dec.Decode(&form, r.PostForm)
+		if err != nil {
+			http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+			ctx.Err.Printf("/collect-email unable to decode form %s", err)
+			return
+		}
 
-			if form.Email == "" || form.Count < 1 {
-				http.Redirect(w, r, fmt.Sprintf("/collect-email/%s", tixSlug), http.StatusSeeOther)
-			}
+		if form.Email == "" || form.Count < 1 {
+			http.Redirect(w, r, fmt.Sprintf("/collect-email/%s", tixSlug), http.StatusSeeOther)
+		}
 
-			/* The goal is that we hit opennode init, with an email! */
-			OpenNodeInit(w, r, ctx, conf, tix, tixPrice, &form)
-			return
-		default:
-			http.NotFound(w, r)
-			return
+		/* The goal is that we hit opennode init, with an email! */
+		OpenNodeInit(w, r, ctx, conf, tix, tixPrice, &form)
+		return
+	default:
+		http.NotFound(w, r)
+		return
 	}
 }
 
@@ -1067,24 +1066,23 @@ func StripeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, 
 	}
 	params := &stripe.CheckoutSessionParams{
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
-		&stripe.CheckoutSessionLineItemParams{
-			PriceData: &stripe.CheckoutSessionLineItemPriceDataParams {
-				ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
-					Description: stripe.String(confDesc),
-					Name: stripe.String(conf.Desc),
-					Metadata: metadata,
+			{
+				PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+					ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
+						Description: stripe.String(confDesc),
+						Name:        stripe.String(conf.Desc),
+						Metadata:    metadata,
+					},
+					UnitAmount: stripe.Int64(priceAsCents),
+					Currency:   stripe.String("USD"),
 				},
-				UnitAmount: stripe.Int64(priceAsCents),
-				Currency: stripe.String("USD"),
-
-			},
-			Quantity: stripe.Int64(1),
-		},},
-		Metadata: metadata,
-		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL: stripe.String(domain + "/conf/" + conf.Tag + "/success"),
-		CancelURL: stripe.String(domain + "/conf/" + conf.Tag),
-		AutomaticTax: &stripe.CheckoutSessionAutomaticTaxParams{Enabled: stripe.Bool(true)},
+				Quantity: stripe.Int64(1),
+			}},
+		Metadata:            metadata,
+		Mode:                stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL:          stripe.String(domain + "/conf/" + conf.Tag + "/success"),
+		CancelURL:           stripe.String(domain + "/conf/" + conf.Tag),
+		AutomaticTax:        &stripe.CheckoutSessionAutomaticTaxParams{Enabled: stripe.Bool(true)},
 		AllowPromotionCodes: stripe.Bool(true),
 	}
 
@@ -1165,9 +1163,9 @@ func StripeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 			var i int64
 			for i = 0; i < si.Quantity; i++ {
 				item := types.Item{
-					Total:    si.AmountTotal,
-					Desc:     si.Description,
-					Type:     tixType,
+					Total: si.AmountTotal,
+					Desc:  si.Description,
+					Type:  tixType,
 				}
 				entry.Items = append(entry.Items, item)
 			}

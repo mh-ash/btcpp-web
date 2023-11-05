@@ -10,9 +10,9 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/alexedwards/scs/v2"
+	"github.com/base58btc/btcpp-web/external/getters"
 	"github.com/base58btc/btcpp-web/internal/config"
 	"github.com/base58btc/btcpp-web/internal/handlers"
-	"github.com/base58btc/btcpp-web/external/getters"
 	"github.com/base58btc/btcpp-web/internal/types"
 )
 
@@ -51,13 +51,13 @@ func loadConfig() *types.EnvConfig {
 		config.StripeEndpointSec = os.Getenv("STRIPE_END_SECRET")
 		config.RegistryPin = os.Getenv("REGISTRY_PIN")
 		config.Notion = types.NotionConfig{
-			Token: os.Getenv("NOTION_TOKEN"),
+			Token:       os.Getenv("NOTION_TOKEN"),
 			PurchasesDb: os.Getenv("NOTION_PURCHASES_DB"),
-			TalksDb: os.Getenv("NOTION_TALKS_DB"),
-			ConfsDb: os.Getenv("NOTION_CONFS_DB"),
-			ConfsTixDb: os.Getenv("NOTION_CONFSTIX_DB"),
+			TalksDb:     os.Getenv("NOTION_TALKS_DB"),
+			ConfsDb:     os.Getenv("NOTION_CONFS_DB"),
+			ConfsTixDb:  os.Getenv("NOTION_CONFSTIX_DB"),
 		}
-		config.Google = types.GoogleConfig{ Key: os.Getenv("GOOGLE_KEY") }
+		config.Google = types.GoogleConfig{Key: os.Getenv("GOOGLE_KEY")}
 	}
 
 	return &config
@@ -145,7 +145,7 @@ func run(env *types.EnvConfig) error {
 	app.Session.Cookie.SameSite = http.SameSiteLaxMode
 	app.Session.Cookie.Secure = app.InProduction
 
-	app.Notion = &types.Notion{ Config: &env.Notion }
+	app.Notion = &types.Notion{Config: &env.Notion}
 	app.Notion.Setup(env.Notion.Token)
 
 	return nil

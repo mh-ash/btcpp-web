@@ -6,8 +6,8 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/base58btc/btcpp-web/internal/config"
+	"github.com/base58btc/btcpp-web/internal/types"
 	"github.com/sorcererxw/go-notion"
 	"strings"
 	"time"
@@ -42,12 +42,12 @@ func fileGetURL(file *notion.File) string {
 
 func parseSpeaker(pageID string, props map[string]notion.PropertyValue) *types.Speaker {
 	speaker := &types.Speaker{
-		Name:         parseRichText("Name", props),
-		Desc:      parseRichText("Desc", props),
-		Org:      parseRichText("Org", props),
-		Photo:      parseRichText("Photo", props),
-		Github:      parseRichText("Github", props),
-		Twitter:      parseRichText("Twitter", props),
+		Name:    parseRichText("Name", props),
+		Desc:    parseRichText("Desc", props),
+		Org:     parseRichText("Org", props),
+		Photo:   parseRichText("Photo", props),
+		Github:  parseRichText("Github", props),
+		Twitter: parseRichText("Twitter", props),
 	}
 
 	return speaker
@@ -68,25 +68,25 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 	if talktimes != nil {
 		sched = &types.Times{
 			Start: talktimes.Start,
-			End: talktimes.End,
+			End:   talktimes.End,
 		}
 	}
 
 	talk := &types.Talk{
-		ID:           pageID,
-		Name:         parseRichText("Talk Name", props),
-		Clipart:      parseRichText("Clipart", props),
-		Description:  parseRichText("Description", props),
-		Photo:        parseRichText("NormPhoto", props),
-		Website:      props["Website"].URL,
-		Twitter:      twitter,
-		BadgeName:    parseRichText("Badge Name", props),
-		Company:      parseRichText("Company", props),
-		Sched:        sched,
+		ID:          pageID,
+		Name:        parseRichText("Talk Name", props),
+		Clipart:     parseRichText("Clipart", props),
+		Description: parseRichText("Description", props),
+		Photo:       parseRichText("NormPhoto", props),
+		Website:     props["Website"].URL,
+		Twitter:     twitter,
+		BadgeName:   parseRichText("Badge Name", props),
+		Company:     parseRichText("Company", props),
+		Sched:       sched,
 	}
 
 	if len(talk.Clipart) > 4 {
-		talk.AnchorTag = talk.Clipart[:len(talk.Clipart) - 4]
+		talk.AnchorTag = talk.Clipart[:len(talk.Clipart)-4]
 	}
 
 	if props["Venue"].Select != nil {
@@ -114,15 +114,15 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 
 func parseConf(pageID string, props map[string]notion.PropertyValue) *types.Conf {
 	conf := &types.Conf{
-		Ref: pageID,
-		Tag: parseRichText("Name", props),
-		Active: props["Active"].Checkbox,
-		Desc: parseRichText("Desc", props),
-		DateDesc: parseRichText("DateDesc", props),
-		Venue: parseRichText("Venue", props),
-		Template: parseRichText("Template", props),
-		ShowAgenda: props["Show Agenda"].Checkbox,
-		ShowTalks: props["Show Talks"].Checkbox,
+		Ref:           pageID,
+		Tag:           parseRichText("Name", props),
+		Active:        props["Active"].Checkbox,
+		Desc:          parseRichText("Desc", props),
+		DateDesc:      parseRichText("DateDesc", props),
+		Venue:         parseRichText("Venue", props),
+		Template:      parseRichText("Template", props),
+		ShowAgenda:    props["Show Agenda"].Checkbox,
+		ShowTalks:     props["Show Talks"].Checkbox,
 		HasSatellites: props["Has Satellites"].Checkbox,
 	}
 
@@ -134,13 +134,13 @@ func parseConf(pageID string, props map[string]notion.PropertyValue) *types.Conf
 }
 
 func parseConfTicket(pageID string, props map[string]notion.PropertyValue) *types.ConfTicket {
-	ticket := &types.ConfTicket {
-		ID: pageID,
-		Tier: parseRichText("Tier", props),
+	ticket := &types.ConfTicket{
+		ID:    pageID,
+		Tier:  parseRichText("Tier", props),
 		Local: uint(props["Local"].Number),
-		BTC: uint(props["BTC"].Number),
-		USD: uint(props["USD"].Number),
-		Max: uint(props["Max"].Number),
+		BTC:   uint(props["BTC"].Number),
+		USD:   uint(props["USD"].Number),
+		Max:   uint(props["Max"].Number),
 	}
 
 	if len(props["Conf"].Relation) > 0 {
@@ -159,8 +159,8 @@ func parseConfTicket(pageID string, props map[string]notion.PropertyValue) *type
 func ListConfTickets(n *types.Notion) ([]*types.ConfTicket, error) {
 	var confTix []*types.ConfTicket
 
-	hasMore := true;
-	nextCursor := "";
+	hasMore := true
+	nextCursor := ""
 	for hasMore {
 		var err error
 		var pages []*notion.Page
@@ -168,7 +168,7 @@ func ListConfTickets(n *types.Notion) ([]*types.ConfTicket, error) {
 		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
 			n.Config.ConfsTixDb, notion.QueryDatabaseParam{
 				StartCursor: nextCursor,
-		})
+			})
 
 		if err != nil {
 			return nil, err
@@ -186,8 +186,8 @@ func ListConfTickets(n *types.Notion) ([]*types.ConfTicket, error) {
 func ListConferences(n *types.Notion) ([]*types.Conf, error) {
 	var confs []*types.Conf
 
-	hasMore := true;
-	nextCursor := "";
+	hasMore := true
+	nextCursor := ""
 	for hasMore {
 		var err error
 		var pages []*notion.Page
@@ -195,7 +195,7 @@ func ListConferences(n *types.Notion) ([]*types.Conf, error) {
 		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
 			n.Config.ConfsDb, notion.QueryDatabaseParam{
 				StartCursor: nextCursor,
-		})
+			})
 
 		if err != nil {
 			return nil, err
@@ -227,8 +227,8 @@ func ListConferences(n *types.Notion) ([]*types.Conf, error) {
 func ListTalks(n *types.Notion) ([]*types.Talk, error) {
 	var talks []*types.Talk
 
-	hasMore := true;
-	nextCursor := "";
+	hasMore := true
+	nextCursor := ""
 	for hasMore {
 		var err error
 		var pages []*notion.Page
@@ -236,7 +236,7 @@ func ListTalks(n *types.Notion) ([]*types.Talk, error) {
 		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
 			n.Config.TalksDb, notion.QueryDatabaseParam{
 				StartCursor: nextCursor,
-		})
+			})
 
 		if err != nil {
 			return nil, err
@@ -258,16 +258,16 @@ func GetTalksFor(n *types.Notion, event string) ([]*types.Talk, error) {
 	var filtered []*types.Talk
 	for _, talk := range talks {
 		if talk.Event == event {
-			filtered = append(filtered, talk)	
+			filtered = append(filtered, talk)
 		}
 	}
 	return filtered, nil
 }
 
 func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
-	/* Make sure that the ticket is in the Purchases table and 
+	/* Make sure that the ticket is in the Purchases table and
 	is *NOT* already checked in */
-	pages, _, _, _:= n.Client.QueryDatabase(context.Background(), n.Config.PurchasesDb,
+	pages, _, _, _ := n.Client.QueryDatabase(context.Background(), n.Config.PurchasesDb,
 		notion.QueryDatabaseParam{
 			Filter: &notion.Filter{
 				Property: "RefID",
@@ -290,7 +290,7 @@ func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
 				"Checked In": notion.NewRichTextPropertyValue(
 					[]*notion.RichText{
 						{Type: notion.RichTextText,
-							Text: &notion.Text{Content: now.Format(time.RFC3339) }},
+							Text: &notion.Text{Content: now.Format(time.RFC3339)}},
 					}...),
 			})
 
@@ -302,16 +302,14 @@ func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
 		return ticket_type, err == nil, err
 	}
 
-
-
 	return "", true, fmt.Errorf("Already checked in")
 }
 
 func parseRegistration(props map[string]notion.PropertyValue) *types.Registration {
 	regis := &types.Registration{
-		RefID: parseRichText("RefID", props),
-		Type:  props["Type"].Select.Name,
-		Email: props["Email"].Email,
+		RefID:      parseRichText("RefID", props),
+		Type:       props["Type"].Select.Name,
+		Email:      props["Email"].Email,
 		ItemBought: parseRichText("Item Bought", props),
 	}
 	if len(props["conf"].Relation) > 0 {
@@ -323,22 +321,22 @@ func parseRegistration(props map[string]notion.PropertyValue) *types.Registratio
 func SoldTixCount(n *types.Notion, confRef string) (uint, error) {
 	var regisCount uint
 
-	hasMore := true;
-	nextCursor := "";
+	hasMore := true
+	nextCursor := ""
 	db := n.Config.PurchasesDb
 	for hasMore {
 		var err error
 		var pages []*notion.Page
 		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(), db,
-		notion.QueryDatabaseParam{
-			Filter: &notion.Filter{
-				Property: "conf",
-				Relation: &notion.RelationFilterCondition{
-					Contains: confRef,
+			notion.QueryDatabaseParam{
+				Filter: &notion.Filter{
+					Property: "conf",
+					Relation: &notion.RelationFilterCondition{
+						Contains: confRef,
+					},
 				},
-			},
-			StartCursor: nextCursor,
-		})
+				StartCursor: nextCursor,
+			})
 		if err != nil {
 			return 0, err
 		}
@@ -352,8 +350,8 @@ func SoldTixCount(n *types.Notion, confRef string) (uint, error) {
 func fetchRegistrations(ctx *config.AppContext) ([]*types.Registration, error) {
 	var regis []*types.Registration
 
-	hasMore := true;
-	nextCursor := "";
+	hasMore := true
+	nextCursor := ""
 	n := ctx.Notion
 	db := ctx.Env.Notion.PurchasesDb
 	for hasMore {
@@ -431,14 +429,14 @@ func AddTickets(n *types.Notion, entry *types.Entry, src string) error {
 				"RefID": notion.NewTitlePropertyValue(
 					[]*notion.RichText{
 						{Type: notion.RichTextText,
-							Text: &notion.Text{Content: uniqID }},
+							Text: &notion.Text{Content: uniqID}},
 					}...),
 				"Timestamp": notion.NewRichTextPropertyValue(
 					[]*notion.RichText{
 						{Type: notion.RichTextText,
 							Text: &notion.Text{Content: entry.Created.Format(time.RFC3339)},
 						}}...),
-				"Platform": &notion.PropertyValue{
+				"Platform": {
 					Type: notion.PropertySelect,
 					Select: &notion.SelectOption{
 						Name: src,
@@ -447,23 +445,23 @@ func AddTickets(n *types.Notion, entry *types.Entry, src string) error {
 				"conf": notion.NewRelationPropertyValue(
 					[]*notion.ObjectReference{{ID: entry.ConfRef}}...,
 				),
-				"Type": &notion.PropertyValue{
+				"Type": {
 					Type: notion.PropertySelect,
 					Select: &notion.SelectOption{
 						Name: item.Type,
 					},
 				},
-				"Amount Paid": &notion.PropertyValue{
+				"Amount Paid": {
 					Type:   notion.PropertyNumber,
 					Number: float64(item.Total) / 100,
 				},
-				"Currency": &notion.PropertyValue{
+				"Currency": {
 					Type: notion.PropertySelect,
 					Select: &notion.SelectOption{
 						Name: entry.Currency,
 					},
 				},
-				"Email": &notion.PropertyValue{
+				"Email": {
 					Type:  notion.PropertyEmail,
 					Email: entry.Email,
 				},

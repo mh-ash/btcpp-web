@@ -7,25 +7,25 @@ type (
 	}
 
 	OpenNodeRequest struct {
-		Amount        float64 `json:"amount"`
-		Description   string  `json:"description"`
-		Currency      string  `json:"currency"`
-		CustomerEmail string  `json:"customer_email"`
-		NotifEmail    string  `json:"notif_email"`
-		CustomerName  string  `json:"customer_name"`
-		OrderID       string  `json:"order_id"`
-		CallbackURL   string  `json:"callback_url"`
-		SuccessURL    string  `json:"success_url"`
-		AutoSettle    bool    `json:"auto_settle"`
-		TTL           uint    `json:"ttl"`
+		Amount        float64           `json:"amount"`
+		Description   string            `json:"description"`
+		Currency      string            `json:"currency"`
+		CustomerEmail string            `json:"customer_email"`
+		NotifEmail    string            `json:"notif_email"`
+		CustomerName  string            `json:"customer_name"`
+		OrderID       string            `json:"order_id"`
+		CallbackURL   string            `json:"callback_url"`
+		SuccessURL    string            `json:"success_url"`
+		AutoSettle    bool              `json:"auto_settle"`
+		TTL           uint              `json:"ttl"`
 		Metadata      *OpenNodeMetadata `json:"metadata"`
 	}
 
 	OpenNodeMetadata struct {
-		Email string `json:"email"`
+		Email    string  `json:"email"`
 		Quantity float64 `json:"quantity"`
-		ConfRef  string `json:"conf-ref"`
-		TixLocal bool `json:"tix-local"`
+		ConfRef  string  `json:"conf-ref"`
+		TixLocal bool    `json:"tix-local"`
 	}
 
 	OpenNodeChainInvoice struct {
