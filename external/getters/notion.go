@@ -391,7 +391,6 @@ func FetchBtcppRegistrations(ctx *config.AppContext) ([]*types.Registration, err
 		return nil, err
 	}
 
-	ctx.Infos.Printf("found %d rezzies!", len(rezzies))
 	for _, r := range rezzies {
 		if r.RefID == "" {
 			continue

@@ -39,8 +39,6 @@ func CheckForNewMails(ctx *config.AppContext) {
 		return
 	}
 
-	ctx.Infos.Printf("Fetched %d registrations\n", len(rezzies))
-
 	for _, rez := range rezzies {
 		/* check local list (has sent already?) gets lost on restart */
 		_, has := rezziesSent[rez.RefID]
@@ -60,7 +58,9 @@ func CheckForNewMails(ctx *config.AppContext) {
 			fails++
 		}
 	}
-	ctx.Infos.Printf("Of %d, sent %d mails, %d failed, %d retries", success+fails+resent, success, fails, resent)
+	if (success+fails+resent > 0) {
+		ctx.Infos.Printf("Of %d, sent %d mails, %d failed, %d retries", success+fails+resent, success, fails, resent)
+	}
 }
 
 func pdfGrabber(url string, res *[]byte) chromedp.Tasks {
