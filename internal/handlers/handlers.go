@@ -906,6 +906,12 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 		return
 	}
 
+	if ev.Status != "paid" {
+		ctx.Infos.Printf("User did not complete charge. charge-id: %s status: %s email: %s conf-ref: %s", ev.ID, ev.Status, charge.Metadata.Email, charge.Metadata.ConfRef)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	ctx.Infos.Println(charge)
 	entry := types.Entry{
 		ID:       charge.ID,
@@ -919,6 +925,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 	if err != nil {
 		ctx.Err.Printf("Failed to fetch charge %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	tixType := "genpop"
