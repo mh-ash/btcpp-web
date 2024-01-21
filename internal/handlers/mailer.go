@@ -212,7 +212,7 @@ func SendMailRequest(ctx *config.AppContext, mail *mailer.MailRequest) error {
 
 	client := &http.Client{}
 
-	url := "http://104.131.77.55:9998/job"
+	url := "http://45.55.129.100:9998/job"
 	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(payload))
 	if err != nil {
 		return err
