@@ -261,13 +261,13 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 		maybeReload(app)
 		RenderConfSuccess(w, r, app)
 	}).Methods("GET")
-	r.HandleFunc("/conf/{conf}", func(w http.ResponseWriter, r *http.Request) {
-		maybeReload(app)
-		RenderConf(w, r, app)
-	}).Methods("GET")
 	r.HandleFunc("/conf/{conf}/talks", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
 		RenderTalks(w, r, app)
+	}).Methods("GET")
+	r.HandleFunc("/conf/{conf}", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		RenderConf(w, r, app)
 	}).Methods("GET")
 	r.HandleFunc("/tix/{tix}/collect-email", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
