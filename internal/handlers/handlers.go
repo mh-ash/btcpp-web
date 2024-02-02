@@ -64,7 +64,7 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["talks.tmpl"] = talks
 
-	buenos, err := template.ParseFiles("templates/buenos.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/btcbutton.tmpl")
+	buenos, err := template.ParseFiles("templates/buenos.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/multi_session.tmpl", "templates/btcbutton.tmpl")
 	if err != nil {
 		return err
 	}

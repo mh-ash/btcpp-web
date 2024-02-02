@@ -1,0 +1,59 @@
+{{ define "multisession" }}
+<li class="flex-row py-8">
+  <div class="flex">
+    <div class="mb-4 flex-shrink-0 sm:mb-0 sm:mr-4">
+     <a href="/conf/{{ .ConfTag }}/talks#{{ .AnchorTag }}" target="_blank">
+     <img class="inline-block h-28 w-28 rounded-md" src="/static/img/talks/{{ .TalkPhoto }}" alt="" />
+     </a>
+    </div>
+   <div class="ml-3">
+       <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
+       <a href="/conf/{{ .ConfTag }}/talks#{{ .AnchorTag }}">{{ .Name }}</a></h4>
+       {{ if ne .Speaker "" }}
+         <h5 class="text-left text-lg text-gray-500">{{ .Speaker }}</h5>
+         <p class="text-left text-sm text-gray-500">{{ .Company }}</p>
+       {{ end }}
+        {{ if eq .Venue "one" }}
+        <p class="text-left text-sm text-gray-500">
+          Venue: <span class="font-medium text-purple-600">relámpago</span> 
+        </p>
+        {{ end }}
+        {{ if eq .Venue "two" }}
+        <p class="text-left text-sm text-gray-500">
+          Venue: <span class="font-medium text-blue-600">en cadena</span> 
+        </p>
+        {{ end }}
+        {{ if eq .Venue "three" }}
+        <p class="text-left text-sm text-gray-500">
+          Venue: <span class="font-medium text-indigo-600">capa dos</span> 
+        </p>
+        {{ end }}
+        {{ if eq .Venue "four" }}
+        <p class="text-left text-sm text-gray-500">
+          Venue: <span class="font-medium text-cyan-600">líquido</span> 
+        </p>
+        {{ end }}
+    </a>
+   </div>
+  </div>
+  <div class="mt-4 pb-2 w-full flex flex-start items-center text-xs">
+    <span class="pr-4 grow-0 text-sm leading-6 text-gray-900">{{ .StartTime }}</span>
+    <span class="grow-0 text-sm leading-6 text-gray-900 font-bold">{{ .Len }}</span>
+    <span class="flex-grow"></span>
+    
+    {{ if eq .Type "hackathon" }}
+    <span class="grow0 relative z-10 rounded-full bg-orange-50 py-1.5 px-3 font-medium text-orange-600">{{ .Type }}</span>
+    {{ end }}
+    {{ if eq .Type "talk" }}
+    <span class="grow0 relative z-10 rounded-full bg-amber-50 py-1.5 px-3 font-medium text-amber-600">{{ .Type }}</span>
+    {{ end }}
+    {{ if eq .Type "workshop" }}
+    <span class="grow0 relative z-10 rounded-full bg-rose-50 py-1.5 px-3 font-medium text-rose-600">{{ .Type }}</span>
+    {{ end }}
+    {{ if eq .Type "keynote" }}
+    <span class="grow0 relative z-10 rounded-full bg-pink-50 py-1.5 px-3 font-medium text-pink-600">{{ .Type }}</span>
+    {{ end }}
+
+  </div>
+  </li>	
+{{ end }}
