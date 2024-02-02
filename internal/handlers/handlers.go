@@ -587,7 +587,7 @@ func TalkToSession(talk *types.Talk, conf *types.Conf) *Session {
 		TalkPhoto: talk.Clipart,
 		Sched:     talk.Sched,
 		Type:      talk.Type,
-		Venue:     strings.ToUpper(talk.Venue),
+		Venue:     talk.Venue,
 		AnchorTag: talk.AnchorTag,
 		ConfTag:   conf.Tag,
 	}
