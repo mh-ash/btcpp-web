@@ -27,6 +27,26 @@
       </h3>
       <p class="mt-5 text-sm leading-6 text-gray-600">{{ .Description }}</p>
     </div>
+    {{ if eq .Venue "one" }}
+    <p class="text-left text-sm text-gray-500">
+      Venue: <span class="font-medium text-purple-600">relámpago</span> 
+    </p>
+    {{ end }}
+    {{ if eq .Venue "two" }}
+    <p class="text-left text-sm text-gray-500">
+      Venue: <span class="font-medium text-blue-600">en cadena</span> 
+    </p>
+    {{ end }}
+    {{ if eq .Venue "three" }}
+    <p class="text-left text-sm text-gray-500">
+      Venue: <span class="font-medium text-indigo-600">capa dos</span> 
+    </p>
+    {{ end }}
+    {{ if eq .Venue "four" }}
+    <p class="text-left text-sm text-gray-500">
+      Venue: <span class="font-medium text-cyan-600">líquido</span> 
+    </p>
+    {{ end }}
     {{ if ne .BadgeName "" }}
     <div class="mt-6 flex border-t border-gray-900/5 pt-6">
       <div class="relative flex items-center gap-x-4">
