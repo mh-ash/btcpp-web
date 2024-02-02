@@ -196,6 +196,7 @@
         <p class="text-sm leading-6 text-gray-600">{{ .Company }}</p>
         <p class="text-sm leading-6 text-gray-600">{{ .TimeDesc }}</p>
         <ul role="list" class="mt-6 flex justify-center gap-x-6">
+          {{ if ne .Twitter "https://twitter.com/" }}
           <li>
             <a href="{{ .Twitter }}" class="text-gray-400 hover:text-gray-500" target="_blank">
               <span class="sr-only">Twitter</span>
@@ -204,6 +205,8 @@
               </svg>
             </a>
           </li>
+          {{ end }}
+          {{ if ne .Website "" }}
           <li>
             <a href="{{ .Website}}" class="text-gray-400 hover:text-gray-500" target="_blank">
               <span class="sr-only">Website</span>
@@ -212,6 +215,7 @@
               </svg>
             </a>
           </li>
+          {{ end }}
         </ul>
       </li>
       {{ end }}
