@@ -515,7 +515,7 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 		return
 	}
 
-	buckets, err := bucketTalks(talks)
+	buckets, err := bucketTalks(conf, talks)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("Unable to bucket '%s' talks from Notion!! %s", conf.Tag, err.Error())
@@ -573,9 +573,10 @@ type Session struct {
 	Type      string
 	Venue     string
 	AnchorTag string
+	ConfTag   string
 }
 
-func TalkToSession(talk *types.Talk) *Session {
+func TalkToSession(talk *types.Talk, conf *types.Conf) *Session {
 	sesh := &Session{
 		Name:      talk.Name,
 		Speaker:   talk.BadgeName,
@@ -588,6 +589,7 @@ func TalkToSession(talk *types.Talk) *Session {
 		Type:      talk.Type,
 		Venue:     strings.ToUpper(talk.Venue),
 		AnchorTag: talk.AnchorTag,
+		ConfTag:   conf.Tag,
 	}
 
 	if talk.Sched != nil {
@@ -632,12 +634,12 @@ func (p talkTime) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]
 }
 
-func bucketTalks(talks talkTime) (map[string]sessionTime, error) {
+func bucketTalks(conf *types.Conf, talks talkTime) (map[string]sessionTime, error) {
 	sort.Sort(talks)
 
 	sessions := make(map[string]sessionTime)
 	for _, talk := range talks {
-		session := TalkToSession(talk)
+		session := TalkToSession(talk, conf)
 		section, ok := sessions[talk.Section]
 		if !ok {
 			section = make(sessionTime, 0)
