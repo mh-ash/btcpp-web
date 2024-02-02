@@ -101,8 +101,8 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 		talk.TimeDesc = sched.Desc()
 		talk.DayTag = sched.Day()
 	}
-	if props["TalkType"].Select != nil {
-		talk.Type = props["TalkType"].Select.Name
+	if props["Talk Type"].Select != nil {
+		talk.Type = props["Talk Type"].Select.Name
 	}
 
 	if props["Section"].Select != nil {
