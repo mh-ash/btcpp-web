@@ -14,7 +14,6 @@ run:
 
 .PHONY: build
 build:
-	tailwindcss -i templates/css/input.css -o static/css/mini.css --minify
 	go build -o target/$(APP_NAME) ./cmd/web/main.go
 
 .PHONY: all
