@@ -3,6 +3,15 @@ This is the code for the bitcoin++ website. (Conference [Twitter](https://twitte
 All of the configuration values live in a `config.toml` file, which is missing from this repo on purpose.
 
 
+## Setup Dependencies
+
+We use nix for this. Installs go + tailwindcss dependencies for Makefile.
+
+```
+	nix develop
+```
+
+
 ## To run
 
 make run
@@ -16,7 +25,7 @@ Note that the project uses @tailwindcss; `make dev-run` will start the server an
 This is janky though; you'll need to `pkill btcpp-web` before restarting...
 
 
-## To build 
+## To build
 
 make build
 
