@@ -122,7 +122,7 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["collect-email.tmpl"] = collect
 
-	emailincludes, err := template.ParseFiles("templates/include_two.tmpl")
+	emailincludes, err := template.ParseFiles("templates/tix_details.tmpl")
 	if err != nil {
 		return err
 	}
@@ -1026,7 +1026,7 @@ func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 	if discountCode == "hello" {
 		discountPrice = uint(0.80 * float64(tixPrice))
 	}
-	tmpl := template.Must(template.ParseFiles("templates/include_two.tmpl"))
+	tmpl := template.Must(template.ParseFiles("templates/tix_details.tmpl"))
 	w.Header().Set("Content-Type", "text/html")
 	err = tmpl.Execute(w, &TixFormPage{
 		Conf:     conf,

@@ -1,4 +1,9 @@
 <div id="discount_result" name="hidden_stuffs">
+  {{ if ne .TixPrice .DiscountPrice }}
+  <div class="text-gray-300 mt-4 mb-2"> 
+    <span class="font-semibold">{{ .Discount }}</span> Applied! Ticket is now <span class="text-orange-300 font-semibold">${{ .DiscountPrice }}USD</span> <span class="line-through">${{ .TixPrice }}USD</span>
+  </div>
+  {{ end }}
   <input class="rounded-md" type="hidden" name="Tix" value="{{ .Tix }}" required>
   <input class="rounded-md" type="hidden" name="HMAC" value="{{ .HMAC }}" required>
   <input class="rounded-md" type="hidden" name="TixPrice" value="{{ .TixPrice }}" required>
