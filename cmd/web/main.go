@@ -5,9 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
 	"strconv"
-	"syscall"
 	"time"
 
 	"github.com/BurntSushi/toml"
@@ -77,9 +75,6 @@ func RunNewMails(ctx *config.AppContext) {
 }
 
 func main() {
-	/* exit on ctrl-c */
-	handleSigTerms()
-
 	/* Load configs from config.toml */
 	app.Env = loadConfig()
 	err := run(app.Env)
@@ -154,14 +149,4 @@ func run(env *types.EnvConfig) error {
 	app.Notion.Setup(env.Notion.Token)
 
 	return nil
-}
-
-func handleSigTerms() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-c
-		fmt.Println("received SIGTERM, exiting")
-		os.Exit(1)
-	}()
 }
