@@ -15,6 +15,7 @@
             jq
             go
             tailwindcss
+            air 
           ];
           # Automatically run ??? when entering the shell.
           #shellHook = "???";

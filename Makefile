@@ -1,23 +1,19 @@
 APP_NAME = btcpp-web
 
 .PHONY: dev-run
-dev-run:
-	trap "pkill $(APP_NAME)" EXIT
-	go build -o target/$(APP_NAME) ./cmd/web/main.go
-	./target/$(APP_NAME) &
-	tailwindcss -i templates/css/input.css -o static/css/mini.css --minify --watch
-
-.PHONY: run
-run:
-	tailwindcss -i templates/css/input.css -o static/css/mini.css --minify
-	go run ./cmd/web/main.go
+dev-run: build-all
+	air -build.bin target/$(APP_NAME) -build.cmd="make build-all"
 
 .PHONY: build
 build:
-	go build -o target/$(APP_NAME) ./cmd/web/main.go
+	go build -v -o target/$(APP_NAME) ./cmd/web/main.go
 
-.PHONY: all
-all: build
+.PHONY: css-build
+css-build:
+	tailwindcss -i templates/css/input.css -o static/css/mini.css --minify
+
+.PHONY: build-all
+build-all: build css-build
 
 .PHONY: clean
 clean:

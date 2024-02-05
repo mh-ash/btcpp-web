@@ -5,32 +5,32 @@ All of the configuration values live in a `config.toml` file, which is missing f
 
 ## Setup Dependencies
 
-We use nix for this. Installs go + tailwindcss dependencies for Makefile.
+We use nix for this. Installs go + tailwindcss + air dependencies for Makefile.
 
 ```
 	nix develop
 ```
 
 
-## To run
+## To run for development
 
-make run
-
-## To develop
-
-make dev-run
-
-Note that the project uses @tailwindcss; `make dev-run` will start the server and the process that watches for changes to template files.
-
-This is janky though; you'll need to `pkill btcpp-web` before restarting...
+```
+	make dev-run
+```
 
 
 ## To build
 
-make build
+```
+  make build
+```
 
 
 This will put all the files necessary to serve the site into `target/`
+
+Note that the Github actions deployer uses Docker and isn't nix-aware, so for now you *must* make and check-in any CSS changes before deploying.
+
+CSS updates are made automatically by `dev-run`, so this shouldn't be too hard.
 
 
 ## Deploy Testing
