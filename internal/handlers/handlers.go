@@ -1019,13 +1019,15 @@ func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		return
 	}
 
-	// FIXME: validate hmac
+	// FIXME: validate HMAC
 
-	/* FIXME: Look up the discount code */
-	discountPrice := tixPrice
-	if discountCode == "hello" {
-		discountPrice = uint(0.80 * float64(tixPrice))
+	/* Calculate the discount */
+	discountPrice, err := getters.CalcDiscount(ctx.Notion, conf.Ref, discountCode, tixPrice)
+	if err != nil {
+		ctx.Err.Printf("/tix/%s/apply-discount discount not available: %s", tixSlug, err)
+		/* We don't bail though.. just continue */
 	}
+	
 	tmpl := template.Must(template.ParseFiles("templates/tix_details.tmpl"))
 	w.Header().Set("Content-Type", "text/html")
 	err = tmpl.Execute(w, &TixFormPage{
@@ -1040,8 +1042,8 @@ func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 	})
 
 	if err != nil {
-		http.Error(w, "Unable to load stuffs, please try again later", http.StatusInternalServerError)
-		ctx.Err.Printf("/tix/{%s}/collect-email templ exec failed %s", tixSlug, err.Error())
+		http.Error(w, "Unable to load template, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/tix/%s/apply-discount templ exec failed %s", tixSlug, err.Error())
 		return
 	}
 }

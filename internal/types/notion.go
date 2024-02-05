@@ -12,6 +12,7 @@ type (
 		TalksDb     string
 		ConfsDb     string
 		ConfsTixDb  string
+		DiscountsDb string
 	}
 
 	Notion struct {

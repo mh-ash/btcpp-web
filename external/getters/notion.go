@@ -13,6 +13,12 @@ import (
 	"time"
 )
 
+type DiscountCode struct {
+	CodeName   string
+	PercentOff uint
+	ConfRef	   string
+}
+
 func parseRichText(key string, props map[string]notion.PropertyValue) string {
 	val, ok := props[key]
 	if !ok {
@@ -51,6 +57,19 @@ func parseSpeaker(pageID string, props map[string]notion.PropertyValue) *types.S
 	}
 
 	return speaker
+}
+
+func parseDiscount(pageID string, props map[string]notion.PropertyValue) *DiscountCode {
+	discount := &DiscountCode{
+		CodeName:	parseRichText("CodeName", props),
+		PercentOff:     uint(props["PercentOff"].Number),
+	}
+
+	if len(props["Conference"].Relation) > 0 {
+		discount.ConfRef = props["Conference"].Relation[0].ID
+	}
+
+	return discount
 }
 
 func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk {
@@ -262,6 +281,73 @@ func GetTalksFor(n *types.Notion, event string) ([]*types.Talk, error) {
 		}
 	}
 	return filtered, nil
+}
+
+func ListDiscounts(n *types.Notion) ([]*DiscountCode, error) {
+	var discounts []*DiscountCode
+
+	hasMore := true
+	nextCursor := ""
+	for hasMore {
+		var err error
+		var pages []*notion.Page
+
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
+			n.Config.DiscountsDb, notion.QueryDatabaseParam{
+				StartCursor: nextCursor,
+			})
+
+		if err != nil {
+			return nil, err
+		}
+		for _, page := range pages {
+			discount := parseDiscount(page.ID, page.Properties)
+			discounts = append(discounts, discount)
+		}
+	}
+
+	return discounts, nil
+}
+
+func FindDiscount(n *types.Notion, code string) (*DiscountCode, error) {
+	discounts, err := ListDiscounts(n)
+	if err != nil {
+		return nil, err
+	}
+
+	upcode := strings.ToUpper(code)
+	for _, discount := range discounts {
+		if strings.ToUpper(discount.CodeName) == upcode {
+			return discount, nil
+		}
+	}
+	return nil, nil
+}
+
+func CalcDiscount(n *types.Notion, confRef string, code string, tixPrice uint) (uint, error) {
+	discount, err := FindDiscount(n, code)
+
+	if err != nil {
+		return tixPrice, err
+	}
+
+	/* Discount not found! */
+	if discount == nil {
+		return tixPrice, fmt.Errorf("Discount code %s not found", code)
+	}
+
+	if discount.ConfRef != confRef {
+		return tixPrice, fmt.Errorf("%s not a valid code for conference (%s != %s)", code, discount.ConfRef, confRef)
+	}
+
+	discountTix := float64(100 - discount.PercentOff) * float64(tixPrice) / float64(100)
+	
+	tix := uint(discountTix)
+	/* Overflows are a thing */
+	if tix == 0 || tix > tixPrice {
+		tix = 1	
+	}
+	return tix, nil
 }
 
 func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
