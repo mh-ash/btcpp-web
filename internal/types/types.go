@@ -62,6 +62,8 @@ type (
 		Email    string
 		Discount string
 		Count    uint
+		DiscountPrice uint
+		HMAC     string
 	}
 
 	Speaker struct {

@@ -116,11 +116,18 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["checkin.tmpl"] = checkin
 
-	collect, err := template.ParseFiles("templates/collect-email.tmpl", "templates/main_nav.tmpl")
+	collect, err := template.ParseGlob("templates/*.tmpl")
 	if err != nil {
 		return err
 	}
 	app.TemplateCache["collect-email.tmpl"] = collect
+
+	emailincludes, err := template.ParseFiles("templates/include_two.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["email-includes.tmpl"] = emailincludes
+
 
 	return nil
 }
@@ -273,6 +280,10 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 		maybeReload(app)
 		HandleEmail(w, r, app)
 	}).Methods("GET", "POST")
+	r.HandleFunc("/tix/{tix}/apply-discount", func(w http.ResponseWriter, r *http.Request) {
+		maybeReload(app)
+		HandleDiscount(w, r, app)
+	}).Methods("POST")
 	r.HandleFunc("/tix/{tix}", func(w http.ResponseWriter, r *http.Request) {
 		HandleTixSelection(w, r, app)
 	}).Methods("GET")
@@ -367,10 +378,13 @@ type SuccessPage struct {
 
 type TixFormPage struct {
 	Conf     *types.Conf
-	Discount string
-	Count    uint
 	Tix      *types.ConfTicket
-	Price    uint
+	TixSlug  string
+	Count    uint
+	TixPrice    uint
+	Discount string
+	DiscountPrice uint
+	HMAC	  string
 }
 
 func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -984,6 +998,54 @@ func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppC
 	http.Redirect(w, r, fmt.Sprintf("/tix/%s/collect-email", tixSlug), http.StatusSeeOther)
 }
 
+func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
+	params := mux.Vars(r)
+	tixSlug := params["tix"]
+
+	r.ParseForm()
+	discountCode := r.Form.Get("Discount")
+	//tixHmac := r.Form.Get("HMAC")
+
+	if tixSlug == "" {
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	conf, tix, tixPrice, _, err := determineTixPrice(ctx, tixSlug)
+	if err != nil {
+		/* FIXME: have this return an error message, not a status code error */
+		ctx.Err.Printf("/tix/%s/apply-discount unable to determine tix price: %s", tixSlug, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// FIXME: validate hmac
+
+	/* FIXME: Look up the discount code */
+	discountPrice := tixPrice
+	if discountCode == "hello" {
+		discountPrice = uint(0.80 * float64(tixPrice))
+	}
+	tmpl := template.Must(template.ParseFiles("templates/include_two.tmpl"))
+	w.Header().Set("Content-Type", "text/html")
+	err = tmpl.Execute(w, &TixFormPage{
+		Conf:     conf,
+		Tix:      tix,
+		TixSlug:  tixSlug,
+		TixPrice: tixPrice,
+		Discount: discountCode,
+		DiscountPrice: discountPrice,
+		HMAC:  "",  // FIXME
+		Count:    uint(1),
+	})
+
+	if err != nil {
+		http.Error(w, "Unable to load stuffs, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/tix/{%s}/collect-email templ exec failed %s", tixSlug, err.Error())
+		return
+	}
+}
+
 func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	params := mux.Vars(r)
 	tixSlug := params["tix"]
@@ -1008,11 +1070,14 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	switch r.Method {
 	case http.MethodGet:
 		pageTpl := ctx.TemplateCache["collect-email.tmpl"]
-		err = pageTpl.Execute(w, &TixFormPage{
+		err = pageTpl.ExecuteTemplate(w, "collect-email.tmpl", &TixFormPage{
 			Conf:     conf,
 			Tix:      tix,
-			Price:    tixPrice,
+			TixSlug:  tixSlug,
+			TixPrice:    tixPrice,
 			Discount: "",
+			DiscountPrice: tixPrice,
+			HMAC:  "",  // FIXME
 			Count:    uint(1),
 		})
 		if err != nil {
@@ -1038,7 +1103,7 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 		}
 
 		/* The goal is that we hit opennode init, with an email! */
-		OpenNodeInit(w, r, ctx, conf, tix, tixPrice, &form)
+		OpenNodeInit(w, r, ctx, conf, tix, form.DiscountPrice, &form)
 		return
 	default:
 		http.NotFound(w, r)

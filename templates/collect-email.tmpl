@@ -4,6 +4,8 @@
     <title>bitcoin++ | Check out!</title>
     <link rel="stylesheet" href="/static/css/mini.css" />
     <script src="/static/script.js" type="text/javascript"></script>
+    <!-- version 1.9.10 -->
+    <script src="/static/js/htmx.min.js" type="text/javascript"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
@@ -31,11 +33,18 @@
                   <label class="text-gray-300 mt-4 mb-2">
                     Discount Code (optional)
                   </label>
-                  <input class="rounded-md" name="Discount" type="text" 
-                    {{ if .Discount }}
-                    value="{{ .Discount }}"
-                    {{ end }} />
-		              <input class="rounded-md" type="hidden" name="Count" value="{{ .Count }}" required>
+                  <input class="rounded-md" name="Discount" type="search" 
+                    hx-post="/tix/{{ .TixSlug }}/apply-discount"
+                    hx-trigger="input changed delay:500ms, search"
+                    hx-target="#discount_result"
+                    hx-swap="outerHTML"
+                    hx-include="[name='hidden_stuffs']"
+                    placeholder="Have a discount code?"
+                    {{ if ne .Discount "" }}
+                      value="{{ .Discount }}"
+                    {{ end }} 
+                    />
+                  {{ template "include_two.tmpl" . }}
                   <div class="mt-8">
                     <button type="submit" class="inline-flex rounded-md bg-white/10 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Pay Now</button>
                   </div>
