@@ -34,6 +34,7 @@
                     Discount Code (optional)
                   </label>
                   <input class="rounded-md" name="Discount" type="search" 
+                    autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"
                     hx-post="/tix/{{ .TixSlug }}/apply-discount"
                     hx-trigger="input changed delay:500ms, search"
                     hx-target="#discount_result"
