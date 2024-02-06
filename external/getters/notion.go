@@ -333,7 +333,7 @@ func CalcDiscount(n *types.Notion, confRef string, code string, tixPrice uint) (
 
 	/* Discount not found! */
 	if discount == nil {
-		return tixPrice, fmt.Errorf("Discount code %s not found", code)
+		return tixPrice, fmt.Errorf("Discount code \"%s\" not found", code)
 	}
 
 	if discount.ConfRef != confRef {

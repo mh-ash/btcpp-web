@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"log"
 	"net/http"
@@ -29,6 +30,9 @@ func loadConfig() *types.EnvConfig {
 			log.Fatal(err)
 		}
 		config.Prod = false
+
+		config.HMACKey = sha256.Sum256([]byte(config.HMACSecret))
+		config.HMACSecret = ""
 	} else {
 		config.Port = os.Getenv("PORT")
 		config.Prod = true
@@ -59,6 +63,9 @@ func loadConfig() *types.EnvConfig {
 			DiscountsDb:  os.Getenv("NOTION_DISCOUNT_DB"),
 		}
 		config.Google = types.GoogleConfig{Key: os.Getenv("GOOGLE_KEY")}
+
+		secretHex := os.Getenv("HMAC_SECRET")
+		config.HMACKey = sha256.Sum256([]byte(secretHex))
 	}
 
 	return &config

@@ -25,6 +25,8 @@ type (
 		OpenNode          OpenNodeConfig
 		Host              string
 		LocalExternal     string
+		HMACSecret        string
+		HMACKey           [32]byte
 	}
 
 	GoogleConfig struct {
@@ -60,9 +62,9 @@ type (
 
 	TixForm struct {
 		Email    string
-		Discount string
 		Count    uint
 		DiscountPrice uint
+		Discount string
 		HMAC     string
 	}
 

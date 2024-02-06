@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+	"strconv"
 	"time"
 
 	"github.com/base58btc/btcpp-web/external/getters"
@@ -385,6 +387,19 @@ type TixFormPage struct {
 	Discount string
 	DiscountPrice uint
 	HMAC	  string
+	Err       string
+}
+
+func calcTixHMAC(ctx *config.AppContext, conf *types.Conf, tixPrice uint, discountPrice uint, discountCode string) string {
+	mac := hmac.New(sha256.New, ctx.Env.HMACKey[:])
+	mac.Write([]byte(conf.Ref))
+	priceBytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(priceBytes, uint64(tixPrice))
+	mac.Write(priceBytes)
+	binary.LittleEndian.PutUint64(priceBytes, uint64(discountPrice))
+	mac.Write(priceBytes)
+	mac.Write([]byte(discountCode))
+	return hex.EncodeToString(mac.Sum(nil))
 }
 
 func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
@@ -998,13 +1013,23 @@ func HandleTixSelection(w http.ResponseWriter, r *http.Request, ctx *config.AppC
 	http.Redirect(w, r, fmt.Sprintf("/tix/%s/collect-email", tixSlug), http.StatusSeeOther)
 }
 
+func getPrice(pricestr string) (uint, error) {
+	price, err := strconv.ParseUint(pricestr, 10, 32)
+	return uint(price), err
+}
+
 func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	params := mux.Vars(r)
 	tixSlug := params["tix"]
 
 	r.ParseForm()
 	discountCode := r.Form.Get("Discount")
-	//tixHmac := r.Form.Get("HMAC")
+	discountPrice, err := getPrice(r.Form.Get("DiscountPrice"))
+	if err != nil {
+		ctx.Err.Printf("/tix/%s/apply-discount massively blew up: %s", tixSlug, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	if tixSlug == "" {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
@@ -1019,13 +1044,13 @@ func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		return
 	}
 
-	// FIXME: validate HMAC
-
 	/* Calculate the discount */
-	discountPrice, err := getters.CalcDiscount(ctx.Notion, conf.Ref, discountCode, tixPrice)
+	discountPrice, err = getters.CalcDiscount(ctx.Notion, conf.Ref, discountCode, tixPrice)
+	errStr := ""
 	if err != nil {
 		ctx.Err.Printf("/tix/%s/apply-discount discount not available: %s", tixSlug, err)
 		/* We don't bail though.. just continue */
+		errStr = err.Error()
 	}
 	
 	tmpl := template.Must(template.ParseFiles("templates/tix_details.tmpl"))
@@ -1037,7 +1062,8 @@ func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		TixPrice: tixPrice,
 		Discount: discountCode,
 		DiscountPrice: discountPrice,
-		HMAC:  "",  // FIXME
+		Err:      errStr,
+		HMAC:     calcTixHMAC(ctx, conf, tixPrice, discountPrice, discountCode),
 		Count:    uint(1),
 	})
 
@@ -1079,7 +1105,7 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 			TixPrice:    tixPrice,
 			Discount: "",
 			DiscountPrice: tixPrice,
-			HMAC:  "",  // FIXME
+			HMAC:     calcTixHMAC(ctx, conf, tixPrice, tixPrice, ""),
 			Count:    uint(1),
 		})
 		if err != nil {
@@ -1103,6 +1129,15 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 		if form.Email == "" || form.Count < 1 {
 			http.Redirect(w, r, fmt.Sprintf("/collect-email/%s", tixSlug), http.StatusSeeOther)
 		}
+
+		/*  Validate HMAC */
+		expectedHMAC := calcTixHMAC(ctx, conf, tixPrice, form.DiscountPrice, form.Discount)
+		if expectedHMAC != form.HMAC {
+			ctx.Err.Printf("/tix/%s/collect-email hmac mismatch. %s != %s", tixSlug, expectedHMAC, form.HMAC)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
 
 		/* The goal is that we hit opennode init, with an email! */
 		OpenNodeInit(w, r, ctx, conf, tix, form.DiscountPrice, &form)
