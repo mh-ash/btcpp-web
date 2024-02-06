@@ -317,7 +317,7 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	}).Methods("POST")
 	r.HandleFunc("/callback/opennode", func(w http.ResponseWriter, r *http.Request) {
 		OpenNodeCallback(w, r, app)
-	}).Methods("POST")
+	}).Methods("GET", "POST")
 
 	// Create a file server to serve static files from the "static" directory
 	fs := http.FileServer(http.Dir("static"))
@@ -386,6 +386,7 @@ type TixFormPage struct {
 	TixPrice    uint
 	Discount string
 	DiscountPrice uint
+	DiscountRef string
 	HMAC	  string
 	Err       string
 }
@@ -943,7 +944,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 		return
 	}
 
-	ctx.Infos.Println(charge)
+	ctx.Infos.Println("opennode charge!", charge)
 	entry := types.Entry{
 		ID:       charge.ID,
 		ConfRef:  charge.Metadata.ConfRef,
@@ -951,6 +952,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 		Currency: "USD",
 		Created:  charge.CreatedAt,
 		Email:    charge.Metadata.Email,
+		DiscountRef: charge.Metadata.DiscountRef,
 	}
 
 	if err != nil {
@@ -1045,7 +1047,11 @@ func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 	}
 
 	/* Calculate the discount */
-	discountPrice, err = getters.CalcDiscount(ctx.Notion, conf.Ref, discountCode, tixPrice)
+	var discountRef string
+	discountPrice, discount, err := getters.CalcDiscount(ctx.Notion, conf.Ref, discountCode, tixPrice)
+	if discount != nil {
+		discountRef = discount.Ref
+	}
 	errStr := ""
 	if err != nil {
 		ctx.Err.Printf("/tix/%s/apply-discount discount not available: %s", tixSlug, err)
@@ -1062,6 +1068,7 @@ func HandleDiscount(w http.ResponseWriter, r *http.Request, ctx *config.AppConte
 		TixPrice: tixPrice,
 		Discount: discountCode,
 		DiscountPrice: discountPrice,
+		DiscountRef:  discountRef,
 		Err:      errStr,
 		HMAC:     calcTixHMAC(ctx, conf, tixPrice, discountPrice, discountCode),
 		Count:    uint(1),
@@ -1097,15 +1104,36 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 
 	switch r.Method {
 	case http.MethodGet:
+
+		discountCode, _ := getSessionKey("q", r)
+
+		discountPrice := tixPrice
+		var errStr string
+		var discountRef string
+		if discountCode != "" {
+			var discount *types.DiscountCode
+			discountPrice, discount, err = getters.CalcDiscount(ctx.Notion, conf.Ref, discountCode, tixPrice)
+			if err != nil {
+				ctx.Err.Printf("/tix/%s/apply-discount discount not available: %s", tixSlug, err)
+				/* We don't bail though.. just continue */
+				errStr = err.Error()
+			}
+
+			if discount != nil {
+				discountRef = discount.Ref
+			}
+		}
 		pageTpl := ctx.TemplateCache["collect-email.tmpl"]
 		err = pageTpl.ExecuteTemplate(w, "collect-email.tmpl", &TixFormPage{
 			Conf:     conf,
 			Tix:      tix,
 			TixSlug:  tixSlug,
 			TixPrice:    tixPrice,
-			Discount: "",
-			DiscountPrice: tixPrice,
-			HMAC:     calcTixHMAC(ctx, conf, tixPrice, tixPrice, ""),
+			Discount: discountCode,
+			DiscountPrice: discountPrice,
+			DiscountRef: discountRef,
+			Err:      errStr,
+			HMAC:     calcTixHMAC(ctx, conf, tixPrice, tixPrice, discountCode),
 			Count:    uint(1),
 		})
 		if err != nil {
@@ -1140,7 +1168,8 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 
 
 		/* The goal is that we hit opennode init, with an email! */
-		OpenNodeInit(w, r, ctx, conf, tix, form.DiscountPrice, &form)
+		isLocal := tixPrice == tix.Local
+		OpenNodeInit(w, r, ctx, conf, tix, form.DiscountPrice, &form, isLocal)
 		return
 	default:
 		http.NotFound(w, r)
@@ -1148,8 +1177,8 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 	}
 }
 
-func OpenNodeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint, tixForm *types.TixForm) {
-	payment, err := getters.InitOpenNodeCheckout(ctx, tixPrice, tix, conf, tixForm.Count, tixForm.Email)
+func OpenNodeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext, conf *types.Conf, tix *types.ConfTicket, tixPrice uint, tixForm *types.TixForm, isLocal bool) {
+	payment, err := getters.InitOpenNodeCheckout(ctx, tixPrice, tix, conf, isLocal, tixForm.Count, tixForm.Email, tixForm.DiscountRef)
 
 	if err != nil {
 		http.Error(w, "unable to init btc payment", http.StatusInternalServerError)
@@ -1159,7 +1188,6 @@ func OpenNodeInit(w http.ResponseWriter, r *http.Request, ctx *config.AppContext
 
 	/* FIXME: v2: implement on-site btc checkout */
 	/* for now we go ahead and just redirect to opennode, see you latrrr */
-	ctx.Infos.Println(payment)
 	http.Redirect(w, r, payment.HostedCheckoutURL, http.StatusSeeOther)
 }
 

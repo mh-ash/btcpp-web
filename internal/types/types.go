@@ -65,7 +65,15 @@ type (
 		Count    uint
 		DiscountPrice uint
 		Discount string
+		DiscountRef string
 		HMAC     string
+	}
+	
+	DiscountCode struct {
+		Ref        string
+		CodeName   string
+		PercentOff uint
+		ConfRef	   string
 	}
 
 	Speaker struct {
@@ -130,6 +138,7 @@ type (
 		Created  time.Time
 		Email    string
 		Items    []Item
+		DiscountRef string
 	}
 
 	ShirtSize string

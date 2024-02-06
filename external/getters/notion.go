@@ -13,12 +13,6 @@ import (
 	"time"
 )
 
-type DiscountCode struct {
-	CodeName   string
-	PercentOff uint
-	ConfRef	   string
-}
-
 func parseRichText(key string, props map[string]notion.PropertyValue) string {
 	val, ok := props[key]
 	if !ok {
@@ -59,8 +53,9 @@ func parseSpeaker(pageID string, props map[string]notion.PropertyValue) *types.S
 	return speaker
 }
 
-func parseDiscount(pageID string, props map[string]notion.PropertyValue) *DiscountCode {
-	discount := &DiscountCode{
+func parseDiscount(pageID string, props map[string]notion.PropertyValue) *types.DiscountCode {
+	discount := &types.DiscountCode{
+		Ref:            pageID,
 		CodeName:	parseRichText("CodeName", props),
 		PercentOff:     uint(props["PercentOff"].Number),
 	}
@@ -283,8 +278,8 @@ func GetTalksFor(n *types.Notion, event string) ([]*types.Talk, error) {
 	return filtered, nil
 }
 
-func ListDiscounts(n *types.Notion) ([]*DiscountCode, error) {
-	var discounts []*DiscountCode
+func ListDiscounts(n *types.Notion) ([]*types.DiscountCode, error) {
+	var discounts []*types.DiscountCode
 
 	hasMore := true
 	nextCursor := ""
@@ -309,7 +304,7 @@ func ListDiscounts(n *types.Notion) ([]*DiscountCode, error) {
 	return discounts, nil
 }
 
-func FindDiscount(n *types.Notion, code string) (*DiscountCode, error) {
+func FindDiscount(n *types.Notion, code string) (*types.DiscountCode, error) {
 	discounts, err := ListDiscounts(n)
 	if err != nil {
 		return nil, err
@@ -324,20 +319,20 @@ func FindDiscount(n *types.Notion, code string) (*DiscountCode, error) {
 	return nil, nil
 }
 
-func CalcDiscount(n *types.Notion, confRef string, code string, tixPrice uint) (uint, error) {
+func CalcDiscount(n *types.Notion, confRef string, code string, tixPrice uint) (uint, *types.DiscountCode, error) {
 	discount, err := FindDiscount(n, code)
 
 	if err != nil {
-		return tixPrice, err
+		return tixPrice, nil, err
 	}
 
 	/* Discount not found! */
 	if discount == nil {
-		return tixPrice, fmt.Errorf("Discount code \"%s\" not found", code)
+		return tixPrice, nil, fmt.Errorf("Discount code \"%s\" not found", code)
 	}
 
 	if discount.ConfRef != confRef {
-		return tixPrice, fmt.Errorf("%s not a valid code for conference (%s != %s)", code, discount.ConfRef, confRef)
+		return tixPrice, nil, fmt.Errorf("%s not a valid code for conference (%s != %s)", code, discount.ConfRef, confRef)
 	}
 
 	discountTix := float64(100 - discount.PercentOff) * float64(tixPrice) / float64(100)
@@ -347,7 +342,7 @@ func CalcDiscount(n *types.Notion, confRef string, code string, tixPrice uint) (
 	if tix == 0 || tix > tixPrice {
 		tix = 1	
 	}
-	return tix, nil
+	return tix, discount, nil
 }
 
 func CheckIn(n *types.Notion, ticket string) (string, bool, error) {
@@ -508,59 +503,64 @@ func AddTickets(n *types.Notion, entry *types.Entry, src string) error {
 
 	for i, item := range entry.Items {
 		uniqID := UniqueID(entry.Email, entry.ID, int32(i))
-		_, err := n.Client.CreatePage(context.Background(),
-			parent,
-			map[string]*notion.PropertyValue{
-				"RefID": notion.NewTitlePropertyValue(
-					[]*notion.RichText{
-						{Type: notion.RichTextText,
-							Text: &notion.Text{Content: uniqID}},
-					}...),
-				"Timestamp": notion.NewRichTextPropertyValue(
-					[]*notion.RichText{
-						{Type: notion.RichTextText,
-							Text: &notion.Text{Content: entry.Created.Format(time.RFC3339)},
-						}}...),
-				"Platform": {
-					Type: notion.PropertySelect,
-					Select: &notion.SelectOption{
-						Name: src,
-					},
+		vals := map[string]*notion.PropertyValue{
+			"RefID": notion.NewTitlePropertyValue(
+				[]*notion.RichText{
+					{Type: notion.RichTextText,
+						Text: &notion.Text{Content: uniqID}},
+				}...),
+			"Timestamp": notion.NewRichTextPropertyValue(
+				[]*notion.RichText{
+					{Type: notion.RichTextText,
+						Text: &notion.Text{Content: entry.Created.Format(time.RFC3339)},
+					}}...),
+			"Platform": {
+				Type: notion.PropertySelect,
+				Select: &notion.SelectOption{
+					Name: src,
 				},
-				"conf": notion.NewRelationPropertyValue(
-					[]*notion.ObjectReference{{ID: entry.ConfRef}}...,
-				),
-				"Type": {
-					Type: notion.PropertySelect,
-					Select: &notion.SelectOption{
-						Name: item.Type,
-					},
+			},
+			"conf": notion.NewRelationPropertyValue(
+				[]*notion.ObjectReference{{ID: entry.ConfRef}}...,
+			),
+			"Type": {
+				Type: notion.PropertySelect,
+				Select: &notion.SelectOption{
+					Name: item.Type,
 				},
-				"Amount Paid": {
-					Type:   notion.PropertyNumber,
-					Number: float64(item.Total) / 100,
+			},
+			"Amount Paid": {
+				Type:   notion.PropertyNumber,
+				Number: float64(item.Total) / 100,
+			},
+			"Currency": {
+				Type: notion.PropertySelect,
+				Select: &notion.SelectOption{
+					Name: entry.Currency,
 				},
-				"Currency": {
-					Type: notion.PropertySelect,
-					Select: &notion.SelectOption{
-						Name: entry.Currency,
-					},
-				},
-				"Email": {
-					Type:  notion.PropertyEmail,
-					Email: entry.Email,
-				},
-				"Item Bought": notion.NewRichTextPropertyValue(
-					[]*notion.RichText{
-						{Type: notion.RichTextText,
-							Text: &notion.Text{Content: item.Desc}},
-					}...),
-				"Lookup ID": notion.NewRichTextPropertyValue(
-					[]*notion.RichText{
-						{Type: notion.RichTextText,
-							Text: &notion.Text{Content: entry.ID}},
-					}...),
-			})
+			},
+			"Email": {
+				Type:  notion.PropertyEmail,
+				Email: entry.Email,
+			},
+			"Item Bought": notion.NewRichTextPropertyValue(
+				[]*notion.RichText{
+					{Type: notion.RichTextText,
+						Text: &notion.Text{Content: item.Desc}},
+				}...),
+			"Lookup ID": notion.NewRichTextPropertyValue(
+				[]*notion.RichText{
+					{Type: notion.RichTextText,
+						Text: &notion.Text{Content: entry.ID}},
+				}...),
+		}
+
+		if entry.DiscountRef != "" {
+			vals["discount"] = notion.NewRelationPropertyValue(
+				[]*notion.ObjectReference{{ID: entry.DiscountRef}}...,
+			)
+		}
+		_, err := n.Client.CreatePage(context.Background(), parent, vals)
 		if err != nil {
 			return err
 		}
