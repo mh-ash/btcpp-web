@@ -1133,7 +1133,7 @@ func HandleEmail(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 			DiscountPrice: discountPrice,
 			DiscountRef: discountRef,
 			Err:      errStr,
-			HMAC:     calcTixHMAC(ctx, conf, tixPrice, tixPrice, discountCode),
+			HMAC:     calcTixHMAC(ctx, conf, tixPrice, discountPrice, discountCode),
 			Count:    uint(1),
 		})
 		if err != nil {
