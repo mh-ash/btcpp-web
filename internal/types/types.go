@@ -57,6 +57,7 @@ type (
 		USD     uint
 		Expires *Times
 		Max     uint
+		Currency string
 	}
 	ConfTickets []*ConfTicket
 

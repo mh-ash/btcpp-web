@@ -27,7 +27,7 @@ func InitOpenNodeCheckout(ctx *config.AppContext, tixPrice uint, tix *types.Conf
 	onReq := &types.OpenNodeRequest{
 		Amount:        float64(tixPrice),
 		Description:   conf.Desc,
-		Currency:      "USD",
+		Currency:      tix.Currency,
 		CallbackURL:   domain + "/callback/opennode",
 		SuccessURL:    domain + "/conf/" + conf.Tag + "/success",
 		AutoSettle:    false,

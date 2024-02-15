@@ -24,6 +24,7 @@ type (
 		Description string                  `json:"description"`
 		FiatVal     float64                 `json:"fiat_value"`
 		Price       int64                   `json:"price"`
+		Currency    string                  `json:"currency"`
 		CreatedAt   time.Time               `json:"created_at"`
 		Metadata    *types.OpenNodeMetadata `json:"metadata"`
 	}
