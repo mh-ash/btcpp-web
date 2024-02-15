@@ -9,21 +9,21 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg></button>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <a href="/{{ .Tag }}#about" class="text-sm font-semibold leading-6 text-gray-900">about</a>
-	      <a href="/{{ .Tag }}#venue" class="text-sm font-semibold leading-6 text-gray-900">venue</a>
+        <a href="/conf/{{ .Tag }}#about" class="text-sm font-semibold leading-6 text-gray-900">about</a>
+	      <a href="/conf/{{ .Tag }}#venue" class="text-sm font-semibold leading-6 text-gray-900">venue</a>
         {{ if .ShowAgenda }}
-	      <a href="/{{ .Tag }}#agenda" class="text-sm font-semibold leading-6 text-gray-900">agenda</a>
+	      <a href="/conf/{{ .Tag }}#agenda" class="text-sm font-semibold leading-6 text-gray-900">agenda</a>
         {{ end }}
         {{ if .ShowTalks }}
 	      <a href="/conf/{{ .Tag }}/talks" class="text-sm font-semibold leading-6 text-gray-900">talks</a>
         {{ end }}
         {{ if .HasSatellites }}
-        <a href="/{{ .Tag }}#satellites" class="text-sm font-semibold leading-6 text-gray-900">satellite events</a>
+        <a href="/conf/{{ .Tag }}#satellites" class="text-sm font-semibold leading-6 text-gray-900">satellite events</a>
         {{ end }}
-        <a href="/{{ .Tag }}#sponsors" class="text-sm font-semibold leading-6 text-gray-900">sponsors</a>
+        <a href="/conf/{{ .Tag }}#sponsors" class="text-sm font-semibold leading-6 text-gray-900">sponsors</a>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <a href="/{{ .Tag }}#tickets" class="rounded-md bg-{{ .GetColor }} px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-{{ .GetColor }} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{{ .GetColor }}">Buy Tickets</a>
+        <a href="/conf/{{ .Tag }}#tickets" class="rounded-md bg-{{ .GetColor }} px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-{{ .GetColor }} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{{ .GetColor }}">Buy Tickets</a>
       </div>
     </nav><!-- Mobile menu, show/hide based on menu open state. -->
     <div class="hidden lg:hidden" role="nav-dialog" aria-modal="true">
@@ -41,20 +41,20 @@
           <div class="-my-6 divide-y divide-gray-500/10">
             <div class="space-y-2 py-6">
               <div class="-mx-3">
-		            <a onclick="toggleMenu(this)" href="/{{ .Tag }}#venue" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">venue</a>
+		            <a onclick="toggleMenu(this)" href="/conf/{{ .Tag }}#venue" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">venue</a>
                 {{ if .ShowAgenda }}
-	              <a onclick="toggleMenu(this)" href="/{{ .Tag }}#agenda" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">agenda</a>
+	              <a onclick="toggleMenu(this)" href="/conf/{{ .Tag }}#agenda" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">agenda</a>
                 {{ end }}
                 {{ if .ShowTalks }}
                 <a onclick="toggleMenu(this)" href="/conf/{{ .Tag }}/talks" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">talks</a>
                 {{ end }}
                 {{ if .HasSatellites }}
-		            <a onclick="toggleMenu(this)" href="/{{ .Tag }}#satellites" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">satellite events</a>
+		            <a onclick="toggleMenu(this)" href="/conf/{{ .Tag }}#satellites" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">satellite events</a>
                 {{ end }}
-		            <a onclick="toggleMenu(this)" href="/{{ .Tag }}#sponsors" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">sponsors</a>
+		            <a onclick="toggleMenu(this)" href="/conf/{{ .Tag }}#sponsors" class="-mx-3 block rounded-lg py-2 px-3 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">sponsors</a>
               </div>
               <div class="py-6">
-                <a onclick="toggleMenu(this)" href="/{{ .Tag }}#tickets" class="rounded-md bg-{{ .GetColor }} px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-{{ .GetColor }} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{{ .GetColor }}">Buy Tickets</a>
+                <a onclick="toggleMenu(this)" href="/conf/{{ .Tag }}#tickets" class="rounded-md bg-{{ .GetColor }} px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-{{ .GetColor }} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-{{ .GetColor }}">Buy Tickets</a>
               </div>
             </div>
           </div>
