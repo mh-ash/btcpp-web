@@ -27,6 +27,7 @@ type (
 		ConfRef  string  `json:"conf-ref"`
 		TixLocal bool    `json:"tix-local"`
 		DiscountRef string  `json:"discount,omitempty"`
+		Currency    string  `json:"currency"`
 	}
 
 	OpenNodeChainInvoice struct {

@@ -949,7 +949,7 @@ func OpenNodeCallback(w http.ResponseWriter, r *http.Request, ctx *config.AppCon
 		ID:       charge.ID,
 		ConfRef:  charge.Metadata.ConfRef,
 		Total:    int64(charge.FiatVal * 100),
-		Currency: charge.Currency,
+		Currency: charge.Metadata.Currency,
 		Created:  charge.CreatedAt,
 		Email:    charge.Metadata.Email,
 		DiscountRef: charge.Metadata.DiscountRef,
