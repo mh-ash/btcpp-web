@@ -253,7 +253,8 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	// Set up the routes, we'll have one page per course
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
-		Home(w, r, app)
+		http.Redirect(w, r, "/conf/atx24", http.StatusSeeOther)
+		//Home(w, r, app)
 	}).Methods("GET")
 	/* Legacy redirects! */
 	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
