@@ -78,24 +78,23 @@ type (
 	}
 
 	Speaker struct {
-		Name    string
-		Desc    string
-		Org     string
-		Photo   string
-		Github  string
-		Twitter string
+		ID          string
+		Name        string
+		Photo       string
+		Twitter     string
+		Github      string
+		Website     string
+		Nostr       string
+		Company     string
+		OrgPhoto    string
 	}
+	Speakers []*Speaker
 
 	Talk struct {
 		ID          string
 		Name        string
 		Description string
 		Clipart     string
-		Photo       string
-		Website     string
-		Twitter     string
-		BadgeName   string
-		Company     string
 		Sched       *Times
 		TimeDesc    string
 		Duration    string
@@ -105,6 +104,7 @@ type (
 		Event       string
 		AnchorTag   string
 		Section     string
+		Speakers    []*Speaker
 	}
 
 	Ticket struct {
@@ -268,4 +268,16 @@ func (t ConfTickets) Swap(i, j int) {
 func (s ConfTickets) Less(i, j int) bool {
 	/* Sort by time first */
 	return s[i].Expires.Start.Before(s[j].Expires.Start)
+}
+
+func (s Speakers) Len() int {
+	return len(s)
+}
+
+func (s Speakers) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s Speakers) Less(i, j int) bool {
+	return strings.ToUpper(s[i].Name) < strings.ToUpper(s[j].Name)
 }

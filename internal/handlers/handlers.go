@@ -378,6 +378,7 @@ type ConfPage struct {
 	Sold    uint
 	TixLeft uint
 	Talks   []*types.Talk
+	EventSpeakers []*types.Speaker
 	Buckets map[string]sessionTime
 }
 
@@ -444,10 +445,20 @@ func GetReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContex
 	if err != nil {
 		http.Error(w, "Unable to load confereneces, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("/conf-reload conf load failed ! %s", err.Error())
+		return
+	}
+
+	ctx.Confs = confs
+	
+	/* Also try reloading Speakers */
+	_, err = FetchSpeakers(ctx)
+	if err != nil {
+		http.Error(w, "Unable to load speakers, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("/conf-reload speaker load failed ! %s", err.Error())
+		return
 	}
 
 	/* We redirect to home on success */
-	ctx.Confs = confs
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -480,6 +491,40 @@ func ReloadConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	}
 }
 
+/* Implement a 5m refresh for the speakers 'cache' */
+func FetchSpeakers(ctx *config.AppContext) ([]*types.Speaker, error) {
+	/* FIXME: use a cache for notion fetches? */
+	now := time.Now()
+	deadline := now.Add(time.Duration(-5) * time.Minute)
+	if ctx.Speakers == nil || ctx.LastSpeakerFetch.Before(deadline) {
+		var err error
+		ctx.Speakers, err = getters.ListSpeakers(ctx.Notion)
+		/* Set last fetch to now even if there's errors */
+		ctx.LastSpeakerFetch = time.Now()
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return ctx.Speakers, nil
+}
+
+func filterSpeakers(talks []*types.Talk) types.Speakers {
+	var speakers types.Speakers	
+	already := make(map[string]int)
+
+	for _, talk := range talks {
+		for _, speaker:= range talk.Speakers {
+			if _, ok := already[speaker.ID]; !ok {
+				speakers = append(speakers, speaker)
+				already[speaker.ID] = 1
+			}
+		}
+	}
+	return speakers
+}
+
 func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 	tmpl := ctx.TemplateCache["talks.tmpl"]
 
@@ -490,17 +535,30 @@ func RenderTalks(w http.ResponseWriter, r *http.Request, ctx *config.AppContext)
 		return
 	}
 
+	speakers, err := FetchSpeakers(ctx)
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to fetch speakers from Notion!! %s", err.Error())
+		return
+	}
+
 	var talks talkTime
-	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag)
+	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag, speakers)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("Unable to fetch talks from Notion!! %s", err.Error())
 		return
 	}
 
+	var evSpeakers types.Speakers
+	evSpeakers = filterSpeakers(talks)
+
 	sort.Sort(talks)
+	sort.Sort(evSpeakers)
+
 	err = tmpl.ExecuteTemplate(w, "sched.tmpl", &ConfPage{
 		Talks: talks,
+		EventSpeakers: evSpeakers,
 		Conf:  conf,
 	})
 	if err != nil {
@@ -538,12 +596,22 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	}
 
 	var talks talkTime
-	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag)
+	speakers, err := FetchSpeakers(ctx)
+	if err != nil {
+		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
+		ctx.Err.Printf("Unable to fetch speakers from Notion!! %s", err.Error())
+		return
+	}
+	talks, err = getters.GetTalksFor(ctx.Notion, conf.Tag, speakers)
 	if err != nil {
 		http.Error(w, "Unable to load page, please try again later", http.StatusInternalServerError)
 		ctx.Err.Printf("Unable to fetch talks from Notion!! %s", err.Error())
 		return
 	}
+
+	var evSpeakers types.Speakers
+	evSpeakers = filterSpeakers(talks)
+	sort.Sort(evSpeakers)
 
 	soldCount, err := getters.SoldTixCount(ctx.Notion, conf.Ref)
 	if err != nil {
@@ -573,6 +641,7 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 		Sold:    soldCount,
 		TixLeft: tixLeft,
 		Talks:   talks,
+		EventSpeakers: evSpeakers,
 		Buckets: buckets,
 	})
 	if err != nil {
@@ -597,11 +666,7 @@ func Home(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) {
 
 type Session struct {
 	Name      string
-	Speaker   string
-	Company   string
-	Twitter   string
-	Website   string
-	Photo     string
+	Speakers  []*types.Speaker
 	TalkPhoto string
 	Sched     *types.Times
 	StartTime string
@@ -616,11 +681,7 @@ type Session struct {
 func TalkToSession(talk *types.Talk, conf *types.Conf) *Session {
 	sesh := &Session{
 		Name:      talk.Name,
-		Speaker:   talk.BadgeName,
-		Twitter:   talk.Twitter,
-		Website:   talk.Website,
-		Company:   talk.Company,
-		Photo:     talk.Photo,
+		Speakers:  talk.Speakers,
 		TalkPhoto: talk.Clipart,
 		Sched:     talk.Sched,
 		Type:      talk.Type,

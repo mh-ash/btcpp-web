@@ -58,6 +58,7 @@ func loadConfig() *types.EnvConfig {
 			Token:       os.Getenv("NOTION_TOKEN"),
 			PurchasesDb: os.Getenv("NOTION_PURCHASES_DB"),
 			TalksDb:     os.Getenv("NOTION_TALKS_DB"),
+			SpeakersDb:  os.Getenv("NOTION_SPEAKERS_DB"),
 			ConfsDb:     os.Getenv("NOTION_CONFS_DB"),
 			ConfsTixDb:  os.Getenv("NOTION_CONFSTIX_DB"),
 			DiscountsDb:  os.Getenv("NOTION_DISCOUNT_DB"),

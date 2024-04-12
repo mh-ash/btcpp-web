@@ -42,21 +42,23 @@
       Venue: <span class="font-medium text-indigo-600">Hang n' Hack</span>
     </p>
     {{ end }}
-    {{ if ne .BadgeName "" }}
-    <div class="mt-6 flex border-t border-gray-900/5 pt-6">
-      <div class="relative flex items-center gap-x-4">
+    {{ if .Speakers }}
+    <ul role="list" class="mt-6 flex flex-col gap-y-1 border-t border-gray-900/5 pt-6">
+      {{ range .Speakers }}
+      <li class="relative flex items-center gap-x-4">
 	      <img src="/static/img/speakers/{{ .Photo }}" alt="" class="h-10 w-10 rounded-full bg-gray-50" />
 	      <div class="text-sm leading-6">
 	        <p class="font-semibold text-gray-900">
 	          <a href="{{ .Twitter }}" target="_blank">
 	            <span class="absolute inset-0"></span>
-	             {{ .BadgeName }}
+	             {{ .Name }}
 	          </a>
 	        </p>
 	        <p class="text-gray-600">{{ .Company }}</p>
 	      </div>
-      </div>
-    </div>
+      </li>
+      {{ end }}
+    </ul>
     {{ end }}
   </div>
 </article>

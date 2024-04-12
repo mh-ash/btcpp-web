@@ -40,19 +40,6 @@ func fileGetURL(file *notion.File) string {
 	return ""
 }
 
-func parseSpeaker(pageID string, props map[string]notion.PropertyValue) *types.Speaker {
-	speaker := &types.Speaker{
-		Name:    parseRichText("Name", props),
-		Desc:    parseRichText("Desc", props),
-		Org:     parseRichText("Org", props),
-		Photo:   parseRichText("Photo", props),
-		Github:  parseRichText("Github", props),
-		Twitter: parseRichText("Twitter", props),
-	}
-
-	return speaker
-}
-
 func parseDiscount(pageID string, props map[string]notion.PropertyValue) *types.DiscountCode {
 	discount := &types.DiscountCode{
 		Ref:            pageID,
@@ -67,15 +54,31 @@ func parseDiscount(pageID string, props map[string]notion.PropertyValue) *types.
 	return discount
 }
 
-func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk {
-
+func parseSpeaker(pageID string, props map[string]notion.PropertyValue) *types.Speaker {
 	var twitter string
 	parseTwitter := parseRichText("Twitter", props)
 	if strings.Contains(parseTwitter, "http") {
 		twitter = parseTwitter
-	} else {
+	} else if parseTwitter != "" {
 		twitter = fmt.Sprintf("https://twitter.com/%s", parseTwitter)
 	}
+
+	speaker := &types.Speaker{
+		ID:          pageID,
+		Name:        parseRichText("Name", props),
+		Photo:       parseRichText("NormPhoto", props),
+		OrgPhoto:    parseRichText("OrgPhoto", props),
+		Website:     props["Website"].URL,
+		Github:      props["Github"].URL,
+		Twitter:     twitter,
+		Nostr:       parseRichText("npub", props),
+		Company:     parseRichText("Company", props),
+	}
+
+	return speaker
+}
+
+func parseTalk(pageID string, props map[string]notion.PropertyValue, speakers []*types.Speaker) *types.Talk {
 
 	var sched *types.Times
 	talktimes := props["Talk Time"].Date
@@ -91,12 +94,18 @@ func parseTalk(pageID string, props map[string]notion.PropertyValue) *types.Talk
 		Name:        parseRichText("Talk Name", props),
 		Clipart:     parseRichText("Clipart", props),
 		Description: parseRichText("Description", props),
-		Photo:       parseRichText("NormPhoto", props),
-		Website:     props["Website"].URL,
-		Twitter:     twitter,
-		BadgeName:   parseRichText("Badge Name", props),
-		Company:     parseRichText("Company", props),
 		Sched:       sched,
+	}
+
+	/* Find all speakers for this talk */
+	if speakers != nil {
+		for _, speakerRel := range props["speakers"].Relation {
+			for _, speaker := range speakers {
+				if speakerRel.ID == speaker.ID {
+					talk.Speakers = append(talk.Speakers, speaker)
+				}
+			}
+		}
 	}
 
 	if len(talk.Clipart) > 4 {
@@ -239,7 +248,7 @@ func ListConferences(n *types.Notion) ([]*types.Conf, error) {
 	return confs, nil
 }
 
-func ListTalks(n *types.Notion) ([]*types.Talk, error) {
+func ListTalks(n *types.Notion, speakers []*types.Speaker) ([]*types.Talk, error) {
 	var talks []*types.Talk
 
 	hasMore := true
@@ -257,7 +266,7 @@ func ListTalks(n *types.Notion) ([]*types.Talk, error) {
 			return nil, err
 		}
 		for _, page := range pages {
-			talk := parseTalk(page.ID, page.Properties)
+			talk := parseTalk(page.ID, page.Properties, speakers)
 			talks = append(talks, talk)
 		}
 	}
@@ -265,8 +274,34 @@ func ListTalks(n *types.Notion) ([]*types.Talk, error) {
 	return talks, nil
 }
 
-func GetTalksFor(n *types.Notion, event string) ([]*types.Talk, error) {
-	talks, err := ListTalks(n)
+func ListSpeakers(n *types.Notion) ([]*types.Speaker, error) {
+	var speakers []*types.Speaker
+
+	hasMore := true
+	nextCursor := ""
+	for hasMore {
+		var err error
+		var pages []*notion.Page
+
+		pages, nextCursor, hasMore, err = n.Client.QueryDatabase(context.Background(),
+			n.Config.SpeakersDb, notion.QueryDatabaseParam{
+				StartCursor: nextCursor,
+			})
+
+		if err != nil {
+			return nil, err
+		}
+		for _, page := range pages {
+			speaker := parseSpeaker(page.ID, page.Properties)
+			speakers = append(speakers, speaker)
+		}
+	}
+
+	return speakers, nil
+}
+
+func GetTalksFor(n *types.Notion, event string, speakers []*types.Speaker) ([]*types.Talk, error) {
+	talks, err := ListTalks(n, speakers)
 	if err != nil {
 		return nil, err
 	}

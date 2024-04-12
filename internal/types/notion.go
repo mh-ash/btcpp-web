@@ -10,6 +10,7 @@ type (
 		EmailDb     string
 		PurchasesDb string
 		TalksDb     string
+		SpeakersDb  string
 		ConfsDb     string
 		ConfsTixDb  string
 		DiscountsDb string
