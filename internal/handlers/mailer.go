@@ -33,7 +33,7 @@ func CheckForNewMails(ctx *config.AppContext) {
 	}
 
 	var success, fails, resent int
-	rezzies, err := getters.FetchBtcppRegistrations(ctx)
+	rezzies, err := getters.FetchBtcppRegistrations(ctx, true)
 	if err != nil {
 		ctx.Err.Println(err)
 		return

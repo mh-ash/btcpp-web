@@ -500,7 +500,17 @@ func ticketMatch(tickets []string, rez *types.Registration) bool {
 	return false
 }
 
-func FetchBtcppRegistrations(ctx *config.AppContext) ([]*types.Registration, error) {
+func checkActive(ctx *config.AppContext, confRef string) bool {
+	for _, conf := range ctx.Confs {
+		if confRef == conf.Ref {
+			return conf.Active
+		}
+	}
+
+	return false
+}
+
+func FetchBtcppRegistrations(ctx *config.AppContext, activeOnly bool) ([]*types.Registration, error) {
 	var btcppres []*types.Registration
 	rezzies, err := fetchRegistrations(ctx)
 
@@ -512,7 +522,8 @@ func FetchBtcppRegistrations(ctx *config.AppContext) ([]*types.Registration, err
 		if r.RefID == "" {
 			continue
 		}
-		if r.ConfRef == "" {
+
+		if activeOnly && !checkActive(ctx, r.ConfRef) {
 			continue
 		}
 
