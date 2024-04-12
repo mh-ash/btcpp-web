@@ -72,12 +72,6 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["buenos.tmpl"] = buenos
 
-	floripa, err := template.ParseFiles("templates/floripa.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/multi_session.tmpl", "templates/btcbutton.tmpl")
-	if err != nil {
-		return err
-	}
-	app.TemplateCache["floripa.tmpl"] = floripa
-
 	atx, err := template.ParseFiles("templates/atx.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/btcbutton.tmpl")
 	if err != nil {
 		return err
