@@ -9,28 +9,31 @@
    <div class="ml-3">
        <h4 class="text-left text-xl font-medium text-gray-900 hover:text-gray-600">
        <a href="/conf/{{ .ConfTag }}/talks#{{ .AnchorTag }}">{{ .Name }}</a></h4>
-       {{ if ne .Speaker "" }}
-         <h5 class="text-left text-lg text-gray-500">{{ .Speaker }}</h5>
-         <p class="text-left text-sm text-gray-500">{{ .Company }}</p>
-       {{ end }}
+          {{ $spkCount := len .Speakers }}
+          {{ range .Speakers }}
+          <div class="-ml-4 flex items-center gap-x-4">
+            <svg viewBox="0 0 2 2" class="-ml-0.5 h-0.5 w-0.5 flex-none fill-white/50">
+              <circle cx="1" cy="1" r="1" />
+            </svg>
+            <div class="flex gap-x-2.5">
+              <img src="/static/img/speakers/{{ .Photo }}" alt="" class="h-6 w-6 flex-none rounded-full bg-white/10">
+                {{ .Name }}
+            </div>
+          </div>
+          {{ end }}
         {{ if eq .Venue "one" }}
         <p class="text-left text-sm text-gray-500">
-          Venue: <span class="font-medium text-purple-600">Garage 1</span> 
+          Venue: <span class="font-medium text-purple-600">Plenarium</span> 
         </p>
         {{ end }}
         {{ if eq .Venue "two" }}
         <p class="text-left text-sm text-gray-500">
-          Venue: <span class="font-medium text-blue-600">Garage 2</span> 
+          Venue: <span class="font-medium text-blue-600">Workshop</span> 
         </p>
         {{ end }}
         {{ if eq .Venue "three" }}
         <p class="text-left text-sm text-gray-500">
-          Venue: <span class="font-medium text-indigo-600">Garage 3</span> 
-        </p>
-        {{ end }}
-        {{ if eq .Venue "four" }}
-        <p class="text-left text-sm text-gray-500">
-          Venue: <span class="font-medium text-cyan-600">líquido</span> 
+          Venue: <span class="font-medium text-indigo-600">Open Ended</span> 
         </p>
         {{ end }}
     </a>

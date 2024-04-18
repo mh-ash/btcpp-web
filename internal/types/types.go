@@ -178,6 +178,14 @@ func (t *Talk) VenueValue() int {
 		return 3
 	case "p2sh-p2wpkh":
 		return 4
+	case "one":
+		return 0
+	case "two":
+		return 1
+	case "three":
+		return 2
+	case "four":
+		return 3
 	}
 
 	return 5
