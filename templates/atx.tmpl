@@ -596,45 +596,77 @@
 </div>
 </section>
 {{ end }}
-{{ if .Conf.HasSatellites }}
 <section id="satellites">
   <div class="bg-white py-32">
     <div class="mx-auto max-w-7xl px-6 text-center lg:px-8">
       <div class="mx-auto max-w-2xl">
         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Satellite Events</h2>
       </div>
-      <p class="mt-2 text-lg leading-8 text-gray-600">Other bitcoin events happening in Berlin. Additional ticket/registration may be necessary!</p>
+      <p class="mt-2 text-lg leading-8 text-gray-600">Other bitcoin events happening in Austin! Additional ticket/registration may be necessary!</p>
       <div class="mt-16 space-y-20 lg:mt-20 lg:space-y-20">
         <article class="relative isolate flex flex-col gap-8 lg:flex-row">
           <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
-            <img src="/static/img/stammich.webp" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+            <img src="/static/img/happy_hour.jpg" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
           </div>
           <div>
             <div class="flex items-center gap-x-4 text-xs">
-              <time datetime="2020-03-16" class="text-gray-500">Oct 5, 2023 @ 7pm</time>
-              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Meetup</span>
+              <time datetime="2020-03-16" class="text-gray-500">May 1, 2024 @ 6pm</time>
+              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Happy Hour</span>
             </div>
             <div class="group relative max-w-xl">
-              <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                <a href="https://www.meetup.com/bitcoin-lab-berlin/events/294115682/">
+              <h3 class="text-left mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                <div>
                   <span class="absolute inset-0"></span>
-                  Berliner Bitcoin-Stammtisch @ Friedel Richter
+                  Rootstock Happy Hour @ location TBD
+                </div>
+              </h3>
+              <p class="mt-5 text-sm leading-6 text-gray-600"></p>
+            </div>
+            <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+              <div class="relative flex items-center gap-x-4">
+                <img src="/static/img/rootstock_org.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+                <div class="text-sm leading-6">
+                  <p class="font-semibold text-gray-900">
+                    <a href="https://rootstock.io">
+                      <span class="absolute inset-0"></span>
+                      Rootstock Labs
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="relative isolate flex flex-col gap-8 lg:flex-row">
+          <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+            <img src="/static/img/cln_drinkup.jpeg" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+            <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+          </div>
+          <div>
+            <div class="flex items-center gap-x-4 text-xs">
+              <time datetime="2020-03-16" class="text-gray-500">May 1, 2024 @ 8:30pm</time>
+              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Drink Up</span>
+            </div>
+            <div class="group relative max-w-xl">
+              <h3 class="mt-3 text-left text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                <a href="https://partiful.com/e/RpSKcpZe4iokLexpQpIp">
+                  <span class="absolute inset-0"></span>
+                  Core Lightning Drink Up @ Shiner's Saloon
                 </a>
               </h3>
               <p class="mt-5 text-sm leading-6 text-gray-600"></p>
             </div>
             <div class="mt-6 flex border-t border-gray-900/5 pt-6">
               <div class="relative flex items-center gap-x-4">
-                <img src="/static/img/labberlin.webp" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+                <img src="/static/img/cln_img.png" alt="" class="h-10 w-10 rounded-full bg-gray-50">
                 <div class="text-sm leading-6">
                   <p class="font-semibold text-gray-900">
-                    <a href="https://www.meetup.com/bitcoin-lab-berlin/">
+                    <a href="https://docs.corelightning.org/docs/home">
                       <span class="absolute inset-0"></span>
-                      Bitcoin Lab Berlin
+                      Core Lightning
                     </a>
                   </p>
-                  <p class="text-gray-600 ">at Friedel Richter</p>
                 </div>
               </div>
             </div>
@@ -643,30 +675,66 @@
 
         <article class="relative isolate flex flex-col gap-8 lg:flex-row">
           <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
-            <img src="/static/img/ecash.jpeg" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+            <img src="/static/img/trivia_moon.jpeg" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
           </div>
           <div>
             <div class="flex items-center gap-x-4 text-xs">
-              <time datetime="2020-03-16" class="text-gray-500">Oct 8, 2023 @ 10am</time>
-              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Hackathon</span>
+              <time datetime="2020-03-16" class="text-gray-500">May 2, 2024 @ 7pm</time>
+              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Triva Night</span>
             </div>
             <div class="group relative max-w-xl">
-              <h3 class="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                <a href="https://ecashhackday.github.io/">
-                  E-Cash Hackday
+              <h3 class="mt-3 text-left text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                <a href="https://lu.ma/vkj828db">
+                  <span class="absolute inset-0"></span>
+                  Bitcoin Trivia @ Bitcoin Commons
                 </a>
               </h3>
               <p class="mt-5 text-sm leading-6 text-gray-600"></p>
             </div>
             <div class="mt-6 flex border-t border-gray-900/5 pt-6">
               <div class="relative flex items-center gap-x-4">
-                <img src="/static/img/ecash.jpeg" alt="" class="h-10 w-10 rounded-full bg-gray-50">
+                <img src="/static/img/base58_purple_new.png" alt="Base58 School of Engineering logo" class="h-10 w-10 rounded-full bg-gray-50">
+                <div class="text-sm leading-6">
+                  <p class="font-semibold text-gray-900 text-left">
+                    <a href="https://base58.school">
+                      <span class="absolute inset-0"></span>
+                      Base58⛓️🔓
+                    </a>
+                  </p>
+                  <p class="text-gray-600 ">with Austin BitDevs</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="relative isolate flex flex-col gap-8 lg:flex-row">
+          <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+            <img src="/static/img/brotilla.jpeg" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+            <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+          </div>
+          <div>
+            <div class="flex items-center gap-x-4 text-xs">
+              <time datetime="2020-03-16" class="text-gray-500">May 5, 2024 @ 11am</time>
+              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">River Float</span>
+            </div>
+            <div class="group relative max-w-xl">
+              <h3 class="text-left mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                <a href="https://lu.ma/9okon2fm">
+                  Ladybird Lake Brotilla
+                </a>
+              </h3>
+              <p class="mt-5 text-sm leading-6 text-gray-600"></p>
+            </div>
+            <div class="mt-6 flex border-t border-gray-900/5 pt-6">
+              <div class="relative flex items-center gap-x-4">
+                <img src="/static/img/pleblab.jpg" alt="" class="h-10 w-10 rounded-full bg-gray-50">
                 <div class="text-sm leading-6">
                   <p class="font-semibold text-gray-900">
-                    <a href="https://ecashhackday.github.io/">
+                    <a href="https://pleblab.com">
                       <span class="absolute inset-0"></span>
-                      Sponosored by Fedi + Cashu
+                      Brought to you by the Plebs @ PlebLab
                     </a>
                   </p>
                 </div>
@@ -680,7 +748,6 @@
     </div>
   </div>
 </section>
-{{ end }}
 <section id="tickets">
   <div class="mx-auto max-w-7xl px-6 text-center lg:px-8">
     <div class="mx-auto max-w-2xl">
