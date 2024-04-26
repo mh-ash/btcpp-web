@@ -605,22 +605,22 @@
       <div class="mt-16 space-y-20 lg:mt-20 lg:space-y-20">
         <article class="relative isolate flex flex-col gap-8 lg:flex-row">
           <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
-            <img src="/static/img/happy_hour.jpg" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+            <img src="/static/img/rootstock_square.avif" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
           </div>
           <div>
             <div class="flex items-center gap-x-4 text-xs">
               <time datetime="2020-03-16" class="text-gray-500">May 1, 2024 @ 6pm</time>
-              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Happy Hour</span>
+              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">BBQ</span>
             </div>
             <div class="group relative max-w-xl">
               <h3 class="text-left mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                <div>
+                <a href="https://lu.ma/bitcoinaustin" target="_blank">
                   <span class="absolute inset-0"></span>
-                  Happy Hour @ location TBD
-                </div>
+                  Build Better on Bitcoin, Austin Edition @ Terry Black's BBQ
+                </a>
               </h3>
-              <p class="mt-5 text-sm leading-6 text-gray-600"></p>
+              <p class="mt-5 text-sm leading-6 text-gray-600 text-left">Join us for BBQ at Terry Black's!</p>
             </div>
             <div class="mt-6 flex border-t border-gray-900/5 pt-6">
               <a href="https://www.rootstocklabs.com/" target="_blank" class="max-w-48">
@@ -702,6 +702,27 @@
 
         <article class="relative isolate flex flex-col gap-8 lg:flex-row">
           <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
+            <img src="/static/img/fareground_oak.jpg" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
+            <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
+          </div>
+          <div>
+            <div class="flex items-center gap-x-4 text-xs">
+              <time datetime="2020-03-16" class="text-gray-500">May 4, 2024 @ 8pm</time>
+              <span class="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">Social</span>
+            </div>
+            <div class="group relative max-w-xl">
+              <h3 class="text-left mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+                <a target="_blank" href="https://lu.ma/qofcxh0h">
+                  informal after-hang at Ellis Bar
+                </a>
+              </h3>
+              <p class="mt-5 text-sm leading-6 text-gray-600"></p>
+            </div>
+          </div>
+        </article>
+
+        <article class="relative isolate flex flex-col gap-8 lg:flex-row">
+          <div class="relative aspect-[16/9] sm:aspect-[2/1] lg:aspect-square lg:w-64 lg:shrink-0">
             <img src="/static/img/flotilla.webp" alt="" class="absolute inset-0 h-full w-full rounded-2xl bg-gray-50 object-cover">
             <div class="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"></div>
           </div>
@@ -744,9 +765,8 @@
     <div class="mx-auto max-w-2xl">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Get Your All Conference Pass</h2>
       {{ if .Tix }}
-      <p class="mt-6 text-xl leading-8 text-gray-600">Next ticket hike <span class="text-buenos">{{ .Tix.Expires.DateDesc }}</span>
         {{ if lt .TixLeft 40 }}
-      ; <span class="text-buenos font-bold">{{ .TixLeft }}</span> left at this price!</p>
+        <span class="text-buenos font-bold">{{ .TixLeft }}</span> left!</p>
         {{ end }}
       {{ else }}
       <p class="mt-6 text-lg leading-8 text-gray-600">This event is sold out! 🙈</p>
