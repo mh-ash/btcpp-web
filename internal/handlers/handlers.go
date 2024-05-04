@@ -84,6 +84,18 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["atx.tmpl"] = atx
 
+	atx25, err := template.ParseFiles("templates/atx25.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/btcbutton.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["atx25.tmpl"] = atx25
+
+	atx24, err := template.ParseFiles("templates/atx24.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/btcbutton.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["atx24.tmpl"] = atx24
+
 	ticket, err := template.New("ticket.tmpl").Funcs(template.FuncMap{
 		"safesrc": func(s string) template.HTMLAttr {
 			return template.HTMLAttr(fmt.Sprintf(`src="%s"`, s))
