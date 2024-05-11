@@ -264,6 +264,26 @@ func findCurrTix(conf *types.Conf, soldCount uint) *types.ConfTicket {
 	return nil
 }
 
+/* Find ticket where current sold + date > inputs */
+func findMaxTix(conf *types.Conf) *types.ConfTicket {
+	/* Sort the tickets! */
+	tixs := types.ConfTickets(conf.Tickets)
+	sort.Sort(&tixs)
+	
+	if len(tixs) < 0 {
+		return nil
+	}
+	
+	maxTix := tixs[0]
+	for _, tix := range tixs {
+		if tix.USD > maxTix.USD {
+			maxTix = tix
+		}
+	}
+
+	return maxTix
+}
+
 // Routes sets up the routes for the application
 func Routes(app *config.AppContext) (http.Handler, error) {
 	r := mux.NewRouter()
@@ -392,6 +412,7 @@ type HomePage struct{}
 type ConfPage struct {
 	Conf    *types.Conf
 	Tix     *types.ConfTicket
+	MaxTix  *types.ConfTicket
 	Sold    uint
 	TixLeft uint
 	Talks   []*types.Talk
@@ -645,6 +666,8 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	}
 
 	currTix := findCurrTix(conf, soldCount)
+	maxTix := findMaxTix(conf)
+
 	var tixLeft uint
 	if currTix == nil {
 		tixLeft = 0
@@ -655,6 +678,7 @@ func RenderConf(w http.ResponseWriter, r *http.Request, ctx *config.AppContext) 
 	err = tmpl.ExecuteTemplate(w, conf.Template, &ConfPage{
 		Conf:    conf,
 		Tix:     currTix,
+		MaxTix:  maxTix,
 		Sold:    soldCount,
 		TixLeft: tixLeft,
 		Talks:   talks,
