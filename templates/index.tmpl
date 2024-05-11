@@ -8,40 +8,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
   </head>
-<body>
-{{ block "mainnav" . }} {{ end }}
-<section>
- <div class="relative isolate overflow-hidden bg-gradient-to-b from-indigo-100/20 pt-8 sm:pt-16">
-    <div class="mx-auto max-w-7xl px-6 pt-4 pb-12 lg:px-8">
-      <div class="mx-auto max-w-2xl lg:mx-0 flex flex-col lg:max-w-none gap-y-8 lg:gap-y-16">
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">✨ Upcoming Events ✨</h1>
-        <article class="relative isolate flex flex-col justify-end rounded-2xl">
-          <a href="/ba24">
-             <img src="/static/img/sun_lady.png" alt="" class="aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none hover:hue-rotate-180 filter" />
-              <div class="px-8 flex flex-col flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
-                <h3 class="my-3 text-lg font-semibold leading-6 text-buenos">
-                <span class="font-bitcoin">bitcoin++</span> is getting paid in Bitcoin | Buenos Aires | Feb 22 - 24, 2024
-                </h3>
-                <a href="/ba24" class="rounded-md bg-buenos px-3.5 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-bitcoin focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-buenos">Attend Buenos Aires</a>
+  <body>
+    {{ block "mainnav" . }} {{ end }}
+    <section id="confs">
+      <div class="bg-white py-24 sm:py-32">
+        <div class="mx-auto max-w-7xl px-6 lg:px-0">
+          <div class="mx-auto max-w-2xl text-center">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Upcoming Events</h2>
+            <p class="mt-2 text-lg leading-8 text-gray-600">Attend one of bitcoin's biggest FOSS gatherings</p>
+          </div>
+          <!-- begins -->
+          <div class="relative mx-auto max-w-2xl lg:mx-0 lg:max-w-none lg:px-8">
+            <div class="relative lg:static rounded-2xl mt-16 sm:mt-20 lg:mx-0 lg:max-w-none">
+              <div class="relative z-20 pt-14 lg:w-full lg:max-w-lg lg:pl-8">
+                <svg class="absolute inset-y-0 -right-24 hidden h-full w-80 translate-x-1/5 transform fill-white lg:block" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <polygon points="0,0 90,0 50,100 0,100" />
+                </svg>
+
+                <div class="relative px-6 py-32 sm:py-40 lg:px-8 lg:py-56 lg:pr-0">
+                  <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
+                    <h1 class="text-4xl font-bold tracking-tight text-white lg:text-gray-900"><span class="font-bitcoin">bitcoin++</span> mints ecash</h1>
+                    <p class="mt-6 text-lg leading-8 text-gray-200 lg:text-gray-600">Berlin, Germany | Oct 10 - 12, 2024</p>
+                    <div class="mt-10 flex items-center gap-x-6">
+                      <a href="/conf/berlin24" class="rounded-2xl bg-zinc-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:text-zinc-900 hover:bg-zinc-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-200">Attend</a>
+                    </div>
+                  </div>
+                </div>
               </div>
-          </a>
-       </article>
-        <article class="relative isolate flex flex-col justify-end rounded-2xl">
-          <a href="/conf/atx24">
-             <img src="/static/img/tx_rainbow.png" alt="" class="aspect-[7/5] w-full max-w-lg rounded-2xl object-cover lg:max-w-none hover:hue-rotate-180 filter" />
-              <div class="px-8 flex flex-col flex-wrap items-center gap-y-1 overflow-hidden text-sm leading-6 text-gray-300">
-                <h3 class="my-3 text-lg font-semibold leading-6 text-txgreen">
-                <span class="font-bitcoin">bitcoin++</span> is script happy | Austin, TX | May 1 - 4, 2024
-                </h3>
-                <a href="/atx24" class="rounded-md bg-txgreen px-3.5 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-bitcoin focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-txgreen">Attend Austin, TX</a>
+            </div>
+            <div class="rounded-2xl absolute inset-0 z-10 bg-gradient-to-t from-gray-900 via-gray-900/40 lg:hidden"></div>
+            <div class="bg-gray-50 absolute inset-0 lg:z-10 lg:inset-y-0 lg:left-auto lg:right-0 lg:w-2/3">
+              <img class="aspect-[3/2] object-cover lg:aspect-auto h-full w-full rounded-2xl lg:rounded-r-2xl" src="/static/img/berlin24.png" alt="">
+            </div>
+          </div>
+          <!-- ends -->
+          <!-- begins -->
+          <div class="relative mx-auto max-w-2xl lg:mx-0 lg:max-w-none lg:px-8">
+            <div class="relative lg:static rounded-2xl mt-16 sm:mt-20 lg:mx-0 lg:max-w-none">
+              <div class="relative z-20 pt-14 lg:w-full lg:max-w-lg lg:pl-8">
+                <svg class="absolute inset-y-0 -right-24 hidden h-full w-80 translate-x-1/5 transform fill-white lg:block" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <polygon points="0,0 90,0 50,100 0,100" />
+                </svg>
+
+                <div class="relative px-6 py-32 sm:py-40 lg:px-8 lg:py-56 lg:pr-0">
+                  <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
+                    <h1 class="text-4xl font-bold tracking-tight text-white lg:text-gray-900"><span class="font-bitcoin">bitcoin++</span> catches some waves</h1>
+                    <p class="mt-6 text-lg leading-8 text-gray-200 lg:text-gray-600">Florianopolis, Brasil | January 2025</p>
+                    <div class="mt-10 flex items-center gap-x-6">
+                      <a href="/conf/floripa" class="rounded-2xl bg-cyan-400 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-200">Attend</a>
+                    </div>
+                  </div>
+                </div>
               </div>
-          </a>
-       </article>
+            </div>
+            <div class="rounded-2xl absolute inset-0 z-10 bg-gradient-to-t from-gray-900 via-gray-900/40 lg:hidden"></div>
+            <div class="bg-gray-50 absolute inset-0 lg:z-10 lg:inset-y-0 lg:left-auto lg:right-0 lg:w-2/3">
+              <img class="aspect-[3/2] object-cover lg:aspect-auto h-full w-full rounded-2xl lg:rounded-r-2xl" src="/static/img/floripa.png" alt="">
+            </div>
+          </div>
+          <!-- ends -->
+          <!-- begins -->
+          <div class="relative mx-auto max-w-2xl lg:mx-0 lg:max-w-none lg:px-8">
+            <div class="relative lg:static rounded-2xl mt-16 sm:mt-20 lg:mx-0 lg:max-w-none">
+              <div class="relative z-20 pt-14 lg:w-full lg:max-w-lg lg:pl-8">
+                <svg class="absolute inset-y-0 -right-24 hidden h-full w-80 translate-x-1/5 transform fill-white lg:block" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <polygon points="0,0 90,0 50,100 0,100" />
+                </svg>
+
+                <div class="relative px-6 py-32 sm:py-40 lg:px-8 lg:py-56 lg:pr-0">
+                  <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
+                    <h1 class="text-4xl font-bold tracking-tight text-white lg:text-gray-900"><span class="font-bitcoin">bitcoin++</span> dives deep</h1>
+                    <p class="mt-6 text-lg leading-8 text-gray-200 lg:text-gray-600">Austin, Texas | April 2025</p>
+                    <div class="mt-10 flex items-center gap-x-6">
+                      <a href="/conf/atx25" class="rounded-2xl bg-txgreen px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange">Attend</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-2xl absolute inset-0 z-10 bg-gradient-to-t from-gray-900 via-gray-900/40 lg:hidden"></div>
+            <div class="bg-gray-50 absolute inset-0 lg:z-10 lg:inset-y-0 lg:left-auto lg:right-0 lg:w-2/3">
+              <img class="aspect-[3/2] object-cover lg:aspect-auto h-full w-full rounded-2xl lg:rounded-r-2xl" src="/static/img/dog_swimming.jpg" alt="">
+            </div>
+          </div>
+          <!-- ends -->
+        </div>
       </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
     <section id="about">
     {{ block "about" . }} {{ end }}
     </section>

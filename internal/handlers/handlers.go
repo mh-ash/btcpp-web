@@ -58,6 +58,12 @@ func loadTemplates(app *config.AppContext) error {
 	}
 	app.TemplateCache["berlin.tmpl"] = berlin
 
+	berlin24, err := template.ParseFiles("templates/berlin24.tmpl", "templates/conf_nav.tmpl", "templates/session.tmpl", "templates/btcbutton.tmpl")
+	if err != nil {
+		return err
+	}
+	app.TemplateCache["berlin24.tmpl"] = berlin24
+
 	talks, err := template.ParseFiles("templates/sched.tmpl",
 		"templates/sched_desc.tmpl",
 		"templates/conf_nav.tmpl")
@@ -265,8 +271,7 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	// Set up the routes, we'll have one page per course
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		maybeReload(app)
-		http.Redirect(w, r, "/conf/atx24", http.StatusSeeOther)
-		//Home(w, r, app)
+		Home(w, r, app)
 	}).Methods("GET")
 	/* Legacy redirects! */
 	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
