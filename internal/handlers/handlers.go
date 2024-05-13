@@ -254,7 +254,7 @@ func findCurrTix(conf *types.Conf, soldCount uint) *types.ConfTicket {
 		if tix.Expires.Start.Before(now) {
 			continue
 		}
-		if tix.Max < soldCount {
+		if tix.Max <= soldCount {
 			continue
 		}
 		return tix
