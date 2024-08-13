@@ -297,6 +297,12 @@ func Routes(app *config.AppContext) (http.Handler, error) {
 	r.HandleFunc("/berlin23", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/conf/berlin23", http.StatusSeeOther)
 	}).Methods("GET")
+	r.HandleFunc("/ecash", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/conf/berlin24", http.StatusSeeOther)
+	}).Methods("GET")
+	r.HandleFunc("/mempool", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/conf/atx25", http.StatusSeeOther)
+	}).Methods("GET")
 	r.HandleFunc("/atx24", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/conf/atx24", http.StatusSeeOther)
 	}).Methods("GET")
