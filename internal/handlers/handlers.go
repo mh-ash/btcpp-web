@@ -270,7 +270,7 @@ func findMaxTix(conf *types.Conf) *types.ConfTicket {
 	tixs := types.ConfTickets(conf.Tickets)
 	sort.Sort(&tixs)
 	
-	if len(tixs) < 0 {
+	if len(tixs) <= 0 {
 		return nil
 	}
 	
