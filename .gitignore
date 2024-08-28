@@ -5,3 +5,4 @@ target
 todo
 *.log
 .env
+.DS_Store
