@@ -186,7 +186,7 @@ func findConf(r *http.Request, app *config.AppContext) (*types.Conf, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("conf '%s' not found", confTag)
+	return nil, fmt.Errorf("'%s' not found (url: %s)", confTag, r.URL.String())
 }
 
 func findConfByRef(app *config.AppContext, confRef string) *types.Conf {
